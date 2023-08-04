@@ -10,6 +10,7 @@ function Body() {
     const [handleInput, setHandleInput] = useState<string>('')
     const [descriptionInput,setDescriptionInput] = useState<string>("")
     const [users,setUsers] = useState<any[]>()
+    const [count,setCount] = useState<any>(100)
     const changeHandleInput = (e: any) => {
         if (e.key === 'Enter' && handleInput != "") {
             setHandle([...handle, handleInput])
@@ -22,6 +23,11 @@ function Body() {
         setHandle(handle.filter(e => e != h))
     }
     const handleSubmit = () => {
+        const requestBody = {
+            handle,
+            descriptionInput,
+            count
+        }
         if(handleInput !='' && descriptionInput != ''){
             fetch("https://jsonplaceholder.typicode.com/users").then(e=>e.json()).then(e=>{
                 setUsers(e)
@@ -72,7 +78,7 @@ function Body() {
                         <Box sx={{ height: '1rem' }} />
                         <div style={{ alignSelf: "left" }}>
                             <Typography id="users-slider" gutterBottom>
-                                How many results?
+                                How many results? 
                             </Typography>
                         </div>
                         <Slider
@@ -86,6 +92,8 @@ function Body() {
                             max={1000}
                             aria-labelledby="users-slider"
                             size="small"
+                            onChange={(_,v)=>setCount(v)}
+                            value={count}
                         />
                         <Box sx={{ height: '2rem' }} />
 
