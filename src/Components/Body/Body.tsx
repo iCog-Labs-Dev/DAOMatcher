@@ -1,5 +1,4 @@
-import { AccountCircle } from "@mui/icons-material"
-import { Box, Button, Chip, Container, Divider, Grid, InputAdornment, Slider, TextField, Typography } from "@mui/material"
+import { Box, Button, Chip, Container, Divider, Slider, TextField, Typography } from "@mui/material"
 import { useState } from "react";
 import User from "./User/User";
 function valuetext(value: number) {
@@ -28,6 +27,8 @@ function Body() {
             descriptionInput,
             count
         }
+        console.log(requestBody);
+        
         if(handleInput !='' && descriptionInput != ''){
             fetch("https://jsonplaceholder.typicode.com/users").then(e=>e.json()).then(e=>{
                 setUsers(e)

@@ -1,7 +1,7 @@
 import {  ThemeProvider, createTheme } from "@mui/material"
 import Body from "./Components/Body/Body";
 import Header from "./Components/Header/Header";
-import { blueGrey, cyan, teal,grey } from "@mui/material/colors";
+import { blueGrey, teal } from "@mui/material/colors";
 const theme = createTheme({
     typography: {
         fontFamily: [
