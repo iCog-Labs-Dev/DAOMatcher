@@ -12,11 +12,13 @@ function Body() {
     const [users, setUsers] = useState<any[]>()
     const [count, setCount] = useState<any>(100)
     const addHandler = () => {
-        setHandle([...handle, handleInput])
-        setHandleInput('')
+        if(handleInput != ""){
+            setHandle([...handle, handleInput])
+            setHandleInput('')
+        }
     }
     const changeHandleInput = (e: any) => {
-        if (e.key === 'Enter' && handleInput != "") {
+        if (e.key === 'Enter') {
             addHandler()
             return
         }
