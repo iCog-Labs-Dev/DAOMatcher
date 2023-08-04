@@ -1,19 +1,23 @@
-import { Box, Button, Chip, Container, Divider, Slider, TextField, Typography } from "@mui/material"
+import { Box, Button, Chip, Container, Divider, IconButton, Slider, Stack, TextField, Typography } from "@mui/material"
 import { useState } from "react";
 import User from "./User/User";
+import AddIcon from '@mui/icons-material/Add';
 function valuetext(value: number) {
     return `${value}°C`;
 }
 function Body() {
     const [handle, setHandle] = useState<string[]>([]);
     const [handleInput, setHandleInput] = useState<string>('')
-    const [descriptionInput,setDescriptionInput] = useState<string>("")
-    const [users,setUsers] = useState<any[]>()
-    const [count,setCount] = useState<any>(100)
+    const [descriptionInput, setDescriptionInput] = useState<string>("")
+    const [users, setUsers] = useState<any[]>()
+    const [count, setCount] = useState<any>(100)
+    const addHandler = () => {
+        setHandle([...handle, handleInput])
+        setHandleInput('')
+    }
     const changeHandleInput = (e: any) => {
         if (e.key === 'Enter' && handleInput != "") {
-            setHandle([...handle, handleInput])
-            setHandleInput('')
+            addHandler()
             return
         }
         setHandleInput(e.target.value)
@@ -28,12 +32,12 @@ function Body() {
             count
         }
         console.log(requestBody);
-        
-        if(handleInput !='' && descriptionInput != ''){
-            fetch("https://jsonplaceholder.typicode.com/users").then(e=>e.json()).then(e=>{
+
+        if (handle.length > 0 && descriptionInput != '') {
+            fetch("https://jsonplaceholder.typicode.com/users").then(e => e.json()).then(e => {
                 setUsers(e)
             })
-        }else{
+        } else {
             alert("Empty handles or description!")
         }
     }
@@ -45,15 +49,21 @@ function Body() {
                     <Container maxWidth="md">
                         <Typography variant="h5">Search for people with similar interests</Typography>
                         <Box sx={{ height: '2rem' }} />
-                        <TextField
-                            id="outlined-basic"
-                            label="Twitter handles"
-                            variant="outlined"
-                            fullWidth
-                            onChange={changeHandleInput}
-                            value={handleInput}
-                            onKeyDown={changeHandleInput}
-                        />
+                        <Stack direction="row">
+
+                            <TextField
+                                id="outlined-basic"
+                                label="Twitter handles"
+                                variant="outlined"
+                                fullWidth
+                                onChange={changeHandleInput}
+                                value={handleInput}
+                                onKeyDown={changeHandleInput}
+                            />
+                            <IconButton aria-label="delete" size="large" onClick={addHandler}>
+                                <AddIcon fontSize="inherit" />
+                            </IconButton>
+                        </Stack>
                         <Box sx={{ margin: '1rem 0' }}>
                             {handle.length ? handle.map((h, i) => (
                                 <Chip label={h} key={i} onDelete={() => deleteHandle(h)} sx={{ margin: '0.5rem' }} />
@@ -72,14 +82,14 @@ function Body() {
                                 multiline
                                 fullWidth
                                 value={descriptionInput}
-                                onChange={e=>setDescriptionInput(e.target.value)}
+                                onChange={e => setDescriptionInput(e.target.value)}
                             />
 
                         </Box>
                         <Box sx={{ height: '1rem' }} />
                         <div style={{ alignSelf: "left" }}>
                             <Typography id="users-slider" gutterBottom>
-                                How many results? 
+                                How many results?
                             </Typography>
                         </div>
                         <Slider
@@ -93,7 +103,7 @@ function Body() {
                             max={1000}
                             aria-labelledby="users-slider"
                             size="small"
-                            onChange={(_,v)=>setCount(v)}
+                            onChange={(_, v) => setCount(v)}
                             value={count}
                         />
                         <Box sx={{ height: '2rem' }} />
@@ -103,11 +113,11 @@ function Body() {
                 </Box>
                 <Divider flexItem>
                     {users && users.length && <Typography>Results</Typography>}
-                    
+
                 </Divider>
                 <Container maxWidth="sm">
-                    {users && users.length && users.map(user=>(
-                        <User user={user}/>
+                    {users && users.length && users.map(user => (
+                        <User user={user} />
                     ))}
                 </Container>
             </Container >
