@@ -36,6 +36,19 @@ function Body() {
         console.log(requestBody);
 
         if (handle.length > 0 && descriptionInput != '') {
+            // fetch("https://c369-35-227-118-0.ngrok-free.app"
+            // ,{
+            //     method:'POST',
+            //     body: JSON.stringify({
+            //         query:descriptionInput,
+            //         user_list:handle,
+            //         user_limit:count
+            //     })
+            // }
+            // ).then(e => e.json()).then(e => {
+
+            //     setUsers(e)
+            // })
             fetch("https://jsonplaceholder.typicode.com/users").then(e => e.json()).then(e => {
                 setUsers(e)
             })
@@ -61,8 +74,9 @@ function Body() {
                                 onChange={changeHandleInput}
                                 value={handleInput}
                                 onKeyDown={changeHandleInput}
+                                size="small"
                             />
-                            <IconButton aria-label="delete" size="large" onClick={addHandler}>
+                            <IconButton aria-label="delete" size="medium" onClick={addHandler}>
                                 <AddIcon fontSize="inherit" />
                             </IconButton>
                         </Stack>
@@ -85,6 +99,7 @@ function Body() {
                                 fullWidth
                                 value={descriptionInput}
                                 onChange={e => setDescriptionInput(e.target.value)}
+                                size="small"
                             />
 
                         </Box>
@@ -110,7 +125,7 @@ function Body() {
                         />
                         <Box sx={{ height: '2rem' }} />
 
-                        <Button variant="contained" fullWidth onClick={handleSubmit}>Search</Button>
+                        <Button variant="contained" fullWidth onClick={handleSubmit} size="small">Search</Button>
                     </Container>
                 </Box>
                 <Divider flexItem>
