@@ -50,8 +50,9 @@ function Body() {
                 }),
             }
             ).then(e => e.json()).then(e => {
-
-                setUsers(e)
+                console.log(e.result);
+                
+                setUsers(e.result)
             })
         } else {
             alert("Empty handles or description!")
