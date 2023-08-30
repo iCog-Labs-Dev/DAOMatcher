@@ -36,20 +36,21 @@ function Body() {
         console.log(requestBody);
 
         if (handle.length > 0 && descriptionInput != '') {
-            // fetch("https://c369-35-227-118-0.ngrok-free.app"
-            // ,{
-            //     method:'POST',
-            //     body: JSON.stringify({
-            //         query:descriptionInput,
-            //         user_list:handle,
-            //         user_limit:count
-            //     })
-            // }
-            // ).then(e => e.json()).then(e => {
+            fetch("http://localhost:5000"
+            ,{
+                method:'POST',
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    query:descriptionInput,
+                    user_list:handle,
+                    user_limit:3
+                }),
+            }
+            ).then(e => e.json()).then(e => {
 
-            //     setUsers(e)
-            // })
-            fetch("https://jsonplaceholder.typicode.com/users").then(e => e.json()).then(e => {
                 setUsers(e)
             })
         } else {
