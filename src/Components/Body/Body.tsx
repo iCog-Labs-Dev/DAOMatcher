@@ -50,7 +50,7 @@ function Body() {
                 }),
             }
             ).then(e => e.json()).then(e => {
-                console.log(e.result);
+                console.log(e.result);//For debugging only
                 
                 setUsers(e.result)
             })
@@ -136,7 +136,7 @@ function Body() {
                 </Divider>
                 <Container maxWidth="sm">
                     {users && users.length && users.map(user => (
-                        <User key={user.id  } user={user} />
+                        <User key={user.id} user={user} />
                     ))}
                 </Container>
             </Container >
