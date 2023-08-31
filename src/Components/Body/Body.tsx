@@ -51,8 +51,10 @@ function Body() {
             }
             ).then(e => e.json()).then(e => {
                 console.log(e.result);//For debugging only
+                let data = e.result
+                data = data.filter((user: { score: number; }) => user.score > 50)
                 
-                setUsers(e.result)
+                setUsers(data)
             })
         } else {
             alert("Empty handles or description!")
@@ -70,13 +72,14 @@ function Body() {
 
                             <TextField
                                 id="outlined-basic"
-                                label="Mastodon handles"
+                                label="User handles"
                                 variant="outlined"
                                 fullWidth
                                 onChange={changeHandleInput}
                                 value={handleInput}
                                 onKeyDown={changeHandleInput}
                                 size="small"
+                                placeholder="LinkedIn or Mastodon handle"
                             />
                             <IconButton aria-label="delete" size="medium" onClick={addHandler}>
                                 <AddIcon fontSize="inherit" />
@@ -136,7 +139,7 @@ function Body() {
                 </Divider>
                 <Container maxWidth="sm">
                     {users && users.length && users.map(user => (
-                        <User key={user.id + Math.random()} user={user} />
+                        <User key={user.id + (Math.random() * 10)} user={user} />
                     ))}
                 </Container>
             </Container >
