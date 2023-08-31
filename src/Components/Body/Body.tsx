@@ -136,7 +136,7 @@ function Body() {
                 </Divider>
                 <Container maxWidth="sm">
                     {users && users.length && users.map(user => (
-                        <User key={user.id} user={user} />
+                        <User key={user.id + Math.random()} user={user} />
                     ))}
                 </Container>
             </Container >
