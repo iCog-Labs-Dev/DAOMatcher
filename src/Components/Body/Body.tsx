@@ -70,7 +70,7 @@ function Body() {
 
                             <TextField
                                 id="outlined-basic"
-                                label="Twitter handles"
+                                label="Mastodon handles"
                                 variant="outlined"
                                 fullWidth
                                 onChange={changeHandleInput}
@@ -136,7 +136,7 @@ function Body() {
                 </Divider>
                 <Container maxWidth="sm">
                     {users && users.length && users.map(user => (
-                        <User user={user} />
+                        <User key={user.id  } user={user} />
                     ))}
                 </Container>
             </Container >
