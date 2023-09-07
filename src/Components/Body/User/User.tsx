@@ -12,6 +12,7 @@ function User({user}:any) {
                         <Box sx={{ textAlign: 'left',marginLeft:'1rem' }}>
                             <Typography>{user.name}</Typography>
                             <Typography color="gray">@{user.username}</Typography>
+                            <Typography color="gray" fontSize={"14px"}>{user.score}% Match</Typography>
                         </Box>
                     </Stack>
                     <Button startIcon={<OpenInNewIcon />}>Visit profile</Button>

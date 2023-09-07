@@ -36,21 +36,25 @@ function Body() {
         console.log(requestBody);
 
         if (handle.length > 0 && descriptionInput != '') {
-            // fetch("https://c369-35-227-118-0.ngrok-free.app"
-            // ,{
-            //     method:'POST',
-            //     body: JSON.stringify({
-            //         query:descriptionInput,
-            //         user_list:handle,
-            //         user_limit:count
-            //     })
-            // }
-            // ).then(e => e.json()).then(e => {
-
-            //     setUsers(e)
-            // })
-            fetch("https://jsonplaceholder.typicode.com/users").then(e => e.json()).then(e => {
-                setUsers(e)
+            fetch("http://localhost:5000"
+            ,{
+                method:'POST',
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    query:descriptionInput,
+                    user_list:handle,
+                    user_limit:3
+                }),
+            }
+            ).then(e => e.json()).then(e => {
+                console.log(e.result);//For debugging only
+                let data = e.result
+                data = data.filter((user: { score: number; }) => user.score > 50)
+                
+                setUsers(data)
             })
         } else {
             alert("Empty handles or description!")
@@ -68,13 +72,14 @@ function Body() {
 
                             <TextField
                                 id="outlined-basic"
-                                label="Twitter handles"
+                                label="User handles"
                                 variant="outlined"
                                 fullWidth
                                 onChange={changeHandleInput}
                                 value={handleInput}
                                 onKeyDown={changeHandleInput}
                                 size="small"
+                                placeholder="LinkedIn or Mastodon handle"
                             />
                             <IconButton aria-label="delete" size="medium" onClick={addHandler}>
                                 <AddIcon fontSize="inherit" />
@@ -134,7 +139,7 @@ function Body() {
                 </Divider>
                 <Container maxWidth="sm">
                     {users && users.length && users.map(user => (
-                        <User user={user} />
+                        <User key={user.id + (Math.random() * 10)} user={user} />
                     ))}
                 </Container>
             </Container >
