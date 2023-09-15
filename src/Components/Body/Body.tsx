@@ -60,8 +60,8 @@ function Body() {
                 const data = e.result
 
                 setUsers(data)
-                setIsLoading(false)
-            })
+            }).catch(err => console.log("Error: ", err)
+            ).finally(() => setIsLoading(false))
         } else {
             alert("Empty handles or description!")
         }
