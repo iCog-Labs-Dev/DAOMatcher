@@ -1,5 +1,5 @@
 import { Box, Button, Chip, Container, Divider, IconButton, Slider, Stack, TextField, Typography } from "@mui/material"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import User from "./User/User";
 import AddIcon from '@mui/icons-material/Add';
 function valuetext(value: number) {
@@ -12,7 +12,7 @@ function Body() {
     const [users, setUsers] = useState<any[]>()
     const [count, setCount] = useState<any>(100)
     const addHandler = () => {
-        if(handleInput != ""){
+        if (handleInput != "") {
             setHandle([...handle, handleInput])
             setHandleInput('')
         }
@@ -36,30 +36,46 @@ function Body() {
         console.log(requestBody);
 
         if (handle.length > 0 && descriptionInput != '') {
-            fetch("http://localhost:5000"
-            ,{
-                method:'POST',
-                mode: "cors",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    query:descriptionInput,
-                    user_list:handle,
-                    user_limit:3
-                }),
-            }
+            fetch("http://localhost:8000"
+                , {
+                    method: 'POST',
+                    mode: "cors",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        query: descriptionInput,
+                        user_list: handle,
+                        user_limit: 3
+                    }),
+                }
             ).then(e => e.json()).then(e => {
                 console.log(e.result);//For debugging only
-                let data = e.result
-                data = data.filter((user: { score: number; }) => user.score > 50)
-                
+                const data = e.result
+
                 setUsers(data)
             })
         } else {
             alert("Empty handles or description!")
         }
     }
+
+    useEffect(() => {
+        const eventSource = new EventSource("http://localhost:8000/stream", {
+
+        })
+
+        eventSource.addEventListener('message', (event) => {
+            // Parse and log the data received from the SSE
+            const newData = JSON.parse(event.data);
+            console.log('Received SSE data:', newData);
+        });
+
+        return () => {
+            eventSource.close()
+        }
+    }, [])
+
     return (
         <center>
             <Container maxWidth="lg">
