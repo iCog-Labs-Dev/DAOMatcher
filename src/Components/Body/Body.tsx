@@ -13,6 +13,7 @@ function Body() {
     const [users, setUsers] = useState<any[]>()
     const [count, setCount] = useState<any>(100)
     const [progress, setProgress] = useState<number>(0)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const BASE_URL = "http://localhost:8000"
     const addHandler = () => {
@@ -40,6 +41,7 @@ function Body() {
         console.log(requestBody);
 
         if (handle.length > 0 && descriptionInput != '') {
+            setIsLoading(true)
             fetch(BASE_URL
                 , {
                     method: 'POST',
@@ -58,6 +60,7 @@ function Body() {
                 const data = e.result
 
                 setUsers(data)
+                setIsLoading(false)
             })
         } else {
             alert("Empty handles or description!")
@@ -78,7 +81,7 @@ function Body() {
                 console.log("tempProgress: ", tempProgress);
                 console.log("count: ", count);
 
-                const percentage = tempProgress / count
+                const percentage = (tempProgress / count) * 100
                 setProgress(percentage)
             } catch (error) {
                 console.log(error);
@@ -166,8 +169,9 @@ function Body() {
                         />
                         <Box sx={{ height: '2rem' }} />
 
-                        <Button variant="contained" fullWidth onClick={handleSubmit} size="small">Search</Button>
-                        <CircularProgressWithLabel value={progress} />
+                        <Button disabled={isLoading} variant="contained" fullWidth onClick={handleSubmit} size="small">Search</Button>
+                        {isLoading ? (<CircularProgressWithLabel style={{ margin: '1rem' }} value={progress} />) : null}
+
                     </Container>
                 </Box>
                 <Divider flexItem>
