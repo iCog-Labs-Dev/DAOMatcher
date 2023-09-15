@@ -11,6 +11,8 @@ function Body() {
     const [descriptionInput, setDescriptionInput] = useState<string>("")
     const [users, setUsers] = useState<any[]>()
     const [count, setCount] = useState<any>(100)
+
+    const BASE_URL = "http://localhost:8000"
     const addHandler = () => {
         if (handleInput != "") {
             setHandle([...handle, handleInput])
@@ -36,7 +38,7 @@ function Body() {
         console.log(requestBody);
 
         if (handle.length > 0 && descriptionInput != '') {
-            fetch("http://localhost:8000"
+            fetch(BASE_URL
                 , {
                     method: 'POST',
                     mode: "cors",
@@ -61,15 +63,18 @@ function Body() {
     }
 
     useEffect(() => {
-        const eventSource = new EventSource("http://localhost:8000/stream", {
+        const eventSource = new EventSource(BASE_URL + "/stream", {
 
         })
 
-        eventSource.addEventListener('message', (event) => {
-            // Parse and log the data received from the SSE
-            const newData = JSON.parse(event.data);
-            console.log('Received SSE data:', newData);
-        });
+        eventSource.onmessage = (event) => {
+            console.log("recieved data", event.data);
+        }
+
+        eventSource.onerror = (error) => {
+            console.log("Error: ", error);
+
+        }
 
         return () => {
             eventSource.close()
