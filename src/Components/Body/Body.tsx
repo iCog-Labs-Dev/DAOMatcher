@@ -76,10 +76,12 @@ function Body() {
                 const data = await response.json() as Response
                 console.log(data);//For debugging only
                 const { result: users } = data
+                users.sort((a, b) => a.score - b.score)
                 setUsers(users)
             } catch (error) {
                 console.log("Error: ", error)
             } finally {
+                setProgress(0)
                 setIsLoading(false)
             }
         } else {
@@ -97,9 +99,11 @@ function Body() {
                 const data = JSON.parse(event.data)
                 console.log("recieved data: ", data);
 
-                const { progress: tempProgress } = JSON.parse(event.data)
+                const { progress: tempProgress, curr_user: user } = JSON.parse(event.data)
                 console.log("tempProgress: ", tempProgress);
                 console.log("count: ", count);
+                console.log("user: ", user);
+
 
                 const percentage = (tempProgress / count) * 100
                 setProgress(percentage)
@@ -117,7 +121,7 @@ function Body() {
         return () => {
             eventSource.close()
         }
-    }, [])
+    }, [users, count])
 
     return (
         <center>
