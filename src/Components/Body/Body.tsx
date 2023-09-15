@@ -24,7 +24,7 @@ function Body() {
     const [handle, setHandle] = useState<string[]>([]);
     const [handleInput, setHandleInput] = useState<string>('')
     const [descriptionInput, setDescriptionInput] = useState<string>("")
-    const [users, setUsers] = useState<User[]>()
+    const [users, setUsers] = useState<User[]>([])
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [count, setCount] = useState<any>(100)
     const [progress, setProgress] = useState<number>(0)
@@ -58,6 +58,7 @@ function Body() {
 
         if (handle.length > 0 && descriptionInput != '') {
             setIsLoading(true)
+            setUsers([])
             try {
                 const response = await fetch(BASE_URL
                     , {
@@ -121,7 +122,7 @@ function Body() {
         return () => {
             eventSource.close()
         }
-    }, [users, count])
+    })
 
     return (
         <center>
