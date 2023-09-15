@@ -2,6 +2,7 @@ import { Box, Button, Chip, Container, Divider, IconButton, Slider, Stack, TextF
 import { useEffect, useState } from "react";
 import User from "./User/User";
 import AddIcon from '@mui/icons-material/Add';
+import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
 function valuetext(value: number) {
     return `${value}°C`;
 }
@@ -11,6 +12,7 @@ function Body() {
     const [descriptionInput, setDescriptionInput] = useState<string>("")
     const [users, setUsers] = useState<any[]>()
     const [count, setCount] = useState<any>(100)
+    const [progress, setProgress] = useState<number>(0)
 
     const BASE_URL = "http://localhost:8000"
     const addHandler = () => {
@@ -48,7 +50,7 @@ function Body() {
                     body: JSON.stringify({
                         query: descriptionInput,
                         user_list: handle,
-                        user_limit: 3
+                        user_limit: count
                     }),
                 }
             ).then(e => e.json()).then(e => {
@@ -68,7 +70,20 @@ function Body() {
         })
 
         eventSource.onmessage = (event) => {
-            console.log("recieved data", event.data);
+            try {
+                const data = JSON.parse(event.data)
+                console.log("recieved data: ", data);
+
+                const { progress: tempProgress } = JSON.parse(event.data)
+                console.log("tempProgress: ", tempProgress);
+                console.log("count: ", count);
+
+                const percentage = tempProgress / count
+                setProgress(percentage)
+            } catch (error) {
+                console.log(error);
+            }
+
         }
 
         eventSource.onerror = (error) => {
@@ -152,6 +167,7 @@ function Body() {
                         <Box sx={{ height: '2rem' }} />
 
                         <Button variant="contained" fullWidth onClick={handleSubmit} size="small">Search</Button>
+                        <CircularProgressWithLabel value={progress} />
                     </Container>
                 </Box>
                 <Divider flexItem>
