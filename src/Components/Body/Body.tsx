@@ -232,11 +232,11 @@ function Body() {
           {users && users.length && <Typography>Results</Typography>}
         </Divider>
         <Container maxWidth="sm">
-          {users &&
-            users.length &&
-            users.map((user) => (
-              <User key={user.id + Math.random() * 10} user={user} />
-            ))}
+          {users && users.length
+            ? users.map((user) => (
+                <User key={user.id + Math.random() * 10} user={user} />
+              ))
+            : null}
         </Container>
       </Container>
     </center>
