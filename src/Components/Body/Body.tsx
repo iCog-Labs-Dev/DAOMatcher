@@ -107,15 +107,18 @@ function Body() {
         const data = JSON.parse(event.data);
         console.log("recieved data: ", data);
 
-        const { progress: tempProgress, curr_user: user } = JSON.parse(
-          event.data
-        );
-        console.log("tempProgress: ", tempProgress);
-        console.log("count: ", count);
-        console.log("user: ", user);
+        const { progress: tempProgress, curr_user: user } = data;
 
-        const percentage = (tempProgress / count) * 100;
-        setProgress(percentage);
+        if (!tempProgress) {
+          console.log(data.error);
+        } else {
+          console.log("tempProgress: ", tempProgress);
+          console.log("count: ", count);
+          console.log("user: ", user);
+
+          const percentage = (tempProgress / count) * 100;
+          setProgress(percentage);
+        }
       } catch (error) {
         console.log(error);
       }
