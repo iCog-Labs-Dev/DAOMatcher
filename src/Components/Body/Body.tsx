@@ -86,7 +86,7 @@ function Body() {
         const data = (await response.json()) as Response;
         console.log(data); //For debugging only
         const { result: users } = data;
-        users.sort((a, b) => a.score - b.score);
+        users.sort((a, b) => b.score - a.score);
         setUsers(users);
       } catch (error) {
         console.log("Error: ", error);
