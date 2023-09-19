@@ -15,7 +15,7 @@ import User from "./User/User";
 import AddIcon from "@mui/icons-material/Add";
 import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
 
-interface User {
+export interface IUser {
   id: string;
   username: string;
   name: string;
@@ -23,9 +23,10 @@ interface User {
   handle: string;
 }
 
-interface Response {
-  result: User[];
+export interface Response {
+  result: IUser[];
 }
+
 
 function valuetext(value: number) {
   return `${value}°C`;
@@ -35,7 +36,7 @@ function Body() {
   const [handle, setHandle] = useState<string[]>([]);
   const [handleInput, setHandleInput] = useState<string>("");
   const [descriptionInput, setDescriptionInput] = useState<string>("");
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<IUser[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [count, setCount] = useState<any>(100);
   const [progress, setProgress] = useState<number>(0);
@@ -80,7 +81,7 @@ function Body() {
           body: JSON.stringify({
             query: descriptionInput,
             user_list: handle,
-            user_limit: count,
+            user_limit: 3,
           }),
         });
         const data = (await response.json()) as Response;
@@ -237,8 +238,8 @@ function Body() {
         <Container maxWidth="sm">
           {users && users.length
             ? users.map((user) => (
-                <User key={user.id + Math.random() * 10} user={user} />
-              ))
+              <User key={user.id + Math.random() * 10} user={user} />
+            ))
             : null}
         </Container>
       </Container>
