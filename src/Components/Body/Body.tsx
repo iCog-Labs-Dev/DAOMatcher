@@ -13,6 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import User from "./User/User";
 import AddIcon from "@mui/icons-material/Add";
+import Alert from '@mui/material/Alert';
 import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
 
 export interface IUser {
@@ -41,6 +42,9 @@ function Body() {
   const [count, setCount] = useState<any>(100);
   const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [error, setError] = useState<any>(null)
+  const [success, setSuccess] = useState<boolean>(false);
 
   const BASE_URL = "http://localhost:8000";
   const addHandler = () => {
@@ -89,14 +93,19 @@ function Body() {
         const { result: users } = data;
         users.sort((a, b) => b.score - a.score);
         setUsers(users);
+        setError(null);
+        setSuccess(true)
       } catch (error) {
         console.log("Error: ", error);
+        setError(error)
+        setSuccess(false)
       } finally {
         setProgress(0);
         setIsLoading(false);
       }
     } else {
-      alert("Empty handles or description!");
+      setError("Empty handles or description!")
+      setSuccess(false)
     }
   };
 
@@ -127,6 +136,8 @@ function Body() {
 
     eventSource.onerror = (error) => {
       console.log("Error: ", error);
+      setError(error)
+      setSuccess(false)
     };
 
     return () => {
@@ -136,12 +147,19 @@ function Body() {
 
   return (
     <center>
+
+
       <Container maxWidth="lg">
         <Box sx={{ margin: "5rem 0" }}>
+
           <Container maxWidth="md">
             <Typography variant="h5">
               Search for people with similar interests
             </Typography>
+            {error ? (<Alert severity="error">{error}</Alert>) : (null)}
+            {success ? (<Alert severity="success">Loading successful</Alert>
+            ) : (null)}
+
             <Box sx={{ height: "2rem" }} />
             <Stack direction="row">
               <TextField
