@@ -238,7 +238,6 @@ function Body() {
                 value={depth}
                 onChange={(_, v: number) => {
                   console.log(depth);
-
                   setDepth(v);
                 }}
                 size="small"
