@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import User from "./User/User";
 import AddIcon from "@mui/icons-material/Add";
-import Alert from '@mui/material/Alert';
+import Alert from "@mui/material/Alert";
 import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
 
 export interface IUser {
@@ -28,7 +28,6 @@ export interface Response {
   result: IUser[];
 }
 
-
 function valuetext(value: number) {
   return `${value}°C`;
 }
@@ -40,10 +39,12 @@ function Body() {
   const [users, setUsers] = useState<IUser[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [count, setCount] = useState<any>(100);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [depth, setDepth] = useState<number>(2);
   const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [error, setError] = useState<any>(null)
+  const [error, setError] = useState<any>(null);
   const [success, setSuccess] = useState<boolean>(false);
 
   const BASE_URL = "http://localhost:8000";
@@ -94,18 +95,18 @@ function Body() {
         users.sort((a, b) => b.score - a.score);
         setUsers(users);
         setError(null);
-        setSuccess(true)
+        setSuccess(true);
       } catch (error) {
         console.log("Error: ", error);
-        setError(error)
-        setSuccess(false)
+        setError(error);
+        setSuccess(false);
       } finally {
         setProgress(0);
         setIsLoading(false);
       }
     } else {
-      setError("Empty handles or description!")
-      setSuccess(false)
+      setError("Empty handles or description!");
+      setSuccess(false);
     }
   };
 
@@ -136,8 +137,8 @@ function Body() {
 
     eventSource.onerror = (error) => {
       console.log("Error: ", error);
-      setError(error)
-      setSuccess(false)
+      setError(error);
+      setSuccess(false);
     };
 
     return () => {
@@ -147,18 +148,16 @@ function Body() {
 
   return (
     <center>
-
-
       <Container maxWidth="lg">
         <Box sx={{ margin: "5rem 0" }}>
-
           <Container maxWidth="md">
             <Typography variant="h5">
               Search for people with similar interests
             </Typography>
-            {error ? (<Alert severity="error">{error}</Alert>) : (null)}
-            {success ? (<Alert severity="success">Loading successful</Alert>
-            ) : (null)}
+            {error ? <Alert severity="error">{error}</Alert> : null}
+            {success ? (
+              <Alert severity="success">Loading successful</Alert>
+            ) : null}
 
             <Box sx={{ height: "2rem" }} />
             <Stack direction="row">
@@ -231,6 +230,31 @@ function Body() {
               onChange={(_, v) => setCount(v)}
               value={count}
             />
+            <Stack direction="row">
+              <TextField
+                id="outlined-textarea"
+                label="Depth of the search"
+                rows={1}
+                value={depth}
+                onChange={(_, v: number) => {
+                  console.log(depth);
+
+                  setDepth(v);
+                }}
+                size="small"
+                type="number"
+              />
+              <TextField
+                style={{ marginLeft: 10 }}
+                id="outlined-textarea"
+                label="Cost estimation"
+                value={null}
+                size="small"
+                contentEditable="false"
+                disabled
+              />
+            </Stack>
+
             <Box sx={{ height: "2rem" }} />
 
             <Button
@@ -256,8 +280,8 @@ function Body() {
         <Container maxWidth="sm">
           {users && users.length
             ? users.map((user) => (
-              <User key={user.id + Math.random() * 10} user={user} />
-            ))
+                <User key={user.id + Math.random() * 10} user={user} />
+              ))
             : null}
         </Container>
       </Container>
