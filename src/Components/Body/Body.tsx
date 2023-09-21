@@ -16,6 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Alert from "@mui/material/Alert";
 import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
 import { CustomNumberInput } from "./NumberInput/NumberInput";
+import { format, intervalToDuration } from "date-fns";
 
 export interface IUser {
   id: string;
@@ -41,12 +42,13 @@ function Body() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [count, setCount] = useState<any>(100);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [depth, setDepth] = useState<any>(2);
+  const [depth, setDepth] = useState<any>(count);
   const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, setError] = useState<any>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const [estimation, setEstimation] = useState<string>("");
 
   const BASE_URL = "http://localhost:8000";
   const addHandler = () => {
@@ -152,6 +154,33 @@ function Body() {
     }
   });
 
+  function formatTime(milliseconds: number) {
+    const hours = Math.floor(milliseconds / 3600000);
+    const minutes = Math.floor((milliseconds % 3600000) / 60000);
+    const seconds = Math.floor((milliseconds % 60000) / 1000);
+    const remainingMilliseconds = milliseconds % 1000;
+
+    const hrsStr = hours > 0 ? `${hours} hrs` : "";
+    const minsStr = minutes > 0 ? `${minutes} mins` : "";
+    const secStr = seconds > 0 ? `${seconds} secs` : "";
+    const milStr =
+      remainingMilliseconds > 0 ? `${remainingMilliseconds} millseconds` : "";
+    const formattedDuration = `${hrsStr} ${minsStr} ${secStr} ${milStr}`;
+
+    return formattedDuration;
+  }
+
+  useEffect(() => {
+    const milliseconds = depth * 3474;
+    const timeString = formatTime(milliseconds);
+
+    setEstimation(timeString);
+  }, [depth]);
+
+  useEffect(() => {
+    setDepth(count);
+  }, [count]);
+
   return (
     <center>
       <Container maxWidth="lg">
@@ -243,15 +272,17 @@ function Body() {
                 value={depth}
                 onChange={(_, val) => setDepth(val)}
               />
-              <TextField
-                style={{ marginLeft: 10 }}
-                id="outlined-textarea"
-                label="Cost estimation"
-                value={null}
-                size="small"
-                contentEditable="false"
-                disabled
-              />
+              <div
+                style={{
+                  marginTop: "1rem",
+                  marginLeft: "1rem",
+                  color: "#4f4c4c",
+                }}
+              >
+                <Typography id="users-slider" fontSize={14} gutterBottom>
+                  {`Searching ${count} users using depth of ${depth} takes minimum of ${estimation}`}
+                </Typography>
+              </div>
             </Stack>
 
             <Box sx={{ height: "2rem" }} />
