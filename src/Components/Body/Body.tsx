@@ -63,6 +63,7 @@ function Body() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const changeHandleInput = (e: any) => {
+    setError(null);
     if (e.key === "Enter") {
       addHandler();
       return;
@@ -94,6 +95,7 @@ function Body() {
             query: descriptionInput,
             user_list: handle,
             user_limit: 3,
+            depth: depth,
           }),
         });
         const data = (await response.json()) as Response;
@@ -241,7 +243,10 @@ function Body() {
                 multiline
                 fullWidth
                 value={descriptionInput}
-                onChange={(e) => setDescriptionInput(e.target.value)}
+                onChange={(e) => {
+                  setError(null);
+                  setDescriptionInput(e.target.value);
+                }}
                 size="small"
               />
             </Box>
