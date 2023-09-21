@@ -121,8 +121,8 @@ function Body() {
           body: JSON.stringify({
             query: descriptionInput,
             user_list: handle,
-            user_limit: 3,
-            depth: 5,
+            user_limit: count,
+            depth: depth,
           }),
         });
         const data = (await response.json()) as Response;
