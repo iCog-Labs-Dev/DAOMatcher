@@ -15,8 +15,6 @@ import User from "./User/User";
 import AddIcon from "@mui/icons-material/Add";
 import Alert from "@mui/material/Alert";
 import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
-import { CustomNumberInput } from "./NumberInput/NumberInput";
-import { format, intervalToDuration } from "date-fns";
 
 export interface IUser {
   id: string;
@@ -42,7 +40,7 @@ function Body() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [count, setCount] = useState<any>(100);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [depth, setDepth] = useState<any>(count);
+  const [depth, setDepth] = useState<any>(200);
   const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,6 +55,12 @@ function Body() {
       setHandleInput("");
     }
   };
+
+  const handleDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.valueAsNumber;
+    setDepth(newValue);
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const changeHandleInput = (e: any) => {
     if (e.key === "Enter") {
@@ -177,10 +181,6 @@ function Body() {
     setEstimation(timeString);
   }, [depth]);
 
-  useEffect(() => {
-    setDepth(count);
-  }, [count]);
-
   return (
     <center>
       <Container maxWidth="lg">
@@ -262,15 +262,19 @@ function Body() {
               max={1000}
               aria-labelledby="users-slider"
               size="small"
-              onChange={(_, v) => setCount(v)}
+              onChange={(_, v) => {
+                setCount(v);
+                setDepth((v as number) * 2);
+              }}
               value={count}
             />
             <Stack direction="row">
-              <CustomNumberInput
+              <TextField
                 aria-label="Enter depth for the search"
                 placeholder="Choose depth"
+                type="number"
                 value={depth}
-                onChange={(_, val) => setDepth(val)}
+                onChange={handleDepthChange}
               />
               <div
                 style={{
