@@ -13,7 +13,9 @@ import {
 import { useEffect, useState } from "react";
 import User from "./User/User";
 import AddIcon from "@mui/icons-material/Add";
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Alert from "@mui/material/Alert";
+import { json2csv } from "json-2-csv";
 import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
 
 export interface IUser {
@@ -47,12 +49,36 @@ function Body() {
   const [error, setError] = useState<any>(null);
   const [success, setSuccess] = useState<boolean>(false);
   const [estimation, setEstimation] = useState<string>("");
+  const [jsonData, setJsonData] = useState<IUser[]>([]);
 
   const BASE_URL = "http://localhost:8000";
   const addHandler = () => {
     if (handleInput != "") {
       setHandle([...handle, handleInput]);
       setHandleInput("");
+    }
+  };
+
+  async function convertToCSV(jsonData: IUser[]) {
+    try {
+      const csv = await json2csv(jsonData);
+      return csv;
+    } catch (err) {
+      console.error("Error converting JSON to CSV:", err);
+      return null;
+    }
+  }
+
+  const handleDownloadClick = async () => {
+    const csv = await convertToCSV(jsonData);
+    if (csv) {
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "data.csv";
+      a.click();
+      window.URL.revokeObjectURL(url);
     }
   };
 
@@ -74,6 +100,7 @@ function Body() {
     setHandle(handle.filter((e) => e != h));
   };
   const handleSubmit = async () => {
+    setSuccess(false);
     const requestBody = {
       handle,
       descriptionInput,
@@ -95,7 +122,7 @@ function Body() {
             query: descriptionInput,
             user_list: handle,
             user_limit: 3,
-            depth: depth,
+            depth: 5,
           }),
         });
         const data = (await response.json()) as Response;
@@ -105,6 +132,7 @@ function Body() {
         setUsers(users);
         setError(null);
         setSuccess(true);
+        setJsonData(users);
       } catch (error) {
         console.log("Error: ", error);
         setError(error);
@@ -314,7 +342,22 @@ function Body() {
           </Container>
         </Box>
         <Divider flexItem>
-          {users && users.length && <Typography>Results</Typography>}
+          {users && users.length && (
+            <Stack direction={"row"}>
+              <Typography>
+                {" "}
+                <IconButton
+                  style={{ marginRight: "0.5rem" }}
+                  aria-label="Download results"
+                  size="medium"
+                  onClick={handleDownloadClick}
+                >
+                  <DownloadRoundedIcon color="success" />
+                </IconButton>
+                Results
+              </Typography>
+            </Stack>
+          )}
         </Divider>
         <Container maxWidth="sm">
           {users && users.length
