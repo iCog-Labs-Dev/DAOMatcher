@@ -15,6 +15,7 @@ import User from "./User/User";
 import AddIcon from "@mui/icons-material/Add";
 import Alert from "@mui/material/Alert";
 import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
+import { CustomNumberInput } from "./NumberInput/NumberInput";
 
 export interface IUser {
   id: string;
@@ -40,7 +41,7 @@ function Body() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [count, setCount] = useState<any>(100);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [depth, setDepth] = useState<number>(2);
+  const [depth, setDepth] = useState<any>(2);
   const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -231,17 +232,11 @@ function Body() {
               value={count}
             />
             <Stack direction="row">
-              <TextField
-                id="outlined-textarea"
-                label="Depth of the search"
-                rows={1}
+              <CustomNumberInput
+                aria-label="Demo number input"
+                placeholder="Type a number…"
                 value={depth}
-                onChange={(_, v: number) => {
-                  console.log(depth);
-                  setDepth(v);
-                }}
-                size="small"
-                type="number"
+                onChange={(_, val) => setDepth(val)}
               />
               <TextField
                 style={{ marginLeft: 10 }}
