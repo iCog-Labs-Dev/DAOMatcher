@@ -112,39 +112,44 @@ function Body() {
   };
 
   useEffect(() => {
-    const eventSource = new EventSource(BASE_URL + "/stream");
+    try {
+      const eventSource = new EventSource(BASE_URL + "/stream");
 
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        console.log("recieved data: ", data);
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log("recieved data: ", data);
 
-        const { progress: tempProgress, curr_user: user } = data;
+          const { progress: tempProgress, curr_user: user } = data;
 
-        if (!tempProgress) {
-          console.log(data.error);
-        } else {
-          console.log("tempProgress: ", tempProgress);
-          console.log("count: ", count);
-          console.log("user: ", user);
+          if (!tempProgress) {
+            console.log(data.error);
+          } else {
+            console.log("tempProgress: ", tempProgress);
+            console.log("count: ", count);
+            console.log("user: ", user);
 
-          const percentage = (tempProgress / count) * 100;
-          setProgress(percentage);
+            const percentage = (tempProgress / count) * 100;
+            setProgress(percentage);
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    };
+      };
 
-    eventSource.onerror = (error) => {
-      console.log("Error: ", error);
-      setError(error);
-      setSuccess(false);
-    };
+      eventSource.onerror = (error) => {
+        console.log("Error: ", error);
+        setError(error);
+        setSuccess(false);
+      };
 
-    return () => {
-      eventSource.close();
-    };
+      return () => {
+        eventSource.close();
+      };
+    } catch (error) {
+      console.log(error);
+      return;
+    }
   });
 
   return (
@@ -233,8 +238,8 @@ function Body() {
             />
             <Stack direction="row">
               <CustomNumberInput
-                aria-label="Demo number input"
-                placeholder="Type a number…"
+                aria-label="Enter depth for the search"
+                placeholder="Choose depth"
                 value={depth}
                 onChange={(_, val) => setDepth(val)}
               />
