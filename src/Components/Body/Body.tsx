@@ -191,14 +191,11 @@ function Body() {
     const hours = Math.floor(milliseconds / 3600000);
     const minutes = Math.floor((milliseconds % 3600000) / 60000);
     const seconds = Math.floor((milliseconds % 60000) / 1000);
-    const remainingMilliseconds = milliseconds % 1000;
 
     const hrsStr = hours > 0 ? `${hours} hrs` : "";
     const minsStr = minutes > 0 ? `${minutes} mins` : "";
     const secStr = seconds > 0 ? `${seconds} secs` : "";
-    const milStr =
-      remainingMilliseconds > 0 ? `${remainingMilliseconds} millseconds` : "";
-    const formattedDuration = `${hrsStr} ${minsStr} ${secStr} ${milStr}`;
+    const formattedDuration = `${hrsStr} ${minsStr} ${secStr}`;
 
     return formattedDuration;
   }
@@ -304,6 +301,7 @@ function Body() {
               <TextField
                 aria-label="Enter depth for the search"
                 placeholder="Choose depth"
+                label="Depth of search"
                 type="number"
                 value={depth}
                 onChange={handleDepthChange}
@@ -361,8 +359,8 @@ function Body() {
         <Container maxWidth="sm">
           {users && users.length
             ? users.map((user) => (
-                <User key={user.id + Math.random() * 10} user={user} />
-              ))
+              <User key={user.id + Math.random() * 10} user={user} />
+            ))
             : null}
         </Container>
       </Container>
