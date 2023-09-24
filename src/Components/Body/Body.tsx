@@ -51,7 +51,7 @@ function Body() {
   const [estimation, setEstimation] = useState<string>("");
   const [jsonData, setJsonData] = useState<IUser[]>([]);
 
-  const BASE_URL = "https://daomatcher-backend.onrender.coms";
+  const BASE_URL = "https://daomatcher-backend.onrender.com";
   const addHandler = () => {
     if (handleInput != "") {
       setHandle([...handle, handleInput]);
@@ -359,8 +359,8 @@ function Body() {
         <Container maxWidth="sm">
           {users && users.length
             ? users.map((user) => (
-              <User key={user.id + Math.random() * 10} user={user} />
-            ))
+                <User key={user.id + Math.random() * 10} user={user} />
+              ))
             : null}
         </Container>
       </Container>
