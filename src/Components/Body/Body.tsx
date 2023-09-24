@@ -51,7 +51,7 @@ function Body() {
   const [estimation, setEstimation] = useState<string>("");
   const [jsonData, setJsonData] = useState<IUser[]>([]);
 
-  const BASE_URL = "http://localhost:8000";
+  const BASE_URL = "https://daomatcher-backend.onrender.coms";
   const addHandler = () => {
     if (handleInput != "") {
       setHandle([...handle, handleInput]);
@@ -76,7 +76,7 @@ function Body() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "data.csv";
+      a.download = `user-data-${new Date()}.csv`;
       a.click();
       window.URL.revokeObjectURL(url);
     }
@@ -110,6 +110,7 @@ function Body() {
 
     if (handle.length > 0 && descriptionInput != "") {
       setIsLoading(true);
+      setError(null);
       setUsers([]);
       try {
         const response = await fetch(BASE_URL, {
@@ -130,7 +131,6 @@ function Body() {
         const { result: users } = data;
         users.sort((a, b) => b.score - a.score);
         setUsers(users);
-        setError(null);
         setSuccess(true);
         setJsonData(users);
       } catch (error) {
@@ -162,10 +162,9 @@ function Body() {
             console.log(data.error);
           } else {
             console.log("tempProgress: ", tempProgress);
-            console.log("count: ", count);
             console.log("user: ", user);
 
-            const percentage = (tempProgress / count) * 100;
+            const percentage = (tempProgress / depth) * 100;
             setProgress(percentage);
           }
         } catch (error) {
