@@ -13,9 +13,12 @@ import {
 import { useEffect, useState } from "react";
 import User from "./User/User";
 import AddIcon from "@mui/icons-material/Add";
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+import Alert from "@mui/material/Alert";
+import { json2csv } from "json-2-csv";
 import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
 
-interface User {
+export interface IUser {
   id: string;
   username: string;
   name: string;
@@ -23,8 +26,8 @@ interface User {
   handle: string;
 }
 
-interface Response {
-  result: User[];
+export interface Response {
+  result: IUser[];
 }
 
 function valuetext(value: number) {
@@ -35,21 +38,58 @@ function Body() {
   const [handle, setHandle] = useState<string[]>([]);
   const [handleInput, setHandleInput] = useState<string>("");
   const [descriptionInput, setDescriptionInput] = useState<string>("");
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<IUser[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [count, setCount] = useState<any>(100);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [depth, setDepth] = useState<any>(200);
   const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [error, setError] = useState<any>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [estimation, setEstimation] = useState<string>("");
+  const [jsonData, setJsonData] = useState<IUser[]>([]);
 
-  const BASE_URL = "http://localhost:8000";
+  const BASE_URL = "https://daomatcher-backend.onrender.coms";
   const addHandler = () => {
     if (handleInput != "") {
       setHandle([...handle, handleInput]);
       setHandleInput("");
     }
   };
+
+  async function convertToCSV(jsonData: IUser[]) {
+    try {
+      const csv = await json2csv(jsonData);
+      return csv;
+    } catch (err) {
+      console.error("Error converting JSON to CSV:", err);
+      return null;
+    }
+  }
+
+  const handleDownloadClick = async () => {
+    const csv = await convertToCSV(jsonData);
+    if (csv) {
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `user-data-${new Date()}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+  };
+
+  const handleDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.valueAsNumber;
+    setDepth(newValue);
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const changeHandleInput = (e: any) => {
+    setError(null);
     if (e.key === "Enter") {
       addHandler();
       return;
@@ -60,6 +100,7 @@ function Body() {
     setHandle(handle.filter((e) => e != h));
   };
   const handleSubmit = async () => {
+    setSuccess(false);
     const requestBody = {
       handle,
       descriptionInput,
@@ -69,6 +110,7 @@ function Body() {
 
     if (handle.length > 0 && descriptionInput != "") {
       setIsLoading(true);
+      setError(null);
       setUsers([]);
       try {
         const response = await fetch(BASE_URL, {
@@ -81,6 +123,7 @@ function Body() {
             query: descriptionInput,
             user_list: handle,
             user_limit: count,
+            depth: depth,
           }),
         });
         const data = (await response.json()) as Response;
@@ -88,50 +131,81 @@ function Body() {
         const { result: users } = data;
         users.sort((a, b) => b.score - a.score);
         setUsers(users);
+        setSuccess(true);
+        setJsonData(users);
       } catch (error) {
         console.log("Error: ", error);
+        setError(error);
+        setSuccess(false);
       } finally {
         setProgress(0);
         setIsLoading(false);
       }
     } else {
-      alert("Empty handles or description!");
+      setError("Empty handles or description!");
+      setSuccess(false);
     }
   };
 
   useEffect(() => {
-    const eventSource = new EventSource(BASE_URL + "/stream");
+    try {
+      const eventSource = new EventSource(BASE_URL + "/stream");
 
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        console.log("recieved data: ", data);
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log("recieved data: ", data);
 
-        const { progress: tempProgress, curr_user: user } = data;
+          const { progress: tempProgress, curr_user: user } = data;
 
-        if (!tempProgress) {
-          console.log(data.error);
-        } else {
-          console.log("tempProgress: ", tempProgress);
-          console.log("count: ", count);
-          console.log("user: ", user);
+          if (!tempProgress) {
+            console.log(data.error);
+          } else {
+            console.log("tempProgress: ", tempProgress);
+            console.log("user: ", user);
 
-          const percentage = (tempProgress / count) * 100;
-          setProgress(percentage);
+            const percentage = (tempProgress / depth) * 100;
+            setProgress(percentage);
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    };
+      };
 
-    eventSource.onerror = (error) => {
-      console.log("Error: ", error);
-    };
+      eventSource.onerror = (error) => {
+        console.log("Error: ", error);
+        setError(error);
+        setSuccess(false);
+      };
 
-    return () => {
-      eventSource.close();
-    };
+      return () => {
+        eventSource.close();
+      };
+    } catch (error) {
+      console.log(error);
+      return;
+    }
   });
+
+  function formatTime(milliseconds: number) {
+    const hours = Math.floor(milliseconds / 3600000);
+    const minutes = Math.floor((milliseconds % 3600000) / 60000);
+    const seconds = Math.floor((milliseconds % 60000) / 1000);
+
+    const hrsStr = hours > 0 ? `${hours} hrs` : "";
+    const minsStr = minutes > 0 ? `${minutes} mins` : "";
+    const secStr = seconds > 0 ? `${seconds} secs` : "";
+    const formattedDuration = `${hrsStr} ${minsStr} ${secStr}`;
+
+    return formattedDuration;
+  }
+
+  useEffect(() => {
+    const milliseconds = depth * 3474;
+    const timeString = formatTime(milliseconds);
+
+    setEstimation(timeString);
+  }, [depth]);
 
   return (
     <center>
@@ -141,6 +215,11 @@ function Body() {
             <Typography variant="h5">
               Search for people with similar interests
             </Typography>
+            {error ? <Alert severity="error">{error}</Alert> : null}
+            {success ? (
+              <Alert severity="success">Loading successful</Alert>
+            ) : null}
+
             <Box sx={{ height: "2rem" }} />
             <Stack direction="row">
               <TextField
@@ -188,7 +267,10 @@ function Body() {
                 multiline
                 fullWidth
                 value={descriptionInput}
-                onChange={(e) => setDescriptionInput(e.target.value)}
+                onChange={(e) => {
+                  setError(null);
+                  setDescriptionInput(e.target.value);
+                }}
                 size="small"
               />
             </Box>
@@ -209,9 +291,34 @@ function Body() {
               max={1000}
               aria-labelledby="users-slider"
               size="small"
-              onChange={(_, v) => setCount(v)}
+              onChange={(_, v) => {
+                setCount(v);
+                setDepth((v as number) * 2);
+              }}
               value={count}
             />
+            <Stack direction="row">
+              <TextField
+                aria-label="Enter depth for the search"
+                placeholder="Choose depth"
+                label="Depth of search"
+                type="number"
+                value={depth}
+                onChange={handleDepthChange}
+              />
+              <div
+                style={{
+                  marginTop: "1rem",
+                  marginLeft: "1rem",
+                  color: "#4f4c4c",
+                }}
+              >
+                <Typography id="users-slider" fontSize={14} gutterBottom>
+                  {`Searching ${count} users using depth of ${depth} takes minimum of ${estimation}`}
+                </Typography>
+              </div>
+            </Stack>
+
             <Box sx={{ height: "2rem" }} />
 
             <Button
@@ -232,13 +339,28 @@ function Body() {
           </Container>
         </Box>
         <Divider flexItem>
-          {users && users.length && <Typography>Results</Typography>}
+          {users && users.length && (
+            <Stack direction={"row"}>
+              <Typography>
+                {" "}
+                <IconButton
+                  style={{ marginRight: "0.5rem" }}
+                  aria-label="Download results"
+                  size="medium"
+                  onClick={handleDownloadClick}
+                >
+                  <DownloadRoundedIcon color="success" />
+                </IconButton>
+                Results
+              </Typography>
+            </Stack>
+          )}
         </Divider>
         <Container maxWidth="sm">
           {users && users.length
             ? users.map((user) => (
-                <User key={user.id + Math.random() * 10} user={user} />
-              ))
+              <User key={user.id + Math.random() * 10} user={user} />
+            ))
             : null}
         </Container>
       </Container>
