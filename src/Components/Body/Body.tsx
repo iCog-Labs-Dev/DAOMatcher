@@ -76,7 +76,7 @@ function Body() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `user-data-${new Date().getMilliseconds()}.csv`;
+      a.download = `user-data-${new Date().getTime()}.csv`;
       a.click();
       window.URL.revokeObjectURL(url);
     }
@@ -155,6 +155,7 @@ function Body() {
         try {
           const data = JSON.parse(event.data);
           console.log("recieved data: ", data);
+          setIsLoading(true)
 
           const { progress: tempProgress, curr_user: user } = data;
 
@@ -184,8 +185,10 @@ function Body() {
     } catch (error) {
       console.log(error);
       return;
+    } finally {
+      setIsLoading(false);
     }
-  });
+  }, [depth]);
 
   function formatTime(milliseconds: number) {
     const hours = Math.floor(milliseconds / 3600000);
@@ -359,8 +362,8 @@ function Body() {
         <Container maxWidth="sm">
           {users && users.length
             ? users.map((user) => (
-                <User key={user.id + Math.random() * 10} user={user} />
-              ))
+              <User key={user.id + Math.random() * 10} user={user} />
+            ))
             : null}
         </Container>
       </Container>
