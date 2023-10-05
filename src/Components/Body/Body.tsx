@@ -52,7 +52,7 @@ function Body() {
   const [estimation, setEstimation] = useState<string>("");
   const [jsonData, setJsonData] = useState<IUser[]>([]);
 
-  const BASE_URL = "https://daomatcher-backend.com";
+  const BASE_URL = "http://localhost:5001/";
   const addHandler = () => {
     if (handleInput != "") {
       setHandle([...handle, handleInput]);
@@ -127,16 +127,24 @@ function Body() {
             depth: depth,
           }),
         });
+
         const data = (await response.json()) as Response;
         console.log(data); //For debugging only
+
         const { result: users } = data;
         users.sort((a, b) => b.score - a.score);
+
         setUsers(users);
         setSuccess(true);
         setJsonData(users);
+
       } catch (error) {
+
         console.log("Error: ", error);
-        setError(error);
+
+        if (error instanceof Error) setError(error.message);
+        else setError("Something went wrong while fetching users")
+
         setSuccess(false);
       } finally {
         setProgress(0);
@@ -150,24 +158,68 @@ function Body() {
 
   useEffect(() => {
     // Connect to the Socket.IO server
-    const socket = io(`http://localhost:5001`);
 
-    socket.on('connect', () => {
-      console.log('Connected to the Socket.IO server');
-    });
+    try {
+      const socket = io(`http://localhost:5001`);
+      socket.on('connect', () => {
+        console.log('Connected to the Socket.IO server');
+      });
 
-    socket.on('disconnect', () => {
-      console.log('Disconnected from the Socket.IO server');
-    });
+      socket.on("connect_error", () => {
+        console.log("Couln't establish connection to server")
+      })
 
-    socket.on("update", () => {
-      console.log("Update recieved");
-    })
+      socket.on("connect_timeout", () => {
+        console.log("Connection timed out")
+      })
 
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+      socket.on('disconnect', () => {
+        console.log('Disconnected from the Socket.IO server');
+      });
+
+      socket.on("update", (data) => {
+        console.log("Update recieved");
+        try {
+          console.log("recieved data: ", data);
+
+          const { progress: tempProgress, curr_user: user } = data;
+
+          if (!tempProgress) {
+            console.log(data.error);
+          } else {
+            console.log("tempProgress: ", tempProgress);
+            console.log("user: ", user);
+
+            const percentage = (tempProgress / depth) * 100;
+            setProgress(percentage);
+          }
+        } catch (error) {
+          console.log(error);
+          if (error instanceof ErrorEvent) setError(error.message)
+          else setError("Something went wrong connecting to socket io")
+          setSuccess(false)
+        }
+      })
+
+      socket.on("error", (error) => {
+        console.log("Error: ", error);
+        setError(error.message ?? "Something went wrong");
+        setSuccess(false);
+      })
+
+      return () => {
+        socket.disconnect();
+      };
+
+    } catch (error) {
+      console.log(error);
+      if (error instanceof ErrorEvent)
+        setError(error.message ?? "Something went wrong")
+      setSuccess(false)
+      return;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   function formatTime(milliseconds: number) {
     const hours = Math.floor(milliseconds / 3600000);
