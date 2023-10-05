@@ -10,6 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import io from 'socket.io-client';
 import { useEffect, useState } from "react";
 import User from "./User/User";
 import AddIcon from "@mui/icons-material/Add";
@@ -51,7 +52,7 @@ function Body() {
   const [estimation, setEstimation] = useState<string>("");
   const [jsonData, setJsonData] = useState<IUser[]>([]);
 
-  const BASE_URL = "https://daomatcher-backend.onrender.com";
+  const BASE_URL = "https://daomatcher-backend.com";
   const addHandler = () => {
     if (handleInput != "") {
       setHandle([...handle, handleInput]);
@@ -148,47 +149,25 @@ function Body() {
   };
 
   useEffect(() => {
-    try {
-      const eventSource = new EventSource(BASE_URL + "/stream");
+    // Connect to the Socket.IO server
+    const socket = io(`http://localhost:5001`);
 
-      eventSource.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          console.log("recieved data: ", data);
-          setIsLoading(true)
+    socket.on('connect', () => {
+      console.log('Connected to the Socket.IO server');
+    });
 
-          const { progress: tempProgress, curr_user: user } = data;
+    socket.on('disconnect', () => {
+      console.log('Disconnected from the Socket.IO server');
+    });
 
-          if (!tempProgress) {
-            console.log(data.error);
-          } else {
-            console.log("tempProgress: ", tempProgress);
-            console.log("user: ", user);
+    socket.on("update", () => {
+      console.log("Update recieved");
+    })
 
-            const percentage = (tempProgress / depth) * 100;
-            setProgress(percentage);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-
-      eventSource.onerror = (error) => {
-        console.log("Error: ", error);
-        setError(error);
-        setSuccess(false);
-      };
-
-      return () => {
-        eventSource.close();
-      };
-    } catch (error) {
-      console.log(error);
-      return;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [depth]);
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   function formatTime(milliseconds: number) {
     const hours = Math.floor(milliseconds / 3600000);
