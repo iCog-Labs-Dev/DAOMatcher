@@ -51,9 +51,9 @@ function Body() {
   const [success, setSuccess] = useState<boolean>(false);
   const [estimation, setEstimation] = useState<string>("");
   const [jsonData, setJsonData] = useState<IUser[]>([]);
-  const [channelId, setChannelId] = useState<string>("")
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [socket, setSocket] = useState<Socket<any, any>>()
+
 
   const BASE_URL = "http://localhost:5001/";
   const addHandler = () => {
@@ -127,44 +127,71 @@ function Body() {
       setIsLoading(true);
       setError(null);
       setUsers([]);
-      try {
-        const response = await fetch(BASE_URL, {
-          method: "POST",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            query: descriptionInput,
-            user_list: handle,
-            user_limit: count,
-            depth: depth,
-          }),
-        });
 
-        const data = (await response.json()) as Response;
-        console.log(data); //For debugging only
+      if (socket) {
+        setIsLoading(true)
+        socket.emit("get_users", {
+          query: descriptionInput,
+          user_list: handle,
+          user_limit: count,
+          depth: depth,
+        })
 
-        const { result: users } = data;
-        users.sort((a, b) => b.score - a.score);
+        socket.on("get_users", (data: Response) => {
+          setIsLoading(false)
+          console.log("Updating completed");
 
-        setUsers(users);
-        setSuccess(true);
-        setError(null)
-        setJsonData(users);
+          console.log(data); //For debugging only
 
-      } catch (error) {
+          const { result: users } = data;
+          users.sort((a, b) => b.score - a.score);
 
-        console.log("Error: ", error);
+          setUsers(users);
+          setSuccess(true);
+          setError(null)
+          setJsonData(users);
 
-        if (error instanceof Error) setError(error.message);
-        else setError("Something went wrong while fetching users")
-
-        setSuccess(false);
-      } finally {
-        setProgress(0);
-        setIsLoading(false);
+        })
       }
+
+      // try {
+      //   const response = await fetch(BASE_URL, {
+      //     method: "POST",
+      //     mode: "cors",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       query: descriptionInput,
+      //       user_list: handle,
+      //       user_limit: count,
+      //       depth: depth,
+      //     }),
+      //   });
+
+      //   const data = (await response.json()) as Response;
+      // console.log(data); //For debugging only
+
+      // const { result: users } = data;
+      // users.sort((a, b) => b.score - a.score);
+
+      // setUsers(users);
+      // setSuccess(true);
+      // setError(null)
+      // setJsonData(users);
+
+      // } catch (error) {
+
+      //   console.log("Error: ", error);
+
+      //   if (error instanceof Error) setError(error.message);
+      //   else setError("Something went wrong while fetching users")
+
+      //   setSuccess(false);
+      // } finally {
+      //   setProgress(0);
+      //   setIsLoading(false);
+      // }
     } else {
       setError("Empty handles or description!");
       setSuccess(false);
@@ -182,12 +209,6 @@ function Body() {
         console.log('Connected to the Socket.IO server');
       });
 
-      socket.on("new_user_connected", (data) => {
-        console.log(data)
-        const { channel } = data
-        setChannelId(channel)
-      })
-
       socket.on("connect_error", () => {
         console.log("Couldn't establish connection to server")
       })
@@ -200,7 +221,7 @@ function Body() {
         console.log('Disconnected from the Socket.IO server');
       });
 
-      socket.on(`update-${channelId}`, (data) => {
+      socket.on(`update`, (data) => {
         console.log("Update recieved");
         try {
           console.log("recieved data: ", data);
