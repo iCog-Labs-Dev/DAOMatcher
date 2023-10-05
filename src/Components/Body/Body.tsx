@@ -105,13 +105,11 @@ function Body() {
   };
 
   const handleCancel = () => {
-    setSuccess(false)
-    setError("Request canceled by user")
-    console.log(socket);
-    console.log("cancel triggered")
+    setSuccess(true)
     if (socket) socket.emit("stop", true)
     else setError("Couldn't cancel request")
     setIsLoading(false)
+    setProgress(0)
   }
 
   const handleSubmit = async () => {
@@ -137,21 +135,6 @@ function Body() {
           depth: depth,
         })
 
-        socket.on("get_users", (data: Response) => {
-          setIsLoading(false)
-          console.log("Updating completed");
-
-          console.log(data); //For debugging only
-
-          const { result: users } = data;
-          users.sort((a, b) => b.score - a.score);
-
-          setUsers(users);
-          setSuccess(true);
-          setError(null)
-          setJsonData(users);
-
-        })
       }
 
       // try {
@@ -211,6 +194,22 @@ function Body() {
 
       socket.on("connect_error", () => {
         console.log("Couldn't establish connection to server")
+      })
+
+      socket.on("get_users", (data: Response) => {
+        setIsLoading(false)
+        console.log("Updating completed");
+
+        console.log(data); //For debugging only
+
+        const { result: users } = data;
+        users.sort((a, b) => b.score - a.score);
+
+        setUsers(users);
+        setSuccess(true);
+        setError(null)
+        setJsonData(users);
+
       })
 
       socket.on("connect_timeout", () => {
