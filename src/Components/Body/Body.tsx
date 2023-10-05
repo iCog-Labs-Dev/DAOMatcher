@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 import { useEffect, useState } from "react";
 import User from "./User/User";
 import AddIcon from "@mui/icons-material/Add";
@@ -51,6 +51,9 @@ function Body() {
   const [success, setSuccess] = useState<boolean>(false);
   const [estimation, setEstimation] = useState<string>("");
   const [jsonData, setJsonData] = useState<IUser[]>([]);
+  const [channelId, setChannelId] = useState<string>("")
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [socket, setSocket] = useState<Socket<any, any>>()
 
   const BASE_URL = "http://localhost:5001/";
   const addHandler = () => {
@@ -100,6 +103,17 @@ function Body() {
   const deleteHandle = (h: string) => {
     setHandle(handle.filter((e) => e != h));
   };
+
+  const handleCancel = () => {
+    setSuccess(false)
+    setError("Request canceled by user")
+    console.log(socket);
+    console.log("cancel triggered")
+    if (socket) socket.emit("stop", true)
+    else setError("Couldn't cancel request")
+    setIsLoading(false)
+  }
+
   const handleSubmit = async () => {
     setSuccess(false);
     const requestBody = {
@@ -136,6 +150,7 @@ function Body() {
 
         setUsers(users);
         setSuccess(true);
+        setError(null)
         setJsonData(users);
 
       } catch (error) {
@@ -161,12 +176,20 @@ function Body() {
 
     try {
       const socket = io(`http://localhost:5001`);
+      setSocket(socket)
+
       socket.on('connect', () => {
         console.log('Connected to the Socket.IO server');
       });
 
+      socket.on("new_user_connected", (data) => {
+        console.log(data)
+        const { channel } = data
+        setChannelId(channel)
+      })
+
       socket.on("connect_error", () => {
-        console.log("Couln't establish connection to server")
+        console.log("Couldn't establish connection to server")
       })
 
       socket.on("connect_timeout", () => {
@@ -177,7 +200,7 @@ function Body() {
         console.log('Disconnected from the Socket.IO server');
       });
 
-      socket.on("update", (data) => {
+      socket.on(`update-${channelId}`, (data) => {
         console.log("Update recieved");
         try {
           console.log("recieved data: ", data);
@@ -354,8 +377,7 @@ function Body() {
             </Stack>
 
             <Box sx={{ height: "2rem" }} />
-
-            <Button
+            {!isLoading ? (<Button
               disabled={isLoading}
               variant="contained"
               fullWidth
@@ -363,7 +385,16 @@ function Body() {
               size="small"
             >
               Search
-            </Button>
+            </Button>) : null}
+            {isLoading ? (<Button
+              disabled={!isLoading}
+              variant="contained"
+              fullWidth
+              onClick={handleCancel}
+              size="small"
+            >
+              Cancel
+            </Button>) : null}
             {isLoading ? (
               <CircularProgressWithLabel
                 style={{ margin: "1rem" }}
