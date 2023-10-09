@@ -16,8 +16,8 @@ import User from "./User/User";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Alert from "@mui/material/Alert";
-import { json2csv } from "json-2-csv";
 import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
+import { convertToCSV } from "../../utils/CSV";
 
 export interface IUser {
   id: string;
@@ -36,8 +36,6 @@ function valuetext(value: number) {
 }
 
 function Body() {
-  const [handle, setHandle] = useState<string[]>([]);
-  const [handleInput, setHandleInput] = useState<string>("");
   const [descriptionInput, setDescriptionInput] = useState<string>("");
   const [users, setUsers] = useState<IUser[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,35 +54,6 @@ function Body() {
 
 
   const BASE_URL = "http://localhost:5001/";
-  const addHandler = () => {
-    if (handleInput != "") {
-      setHandle([...handle, handleInput]);
-      setHandleInput("");
-    }
-  };
-
-  async function convertToCSV(jsonData: IUser[]) {
-    try {
-      const csv = await json2csv(jsonData);
-      return csv;
-    } catch (err) {
-      console.error("Error converting JSON to CSV:", err);
-      return null;
-    }
-  }
-
-  const handleDownloadClick = async () => {
-    const csv = await convertToCSV(jsonData);
-    if (csv) {
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `user-data-${new Date().getTime()}.csv`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    }
-  };
 
   const handleDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.valueAsNumber;
@@ -132,49 +101,10 @@ function Body() {
           query: descriptionInput,
           user_list: handle,
           user_limit: count,
-          depth: depth,
+          // depth: depth,
         })
 
       }
-
-      // try {
-      //   const response = await fetch(BASE_URL, {
-      //     method: "POST",
-      //     mode: "cors",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       query: descriptionInput,
-      //       user_list: handle,
-      //       user_limit: count,
-      //       depth: depth,
-      //     }),
-      //   });
-
-      //   const data = (await response.json()) as Response;
-      // console.log(data); //For debugging only
-
-      // const { result: users } = data;
-      // users.sort((a, b) => b.score - a.score);
-
-      // setUsers(users);
-      // setSuccess(true);
-      // setError(null)
-      // setJsonData(users);
-
-      // } catch (error) {
-
-      //   console.log("Error: ", error);
-
-      //   if (error instanceof Error) setError(error.message);
-      //   else setError("Something went wrong while fetching users")
-
-      //   setSuccess(false);
-      // } finally {
-      //   setProgress(0);
-      //   setIsLoading(false);
-      // }
     } else {
       setError("Empty handles or description!");
       setSuccess(false);
@@ -210,6 +140,12 @@ function Body() {
         setError(null)
         setJsonData(users);
 
+      })
+
+      socket.on("something_went_wrong", (data) => {
+        console.log("Error: ", data);
+        setError(data.message ?? "Something went wrong");
+        setSuccess(false);
       })
 
       socket.on("connect_timeout", () => {
