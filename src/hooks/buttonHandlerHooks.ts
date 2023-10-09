@@ -78,6 +78,7 @@ export const useHandleSubmit = (
   handle: string[],
   descriptionInput: string,
   count: any,
+  depth: number,
   socket: Socket<any, any> | undefined,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setError: React.Dispatch<any>,
@@ -104,7 +105,7 @@ export const useHandleSubmit = (
           query: descriptionInput,
           user_list: handle,
           user_limit: count,
-          // depth: depth,
+          depth: depth,
         });
       }
     } else {
