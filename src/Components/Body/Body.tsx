@@ -41,7 +41,6 @@ function Body() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [count, setCount] = useState<any>(100);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [depth, setDepth] = useState<any>(200);
   const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,62 +53,6 @@ function Body() {
 
 
   const BASE_URL = "http://localhost:5001/";
-
-  const handleDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.valueAsNumber;
-    setDepth(newValue);
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const changeHandleInput = (e: any) => {
-    setError(null);
-    if (e.key === "Enter") {
-      addHandler();
-      return;
-    }
-    setHandleInput(e.target.value);
-  };
-  const deleteHandle = (h: string) => {
-    setHandle(handle.filter((e) => e != h));
-  };
-
-  const handleCancel = () => {
-    setSuccess(true)
-    if (socket) socket.emit("stop", true)
-    else setError("Couldn't cancel request")
-    setIsLoading(false)
-    setProgress(0)
-  }
-
-  const handleSubmit = async () => {
-    setSuccess(false);
-    const requestBody = {
-      handle,
-      descriptionInput,
-      count,
-    };
-    console.log(requestBody);
-
-    if (handle.length > 0 && descriptionInput != "") {
-      setIsLoading(true);
-      setError(null);
-      setUsers([]);
-
-      if (socket) {
-        setIsLoading(true)
-        socket.emit("get_users", {
-          query: descriptionInput,
-          user_list: handle,
-          user_limit: count,
-          // depth: depth,
-        })
-
-      }
-    } else {
-      setError("Empty handles or description!");
-      setSuccess(false);
-    }
-  };
 
   useEffect(() => {
     // Connect to the Socket.IO server
