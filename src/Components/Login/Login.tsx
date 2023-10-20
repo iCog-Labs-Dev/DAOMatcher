@@ -13,6 +13,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { validateEmail, validatePassword } from "../../utils/validators";
 
 const styles = {
   paper: {
@@ -39,21 +40,18 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
-
-  const validateEmail = () => {
-    // Basic email validation
-    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-      setEmailError("Enter a valid email address");
-      return false;
-    }
-    setEmailError("");
-    return true;
-  };
+  const [passError, setPassError] = useState("");
 
   const handleLogin = (e: any) => {
     e.preventDefault();
-    if (validateEmail()) {
-      console.log("Email is valid : ", email);
+    if (!validateEmail(email, setEmailError)) {
+      console.log("Email is invalid : ", email);
+      return;
+    }
+
+    if (!validatePassword(password, setPassError)) {
+      console.log("Password is invalid: ", email);
+      return;
     }
     // Add your login logic here
     console.log("Logging in with:", email, password);
@@ -83,7 +81,7 @@ const LoginPage = () => {
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            onBlur={validateEmail}
+            onBlur={() => validateEmail(email, setEmailError)}
           />
           <FormHelperText error>{emailError}</FormHelperText>
           <TextField
@@ -98,7 +96,9 @@ const LoginPage = () => {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onBlur={() => validatePassword(password, setPassError)}
           />
+          <FormHelperText error>{passError}</FormHelperText>
           <Button
             type="button"
             fullWidth
