@@ -1,8 +1,10 @@
-import { ThemeProvider, createTheme } from "@mui/material";
+import { createBrowserRouter } from "react-router-dom";
+import { createTheme } from "@mui/material";
 import Header from "./Components/Header/Header";
 import { blueGrey, teal } from "@mui/material/colors";
 import Body from "./Components/Body/Body";
-const theme = createTheme({
+import Login from "./Components/Login/Login";
+export const theme = createTheme({
   typography: {
     fontFamily: [
       "-apple-system",
@@ -22,13 +24,22 @@ const theme = createTheme({
     secondary: blueGrey,
   },
 });
+
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <>
+        <Header />
+        <Body />
+      </>
+    ),
+  },
+  { path: "/login", element: <Login /> },
+]);
+
 function App() {
-  return (
-    <ThemeProvider theme={theme}>
-      <Header />
-      <Body />
-    </ThemeProvider>
-  );
+  return <></>;
 }
 
 export default App;
