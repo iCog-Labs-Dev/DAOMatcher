@@ -17,6 +17,7 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { validateEmail, validatePassword } from "../../utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Navigate } from "react-router-dom";
 
 const styles = {
   paper: {
@@ -39,12 +40,16 @@ const styles = {
   },
 };
 
-const LoginPage = () => {
+const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passError, setPassError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  if (isLoggedIn) {
+    return <Navigate to="/DAOMatcher/" replace />;
+  }
 
   const tooglePasswordVisibility = () => {
     setShowPassword(!showPassword);

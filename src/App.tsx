@@ -4,6 +4,7 @@ import Header from "./Components/Header/Header";
 import { blueGrey, teal } from "@mui/material/colors";
 import Body from "./Components/Body/Body";
 import Login from "./Components/Login/Login";
+import Protected from "./Components/Protected/Protected";
 export const theme = createTheme({
   typography: {
     fontFamily: [
@@ -25,17 +26,21 @@ export const theme = createTheme({
   },
 });
 
+const isLoggedIn = true;
+
 export const router = createBrowserRouter([
   {
     path: "/DAOMatcher",
     element: (
       <>
-        <Header />
-        <Body />
+        <Protected isLoggedIn={isLoggedIn}>
+          <Header />
+          <Body />
+        </Protected>
       </>
     ),
   },
-  { path: "DAOMatcher/login", element: <Login /> },
+  { path: "DAOMatcher/login", element: <Login isLoggedIn={isLoggedIn} /> },
 ]);
 
 function App() {
