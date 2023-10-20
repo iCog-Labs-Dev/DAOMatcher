@@ -1,7 +1,7 @@
 // Install Material-UI if not already installed
 // npm install @mui/material @emotion/react @emotion/styled
 
-import React, { useState } from "react";
+import { useState, CSSProperties } from "react";
 import {
   Button,
   TextField,
@@ -18,7 +18,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-  },
+  } as CSSProperties,
   avatar: {
     margin: "8px",
     backgroundColor: "secondary",
