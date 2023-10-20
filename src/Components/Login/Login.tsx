@@ -11,9 +11,12 @@ import {
   CssBaseline,
   Avatar,
   FormHelperText,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { validateEmail, validatePassword } from "../../utils/validators";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const styles = {
   paper: {
@@ -41,6 +44,11 @@ const LoginPage = () => {
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [passError, setPassError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const tooglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleLogin = (e: any) => {
     e.preventDefault();
@@ -91,12 +99,21 @@ const LoginPage = () => {
             fullWidth
             name="password"
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onBlur={() => validatePassword(password, setPassError)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={tooglePasswordVisibility} edge="end">
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
           <FormHelperText error>{passError}</FormHelperText>
           <Button

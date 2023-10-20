@@ -15,14 +15,14 @@ export const validatePassword = (
   password: string,
   setPassError: React.Dispatch<React.SetStateAction<string>>
 ) => {
-  // Basic email validation
+  // Basic password validation
   if (
     !password ||
     !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
       password
     )
   ) {
-    setPassError("Enter a valid password");
+    setPassError("Enter a strong password");
     return false;
   }
   setPassError("");
