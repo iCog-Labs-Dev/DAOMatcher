@@ -27,7 +27,7 @@ export const theme = createTheme({
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/DAOMatcher",
     element: (
       <>
         <Header />
@@ -35,7 +35,7 @@ export const router = createBrowserRouter([
       </>
     ),
   },
-  { path: "/login", element: <Login /> },
+  { path: "DAOMatcher/login", element: <Login /> },
 ]);
 
 function App() {
