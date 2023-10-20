@@ -17,7 +17,15 @@ import AddIcon from "@mui/icons-material/Add";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Alert from "@mui/material/Alert";
 import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
-import { convertToCSV } from "../../utils/CSV";
+import {
+  useAddHandler,
+  useChangeHandleInput,
+  useDeleteHandle,
+  useHandleCancel,
+  useHandleDepthChange,
+  useHandleDownload,
+  useHandleSubmit,
+} from "../../hooks/buttonHandlerHooks";
 
 export interface IUser {
   id: string;
@@ -49,6 +57,37 @@ function Body() {
   const [estimation, setEstimation] = useState<string>("");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [socket, setSocket] = useState<Socket<any, any>>();
+  const { setJsonData, handleDownloadClick } = useHandleDownload();
+  const { depth, setDepth, handleDepthChange } = useHandleDepthChange();
+  const { handle, handleInput, setHandle, setHandleInput, addHandler } =
+    useAddHandler();
+  const { handleSubmit } = useHandleSubmit(
+    handle,
+    descriptionInput,
+    count,
+    depth,
+    socket,
+    setIsLoading,
+    setError,
+    setUsers,
+    setSuccess
+  );
+
+  const { handleCancel } = useHandleCancel(
+    setSuccess,
+    setError,
+    socket,
+    setIsLoading,
+    setProgress
+  );
+
+  const { changeHandleInput } = useChangeHandleInput(
+    setError,
+    addHandler,
+    setHandleInput
+  );
+
+  const { deleteHandle } = useDeleteHandle(handle, setHandle);
 
   const BASE_URL = "http://localhost:5001/";
 

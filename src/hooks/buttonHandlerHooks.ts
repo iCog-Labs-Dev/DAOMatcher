@@ -18,12 +18,10 @@ export const useAddHandler = () => {
   return { handle, handleInput, setHandle, setHandleInput, addHandler };
 };
 
-export const useHandleDepthChange = (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
+export const useHandleDepthChange = () => {
   const [depth, setDepth] = useState<any>(200);
-  const newValue = e.target.valueAsNumber;
-  function handleDepthChange() {
+  function handleDepthChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const newValue = e.target.valueAsNumber;
     setDepth(newValue);
   }
   return { depth, setDepth, handleDepthChange };
