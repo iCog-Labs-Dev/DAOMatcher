@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Socket } from "socket.io-client";
 import { IUser } from "../Components/Body/Body";
+import { convertToCSV } from "../utils/CSV";
 
 export const useAddHandler = () => {
   const [handleInput, setHandleInput] = useState<string>("");
@@ -115,4 +116,23 @@ export const useHandleSubmit = (
   };
 
   return { handleSubmit };
+};
+
+export const useHandleDownload = () => {
+  const [jsonData, setJsonData] = useState<IUser[]>([]);
+
+  const handleDownloadClick = async () => {
+    const csv = await convertToCSV(jsonData);
+    if (csv) {
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `user-data-${new Date().getTime()}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+  };
+
+  return { jsonData, setJsonData, handleDownloadClick };
 };

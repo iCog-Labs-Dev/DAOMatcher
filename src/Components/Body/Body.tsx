@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import io, { Socket } from 'socket.io-client';
+import io, { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import User from "./User/User";
 import AddIcon from "@mui/icons-material/Add";
@@ -47,10 +47,8 @@ function Body() {
   const [error, setError] = useState<any>(null);
   const [success, setSuccess] = useState<boolean>(false);
   const [estimation, setEstimation] = useState<string>("");
-  const [jsonData, setJsonData] = useState<IUser[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [socket, setSocket] = useState<Socket<any, any>>()
-
+  const [socket, setSocket] = useState<Socket<any, any>>();
 
   const BASE_URL = "http://localhost:5001/";
 
@@ -58,19 +56,19 @@ function Body() {
     // Connect to the Socket.IO server
 
     try {
-      const socket = io(`http://localhost:5001`);
-      setSocket(socket)
+      const socket = io(`${BASE_URL}`);
+      setSocket(socket);
 
-      socket.on('connect', () => {
-        console.log('Connected to the Socket.IO server');
+      socket.on("connect", () => {
+        console.log("Connected to the Socket.IO server");
       });
 
       socket.on("connect_error", () => {
-        console.log("Couldn't establish connection to server")
-      })
+        console.log("Couldn't establish connection to server");
+      });
 
       socket.on("get_users", (data: Response) => {
-        setIsLoading(false)
+        setIsLoading(false);
         console.log("Updating completed");
 
         console.log(data); //For debugging only
@@ -80,23 +78,22 @@ function Body() {
 
         setUsers(users);
         setSuccess(true);
-        setError(null)
+        setError(null);
         setJsonData(users);
-
-      })
+      });
 
       socket.on("something_went_wrong", (data) => {
         console.log("Error: ", data);
         setError(data.message ?? "Something went wrong");
         setSuccess(false);
-      })
+      });
 
       socket.on("connect_timeout", () => {
-        console.log("Connection timed out")
-      })
+        console.log("Connection timed out");
+      });
 
-      socket.on('disconnect', () => {
-        console.log('Disconnected from the Socket.IO server');
+      socket.on("disconnect", () => {
+        console.log("Disconnected from the Socket.IO server");
       });
 
       socket.on(`update`, (data) => {
@@ -117,27 +114,26 @@ function Body() {
           }
         } catch (error) {
           console.log(error);
-          if (error instanceof ErrorEvent) setError(error.message)
-          else setError("Something went wrong connecting to socket io")
-          setSuccess(false)
+          if (error instanceof ErrorEvent) setError(error.message);
+          else setError("Something went wrong connecting to socket io");
+          setSuccess(false);
         }
-      })
+      });
 
       socket.on("error", (error) => {
         console.log("Error: ", error);
         setError(error.message ?? "Something went wrong");
         setSuccess(false);
-      })
+      });
 
       return () => {
         socket.disconnect();
       };
-
     } catch (error) {
       console.log(error);
       if (error instanceof ErrorEvent)
-        setError(error.message ?? "Something went wrong")
-      setSuccess(false)
+        setError(error.message ?? "Something went wrong");
+      setSuccess(false);
       return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -276,24 +272,28 @@ function Body() {
             </Stack>
 
             <Box sx={{ height: "2rem" }} />
-            {!isLoading ? (<Button
-              disabled={isLoading}
-              variant="contained"
-              fullWidth
-              onClick={handleSubmit}
-              size="small"
-            >
-              Search
-            </Button>) : null}
-            {isLoading ? (<Button
-              disabled={!isLoading}
-              variant="contained"
-              fullWidth
-              onClick={handleCancel}
-              size="small"
-            >
-              Cancel
-            </Button>) : null}
+            {!isLoading ? (
+              <Button
+                disabled={isLoading}
+                variant="contained"
+                fullWidth
+                onClick={handleSubmit}
+                size="small"
+              >
+                Search
+              </Button>
+            ) : null}
+            {isLoading ? (
+              <Button
+                disabled={!isLoading}
+                variant="contained"
+                fullWidth
+                onClick={handleCancel}
+                size="small"
+              >
+                Cancel
+              </Button>
+            ) : null}
             {isLoading ? (
               <CircularProgressWithLabel
                 style={{ margin: "1rem" }}
@@ -323,8 +323,8 @@ function Body() {
         <Container maxWidth="sm">
           {users && users.length
             ? users.map((user) => (
-              <User key={user.id + Math.random() * 10} user={user} />
-            ))
+                <User key={user.id + Math.random() * 10} user={user} />
+              ))
             : null}
         </Container>
       </Container>
