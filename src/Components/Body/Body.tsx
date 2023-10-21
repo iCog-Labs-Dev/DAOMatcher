@@ -89,7 +89,7 @@ function Body() {
 
   const { deleteHandle } = useDeleteHandle(handle, setHandle);
 
-  const BASE_URL = "http://localhost:5001/";
+  const BASE_URL = "http://localhost:8000/";
 
   useEffect(() => {
     // Connect to the Socket.IO server
