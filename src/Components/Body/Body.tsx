@@ -214,11 +214,9 @@ function Body() {
             {users.length === 0 && success ? (
               <Alert severity="error">No users found</Alert>
             ) : null}
-            {success ? (
+            {success && users.length > 0 ? (
               <Alert severity="success">
-                {users.length > 0
-                  ? "Loading successful. Click the download icon to save the result."
-                  : null}
+                Loading successful. Click the download icon to save the result.
               </Alert>
             ) : null}
 
