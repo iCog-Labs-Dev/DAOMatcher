@@ -207,9 +207,14 @@ function Body() {
               Search for people with similar interests
             </Typography>
             {error ? <Alert severity="error">{error}</Alert> : null}
+            {users.length === 0 ? (
+              <Alert severity="error">No users found</Alert>
+            ) : null}
             {success ? (
               <Alert severity="success">
-                Loading successful. Click the download icon to save the result.
+                {users.length > 0
+                  ? "Loading successful. Click the download icon to save the result."
+                  : null}
               </Alert>
             ) : null}
 
