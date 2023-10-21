@@ -26,6 +26,7 @@ import {
   useHandleDownload,
   useHandleSubmit,
 } from "../../hooks/buttonHandlerHooks";
+import { BASE_URL } from "../../config/default";
 
 export interface IUser {
   id: string;
@@ -88,8 +89,6 @@ function Body() {
   );
 
   const { deleteHandle } = useDeleteHandle(handle, setHandle);
-
-  const BASE_URL = "https://daomatcher-backend.onrender.com/";
 
   useEffect(() => {
     // Connect to the Socket.IO server

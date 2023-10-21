@@ -21,6 +21,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
+import { BASE_URL } from "../../config/default";
 
 interface LoginResponse {
   success: boolean;
@@ -84,7 +85,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     try {
       const { data: successData }: AxiosResponse<LoginResponse> =
         await axios.post(
-          "https://daomatcher-backend.onrender.com/login",
+          `${BASE_URL}/login`,
           {
             email,
             password,
