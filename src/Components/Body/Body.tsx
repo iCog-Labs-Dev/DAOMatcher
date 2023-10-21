@@ -89,7 +89,7 @@ function Body() {
 
   const { deleteHandle } = useDeleteHandle(handle, setHandle);
 
-  const BASE_URL = "http://localhost:8000/";
+  const BASE_URL = "https://daomatcher-backend.onrender.com/";
 
   useEffect(() => {
     // Connect to the Socket.IO server

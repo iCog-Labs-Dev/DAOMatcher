@@ -18,7 +18,7 @@ export const useSocket = (
     // Connect to the Socket.IO server
 
     try {
-      const socket = io(`http://localhost:8000`);
+      const socket = io(`https://daomatcher-backend.onrender.com`);
       setSocket(socket);
 
       socket.on("connect", () => {
