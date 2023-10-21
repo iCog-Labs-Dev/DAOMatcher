@@ -208,7 +208,9 @@ function Body() {
             </Typography>
             {error ? <Alert severity="error">{error}</Alert> : null}
             {success ? (
-              <Alert severity="success">Loading successful</Alert>
+              <Alert severity="success">
+                Loading successful. Click the download icon to save the result.
+              </Alert>
             ) : null}
 
             <Box sx={{ height: "2rem" }} />
