@@ -106,6 +106,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
       socket.on("connect_error", () => {
         console.log("Couldn't establish connection to server");
         setError("Couldn't establish connection to server");
+        setSuccess(false);
         setIsLoading(false);
       });
 
@@ -133,6 +134,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
       socket.on("connect_timeout", () => {
         console.log("Connection timed out");
         setError("Connection timed out");
+        setSuccess(false);
         setIsLoading(false);
       });
 
@@ -207,7 +209,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   }, [depth]);
 
   useEffect(() => {
-    if (users.length === 0 || success) setIsLoading(false);
+    if (users.length === 0 && success) setIsLoading(false);
   }, [users, success]);
 
   if (!isLoggedIn) {
