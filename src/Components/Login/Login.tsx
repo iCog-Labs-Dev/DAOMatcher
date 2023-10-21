@@ -13,11 +13,18 @@ import {
   FormHelperText,
   InputAdornment,
   IconButton,
+  Alert,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { validateEmail, validatePassword } from "../../utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
+import axios, { AxiosResponse } from "axios";
+
+interface LoginResponse {
+  success: boolean;
+  message: string;
+}
 
 const styles = {
   paper: {
@@ -46,6 +53,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [password, setPassword] = useState("");
   const [passError, setPassError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
   if (isLoggedIn) {
     return <Navigate to="/DAOMatcher/" replace />;
@@ -55,7 +63,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = (e: any) => {
+  const handleLogin = async (e: any) => {
     e.preventDefault();
     if (!validateEmail(email, setEmailError)) {
       console.log("Email is invalid : ", email);
@@ -66,8 +74,18 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
       console.log("Password is invalid: ", email);
       return;
     }
-    // Add your login logic here
-    console.log("Logging in with:", email, password);
+    const { data }: AxiosResponse<LoginResponse> = await axios.post(
+      "http://localhost:8000/login",
+      {
+        email,
+        password,
+      }
+    );
+
+    const { success, message } = data;
+
+    if (!success) return setError(message);
+    return setError("");
   };
 
   return (
@@ -81,6 +99,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
           Sign in
         </Typography>
         <form style={styles.form} noValidate>
+          {error ? <Alert severity="error">{error}</Alert> : null}
           <TextField
             variant="outlined"
             margin="normal"
