@@ -1,11 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { createTheme } from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material";
 import Header from "./Components/Header/Header";
 import { blueGrey, teal } from "@mui/material/colors";
 import Body from "./Components/Body/Body";
 import Login from "./Components/Login/Login";
 import { checkSession } from "./utils/cookies";
-export const theme = createTheme({
+
+const theme = createTheme({
   typography: {
     fontFamily: [
       "-apple-system",
@@ -32,18 +33,20 @@ function App() {
   return (
     <>
       <Header />
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/DAOMatcher"
-            element={<Body isLoggedIn={isLoggedIn} />}
-          />
-          <Route
-            path="/DAOMatcher/login"
-            element={<Login isLoggedIn={isLoggedIn} />}
-          />
-        </Routes>
-      </BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/DAOMatcher"
+              element={<Body isLoggedIn={isLoggedIn} />}
+            />
+            <Route
+              path="/DAOMatcher/login"
+              element={<Login isLoggedIn={isLoggedIn} />}
+            />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
     </>
   );
 }
