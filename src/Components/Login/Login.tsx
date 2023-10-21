@@ -20,6 +20,7 @@ import { validateEmail, validatePassword } from "../../utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
+import Cookies from "js-cookie";
 
 interface LoginResponse {
   success: boolean;
@@ -121,6 +122,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     setSuccess(success);
     if (!success) return setError(message);
     else {
+      Cookies.set("email", "email", { expires: 1 / 24 });
       setEmail("");
       setPassword("");
       setSuccessMessage(message);
