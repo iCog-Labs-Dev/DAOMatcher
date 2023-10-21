@@ -59,7 +59,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // if (success) navigate("/DAOMatcher");
+    if (success) navigate("/DAOMatcher");
   }, [navigate, success]);
 
   if (isLoggedIn) {

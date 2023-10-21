@@ -5,6 +5,7 @@ import { blueGrey, teal } from "@mui/material/colors";
 import Body from "./Components/Body/Body";
 import Login from "./Components/Login/Login";
 import Protected from "./Components/Protected/Protected";
+import { checkSession } from "./utils/cookies";
 export const theme = createTheme({
   typography: {
     fontFamily: [
@@ -26,7 +27,7 @@ export const theme = createTheme({
   },
 });
 
-const isLoggedIn = false;
+const isLoggedIn = checkSession("session");
 
 export const router = createBrowserRouter([
   {
