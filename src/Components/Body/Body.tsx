@@ -100,10 +100,13 @@ function Body() {
 
       socket.on("connect", () => {
         console.log("Connected to the Socket.IO server");
+        setError(null);
       });
 
       socket.on("connect_error", () => {
         console.log("Couldn't establish connection to server");
+        setError("Couldn't establish connection to server");
+        setIsLoading(false);
       });
 
       socket.on("get_users", (data: Response) => {
@@ -129,14 +132,19 @@ function Body() {
 
       socket.on("connect_timeout", () => {
         console.log("Connection timed out");
+        setError("Connection timed out");
+        setIsLoading(false);
       });
 
       socket.on("disconnect", () => {
         console.log("Disconnected from the Socket.IO server");
+        setError(null);
       });
 
       socket.on(`update`, (data) => {
         console.log("Update recieved");
+        setError(null);
+
         try {
           console.log("recieved data: ", data);
 
@@ -198,6 +206,10 @@ function Body() {
     setEstimation(timeString);
   }, [depth]);
 
+  useEffect(() => {
+    if (users.length === 0 || success) setIsLoading(false);
+  }, [users, success]);
+
   return (
     <center>
       <Container maxWidth="lg">
@@ -207,7 +219,10 @@ function Body() {
               Search for people with similar interests
             </Typography>
             {error ? <Alert severity="error">{error}</Alert> : null}
-            {success ? (
+            {users.length === 0 && success ? (
+              <Alert severity="error">No users found</Alert>
+            ) : null}
+            {success && users.length > 0 ? (
               <Alert severity="success">
                 Loading successful. Click the download icon to save the result.
               </Alert>
@@ -223,6 +238,7 @@ function Body() {
                 onChange={changeHandleInput}
                 value={handleInput}
                 onKeyDown={changeHandleInput}
+                onBlur={addHandler}
                 size="small"
                 placeholder="LinkedIn or Mastodon handle"
               />
@@ -275,12 +291,12 @@ function Body() {
             </div>
             <Slider
               aria-label="Temperature"
-              defaultValue={100}
+              defaultValue={10}
               getAriaValueText={valuetext}
               valueLabelDisplay="auto"
-              step={100}
+              step={30}
               marks
-              min={100}
+              min={10}
               max={1000}
               aria-labelledby="users-slider"
               size="small"
