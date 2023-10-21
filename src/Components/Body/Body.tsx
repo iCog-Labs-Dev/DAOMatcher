@@ -17,6 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Alert from "@mui/material/Alert";
 import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
+import { Navigate } from "react-router-dom";
 import {
   useAddHandler,
   useChangeHandleInput,
@@ -210,6 +211,10 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   useEffect(() => {
     if (users.length === 0 || success) setIsLoading(false);
   }, [users, success]);
+
+  if (!isLoggedIn) {
+    return <Navigate to="/DAOMatcher/login" />;
+  }
 
   return (
     <center>

@@ -46,8 +46,6 @@ const isLoggedIn = checkSession("email");
 function App() {
   return (
     <>
-      {/* <Protected isLoggedIn={isLoggedIn}>
-      </Protected> */}
       <Header />
       <BrowserRouter>
         <Routes>
