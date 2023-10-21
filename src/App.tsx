@@ -28,21 +28,6 @@ export const theme = createTheme({
 
 const isLoggedIn = checkSession("email");
 
-// export const router = createBrowserRouter([
-//   {
-//     path: "/DAOMatcher",
-//     element: (
-//       <>
-//         <Protected isLoggedIn={isLoggedIn}>
-//           <Header />
-//           <Body />
-//         </Protected>
-//       </>
-//     ),
-//   },
-//   { path: "/DAOMatcher/login", element: <Login isLoggedIn={isLoggedIn} /> },
-// ]);
-
 function App() {
   return (
     <>
