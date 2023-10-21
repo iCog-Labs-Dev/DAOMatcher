@@ -137,7 +137,15 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form style={styles.form} noValidate>
+        <form
+          style={styles.form}
+          noValidate
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              handleLogin(event);
+            }
+          }}
+        >
           {error ? <Alert severity="error">{error}</Alert> : null}
           {success && successMessage ? (
             <Alert severity="success">{successMessage}</Alert>
