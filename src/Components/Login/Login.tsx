@@ -118,7 +118,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     if (!success) {
       return setError(message);
     } else {
-      Cookies.set("email", email, { expires: 1 });
+      Cookies.set("email", email);
       setEmail("");
       setPassword("");
       setSuccessMessage(message);
