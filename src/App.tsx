@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
       </>
     ),
   },
-  { path: "DAOMatcher/login", element: <Login isLoggedIn={isLoggedIn} /> },
+  { path: "/DAOMatcher/login", element: <Login isLoggedIn={isLoggedIn} /> },
 ]);
 
 function App() {
