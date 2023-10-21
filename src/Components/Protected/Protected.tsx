@@ -8,7 +8,7 @@ const Protected = ({
   children: ReactNode;
 }) => {
   if (!isLoggedIn) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/DAOMatcher/login" replace />;
   }
   return children;
 };
