@@ -63,7 +63,7 @@ export const useHandleCancel = (
   setProgress: React.Dispatch<React.SetStateAction<number>>
 ) => {
   const handleCancel = () => {
-    setSuccess(true);
+    setSuccess(false);
     if (socket) socket.emit("stop", true);
     else setError("Couldn't cancel request");
     setIsLoading(false);
