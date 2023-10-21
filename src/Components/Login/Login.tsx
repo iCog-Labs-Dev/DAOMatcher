@@ -57,11 +57,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (success) navigate("/DAOMatcher");
-  }, [navigate, success]);
+  // const navigate = useNavigate();
 
   if (isLoggedIn) {
     return <Navigate to="/DAOMatcher/" replace />;
@@ -120,13 +116,15 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
 
     const { success, message } = data;
     setSuccess(success);
-    if (!success) return setError(message);
-    else {
+    if (!success) {
+      return setError(message);
+    } else {
       Cookies.set("email", "email", { expires: 1 / 24 });
       setEmail("");
       setPassword("");
       setSuccessMessage(message);
-      return setError("");
+      setError("");
+      window.location.reload();
     }
   };
 
