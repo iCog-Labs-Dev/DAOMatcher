@@ -55,10 +55,11 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (success) navigate("/DAOMatcher");
+    // if (success) navigate("/DAOMatcher");
   }, [navigate, success]);
 
   if (isLoggedIn) {
@@ -86,10 +87,14 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     let data: LoginResponse;
     try {
       const { data: successData }: AxiosResponse<LoginResponse> =
-        await axios.post("http://localhost:8000/login", {
-          email,
-          password,
-        });
+        await axios.post(
+          "http://localhost:8000/login",
+          {
+            email,
+            password,
+          },
+          { withCredentials: true }
+        );
       data = successData;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -115,7 +120,12 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     const { success, message } = data;
     setSuccess(success);
     if (!success) return setError(message);
-    return setError("");
+    else {
+      setEmail("");
+      setPassword("");
+      setSuccessMessage(message);
+      return setError("");
+    }
   };
 
   return (
@@ -130,6 +140,9 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
         </Typography>
         <form style={styles.form} noValidate>
           {error ? <Alert severity="error">{error}</Alert> : null}
+          {success && successMessage ? (
+            <Alert severity="success">{successMessage}</Alert>
+          ) : null}
           <TextField
             variant="outlined"
             margin="normal"
