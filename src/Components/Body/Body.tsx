@@ -240,7 +240,7 @@ function Body() {
                 onKeyDown={changeHandleInput}
                 onBlur={addHandler}
                 size="small"
-                placeholder="LinkedIn or Mastodon handle"
+                placeholder="Mastodon handle"
               />
               <IconButton
                 aria-label="delete"
