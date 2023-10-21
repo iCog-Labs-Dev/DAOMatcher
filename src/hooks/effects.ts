@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { Socket, io } from "socket.io-client";
 import { IUser, Response } from "../Components/Body/Body";
+import { BASE_URL } from "../config/default";
 
 export const useSocket = (
   depth: any,
@@ -18,7 +19,7 @@ export const useSocket = (
     // Connect to the Socket.IO server
 
     try {
-      const socket = io(`http://localhost:8000`);
+      const socket = io(`${BASE_URL}`);
       setSocket(socket);
 
       socket.on("connect", () => {

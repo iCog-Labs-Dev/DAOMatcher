@@ -26,6 +26,7 @@ import {
   useHandleDownload,
   useHandleSubmit,
 } from "../../hooks/buttonHandlerHooks";
+import { BASE_URL } from "../../config/default";
 
 export interface IUser {
   id: string;
@@ -88,8 +89,6 @@ function Body() {
   );
 
   const { deleteHandle } = useDeleteHandle(handle, setHandle);
-
-  const BASE_URL = "http://localhost:8000/";
 
   useEffect(() => {
     // Connect to the Socket.IO server
@@ -240,7 +239,7 @@ function Body() {
                 onKeyDown={changeHandleInput}
                 onBlur={addHandler}
                 size="small"
-                placeholder="LinkedIn or Mastodon handle"
+                placeholder="Mastodon handle"
               />
               <IconButton
                 aria-label="delete"
