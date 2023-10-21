@@ -123,12 +123,14 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
         setSuccess(true);
         setError(null);
         setJsonData(users);
+        setProgress(0);
       });
 
       socket.on("something_went_wrong", (data) => {
         console.log("Error: ", data);
         setError(data.message ?? "Something went wrong");
         setSuccess(false);
+        setProgress(0);
       });
 
       socket.on("connect_timeout", () => {
@@ -136,11 +138,14 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
         setError("Connection timed out");
         setSuccess(false);
         setIsLoading(false);
+        setProgress(0);
       });
 
       socket.on("disconnect", () => {
         console.log("Disconnected from the Socket.IO server");
         setError(null);
+        setProgress(0);
+        handleCancel();
       });
 
       socket.on(`update`, (data) => {
@@ -173,9 +178,11 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
         console.log("Error: ", error);
         setError(error.message ?? "Something went wrong");
         setSuccess(false);
+        setProgress(0);
       });
 
       return () => {
+        handleCancel();
         socket.disconnect();
       };
     } catch (error) {
