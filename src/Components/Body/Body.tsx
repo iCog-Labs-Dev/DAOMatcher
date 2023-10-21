@@ -223,6 +223,7 @@ function Body() {
                 onChange={changeHandleInput}
                 value={handleInput}
                 onKeyDown={changeHandleInput}
+                onBlur={addHandler}
                 size="small"
                 placeholder="LinkedIn or Mastodon handle"
               />
@@ -275,12 +276,12 @@ function Body() {
             </div>
             <Slider
               aria-label="Temperature"
-              defaultValue={100}
+              defaultValue={10}
               getAriaValueText={valuetext}
               valueLabelDisplay="auto"
-              step={100}
+              step={30}
               marks
-              min={100}
+              min={10}
               max={1000}
               aria-labelledby="users-slider"
               size="small"
