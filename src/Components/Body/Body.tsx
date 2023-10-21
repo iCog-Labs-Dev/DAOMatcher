@@ -198,6 +198,10 @@ function Body() {
     setEstimation(timeString);
   }, [depth]);
 
+  useEffect(() => {
+    if (users.length === 0 || success) setIsLoading(false);
+  }, [users, success]);
+
   return (
     <center>
       <Container maxWidth="lg">
