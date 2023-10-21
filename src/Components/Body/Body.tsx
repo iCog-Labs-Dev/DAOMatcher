@@ -46,8 +46,6 @@ function valuetext(value: number) {
 }
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
-  console.log(isLoggedIn);
-
   const [descriptionInput, setDescriptionInput] = useState<string>("");
   const [users, setUsers] = useState<IUser[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
