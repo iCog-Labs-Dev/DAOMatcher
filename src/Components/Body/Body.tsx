@@ -211,7 +211,7 @@ function Body() {
               Search for people with similar interests
             </Typography>
             {error ? <Alert severity="error">{error}</Alert> : null}
-            {users.length === 0 ? (
+            {users.length === 0 && success ? (
               <Alert severity="error">No users found</Alert>
             ) : null}
             {success ? (
