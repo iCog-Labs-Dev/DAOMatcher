@@ -26,7 +26,7 @@ export const theme = createTheme({
   },
 });
 
-const isLoggedIn = true;
+const isLoggedIn = false;
 
 export const router = createBrowserRouter([
   {

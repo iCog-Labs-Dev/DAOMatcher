@@ -2,7 +2,7 @@
 // Install Material-UI if not already installed
 // npm install @mui/material @emotion/react @emotion/styled
 
-import { useState, CSSProperties } from "react";
+import { useState, CSSProperties, useEffect } from "react";
 import {
   Button,
   TextField,
@@ -18,8 +18,8 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { validateEmail, validatePassword } from "../../utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Navigate } from "react-router-dom";
-import axios, { AxiosResponse } from "axios";
+import { Navigate, useNavigate } from "react-router-dom";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 interface LoginResponse {
   success: boolean;
@@ -54,6 +54,12 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [passError, setPassError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (success) navigate("/DAOMatcher");
+  }, [navigate, success]);
 
   if (isLoggedIn) {
     return <Navigate to="/DAOMatcher/" replace />;
@@ -74,16 +80,40 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
       console.log("Password is invalid: ", email);
       return;
     }
-    const { data }: AxiosResponse<LoginResponse> = await axios.post(
-      "http://localhost:8000/login",
-      {
-        email,
-        password,
+
+    console.log(`Email: ${email} Password: ${password}`);
+
+    let data: LoginResponse;
+    try {
+      const { data: successData }: AxiosResponse<LoginResponse> =
+        await axios.post("http://localhost:8000/login", {
+          email,
+          password,
+        });
+      data = successData;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const errorData: LoginResponse = error
+          ? error.response
+            ? error.response.data
+              ? error.response.data
+              : null
+            : null
+          : null;
+
+        data = errorData
+          ? errorData
+          : { success: false, message: "Login Failed due to server error" };
+      } else {
+        data = {
+          success: false,
+          message: "Something went wrong with your login",
+        };
       }
-    );
+    }
 
     const { success, message } = data;
-
+    setSuccess(success);
     if (!success) return setError(message);
     return setError("");
   };
