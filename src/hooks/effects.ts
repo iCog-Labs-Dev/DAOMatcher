@@ -1,22 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from "react";
-import { io } from "socket.io-client";
-import { Response } from "../Components/Body/Body";
+import { Socket, io } from "socket.io-client";
+import { IUser, Response } from "../Components/Body/Body";
 
 export const useSocket = (
-  depth,
-  setSocket,
-  setIsLoading,
-  setUsers,
-  setSuccess,
-  setError,
-  setJsonData,
-  setProgress
+  depth: any,
+  isLoading: boolean,
+  setSocket: React.Dispatch<React.SetStateAction<Socket<any, any> | undefined>>,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setUsers: React.Dispatch<React.SetStateAction<IUser[]>>,
+  setSuccess: React.Dispatch<React.SetStateAction<boolean>>,
+  setError: React.Dispatch<any>,
+  setJsonData: React.Dispatch<React.SetStateAction<IUser[]>>,
+  setProgress: React.Dispatch<React.SetStateAction<number>>
 ) => {
   useEffect(() => {
     // Connect to the Socket.IO server
 
     try {
-      const socket = io(`http://localhost:5001`);
+      const socket = io(`http://localhost:8000`);
       setSocket(socket);
 
       socket.on("connect", () => {

@@ -1,8 +1,12 @@
-import { ThemeProvider, createTheme } from "@mui/material";
-import Body from "./Components/Body/Body.1";
+import { createBrowserRouter } from "react-router-dom";
+import { createTheme } from "@mui/material";
 import Header from "./Components/Header/Header";
 import { blueGrey, teal } from "@mui/material/colors";
-const theme = createTheme({
+import Body from "./Components/Body/Body";
+import Login from "./Components/Login/Login";
+import Protected from "./Components/Protected/Protected";
+import { checkSession } from "./utils/cookies";
+export const theme = createTheme({
   typography: {
     fontFamily: [
       "-apple-system",
@@ -22,13 +26,26 @@ const theme = createTheme({
     secondary: blueGrey,
   },
 });
+
+const isLoggedIn = checkSession("email");
+
+export const router = createBrowserRouter([
+  {
+    path: "/DAOMatcher",
+    element: (
+      <>
+        <Protected isLoggedIn={isLoggedIn}>
+          <Header />
+          <Body />
+        </Protected>
+      </>
+    ),
+  },
+  { path: "DAOMatcher/login", element: <Login isLoggedIn={isLoggedIn} /> },
+]);
+
 function App() {
-  return (
-    <ThemeProvider theme={theme}>
-      <Header />
-      <Body />
-    </ThemeProvider>
-  );
+  return <></>;
 }
 
 export default App;
