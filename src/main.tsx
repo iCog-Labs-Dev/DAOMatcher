@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider } from "react-router-dom";
-import { router, theme } from "./App.tsx";
+import App, { theme } from "./App.tsx";
 import "./index.css";
 import { ThemeProvider } from "@mui/material";
 
@@ -13,7 +12,8 @@ import "@fontsource/roboto/700.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <RouterProvider router={router}></RouterProvider>
+      <App />
+      {/* <RouterProvider router={router}></RouterProvider> */}
     </ThemeProvider>
   </React.StrictMode>
 );

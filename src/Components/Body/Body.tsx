@@ -44,7 +44,9 @@ function valuetext(value: number) {
   return `${value}°C`;
 }
 
-function Body() {
+function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
+  console.log(isLoggedIn);
+
   const [descriptionInput, setDescriptionInput] = useState<string>("");
   const [users, setUsers] = useState<IUser[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
