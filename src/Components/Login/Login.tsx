@@ -2,7 +2,7 @@
 // Install Material-UI if not already installed
 // npm install @mui/material @emotion/react @emotion/styled
 
-import { useState, CSSProperties, useEffect } from "react";
+import { useState, CSSProperties } from "react";
 import {
   Button,
   TextField,
@@ -18,7 +18,7 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { validateEmail, validatePassword } from "../../utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 
@@ -57,7 +57,6 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  // const navigate = useNavigate();
 
   if (isLoggedIn) {
     return <Navigate to="/DAOMatcher/" replace />;
