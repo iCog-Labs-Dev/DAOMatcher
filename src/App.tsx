@@ -31,7 +31,7 @@ const isLoggedIn = checkSession("email");
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/DAOMatcher",
     element: (
       <>
         <Protected isLoggedIn={isLoggedIn}>
@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
       </>
     ),
   },
-  { path: "/login", element: <Login isLoggedIn={isLoggedIn} /> },
+  { path: "/DAOMatcher/login", element: <Login isLoggedIn={isLoggedIn} /> },
 ]);
 
 function App() {
