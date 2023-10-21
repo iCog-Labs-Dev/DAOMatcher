@@ -100,10 +100,13 @@ function Body() {
 
       socket.on("connect", () => {
         console.log("Connected to the Socket.IO server");
+        setError(null);
       });
 
       socket.on("connect_error", () => {
         console.log("Couldn't establish connection to server");
+        setError("Couldn't establish connection to server");
+        setIsLoading(false);
       });
 
       socket.on("get_users", (data: Response) => {
@@ -129,14 +132,19 @@ function Body() {
 
       socket.on("connect_timeout", () => {
         console.log("Connection timed out");
+        setError("Connection timed out");
+        setIsLoading(false);
       });
 
       socket.on("disconnect", () => {
         console.log("Disconnected from the Socket.IO server");
+        setError(null);
       });
 
       socket.on(`update`, (data) => {
         console.log("Update recieved");
+        setError(null);
+
         try {
           console.log("recieved data: ", data);
 
