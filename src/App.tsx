@@ -37,11 +37,11 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route
-              path="/DAOMatcher"
+              path="/DAOMatcher/"
               element={<Body isLoggedIn={isLoggedIn} />}
             />
             <Route
-              path="/DAOMatcher/login"
+              path="/DAOMatcher/login/"
               element={<Login isLoggedIn={isLoggedIn} />}
             />
           </Routes>
