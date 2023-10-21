@@ -60,7 +60,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [successMessage, setSuccessMessage] = useState("");
 
   if (isLoggedIn) {
-    return <Navigate to="/DAOMatcher/" replace />;
+    return <Navigate to="/" replace />;
   }
 
   const tooglePasswordVisibility = () => {
