@@ -10,8 +10,11 @@ export const useAddHandler = () => {
 
   function addHandler() {
     if (handleInput != "") {
-      setHandle([...handle, handleInput]);
-      setHandleInput("");
+      const indexof = handle.indexOf(handleInput);
+      if (indexof === -1) {
+        setHandle([...handle, handleInput]);
+        setHandleInput("");
+      }
     }
   }
 
