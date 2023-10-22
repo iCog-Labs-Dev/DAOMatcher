@@ -132,9 +132,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div style={styles.paper}>
-        <Avatar style={styles.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
+        <Avatar style={styles.avatar} src="vite.svg" />
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
