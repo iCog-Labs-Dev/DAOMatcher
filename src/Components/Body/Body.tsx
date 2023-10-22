@@ -35,6 +35,7 @@ export interface IUser {
   name: string;
   score: number;
   handle: string;
+  image: string;
 }
 
 export interface Response {
