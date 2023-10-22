@@ -56,7 +56,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, setError] = useState<any>(null);
   const [success, setSuccess] = useState<boolean>(false);
-  const [estimation, setEstimation] = useState<string>("");
+  // const [estimation, setEstimation] = useState<string>("");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [socket, setSocket] = useState<Socket<any, any>>();
   const { setJsonData, handleDownloadClick } = useHandleDownload();
@@ -193,25 +193,12 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
-  function formatTime(milliseconds: number) {
-    const hours = Math.floor(milliseconds / 3600000);
-    const minutes = Math.floor((milliseconds % 3600000) / 60000);
-    const seconds = Math.floor((milliseconds % 60000) / 1000);
+  // useEffect(() => {
+  //   const milliseconds = depth * 3474;
+  //   const timeString = formatTime(milliseconds);
 
-    const hrsStr = hours > 0 ? `${hours} hrs` : "";
-    const minsStr = minutes > 0 ? `${minutes} mins` : "";
-    const secStr = seconds > 0 ? `${seconds} secs` : "";
-    const formattedDuration = `${hrsStr} ${minsStr} ${secStr}`;
-
-    return formattedDuration;
-  }
-
-  useEffect(() => {
-    const milliseconds = depth * 3474;
-    const timeString = formatTime(milliseconds);
-
-    setEstimation(timeString);
-  }, [depth]);
+  //   setEstimation(timeString);
+  // }, [depth]);
 
   useEffect(() => {
     if (users.length === 0 && success) setIsLoading(false);
@@ -334,7 +321,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
                 }}
               >
                 <Typography id="users-slider" fontSize={14} gutterBottom>
-                  {`Searching ${count} users using depth of ${depth} takes minimum of ${estimation}`}
+                  {`Searching ${count} users using depth of ${depth}`}
                 </Typography>
               </div>
             </Stack>
