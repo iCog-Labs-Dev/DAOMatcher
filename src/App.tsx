@@ -36,7 +36,10 @@ function App() {
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Routes>
-            <Route path="/DAOMatcher/" element={<Body isLoggedIn={true} />} />
+            <Route
+              path="/DAOMatcher/"
+              element={<Body isLoggedIn={isLoggedIn} />}
+            />
             <Route
               path="/DAOMatcher/login/"
               element={<Login isLoggedIn={isLoggedIn} />}
