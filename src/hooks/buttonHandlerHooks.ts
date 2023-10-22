@@ -68,6 +68,7 @@ export const useHandleCancel = (
     setSuccess(false);
     if (socket) socket.emit("stop", true);
     else setError("Couldn't cancel request");
+
     setIsLoading(false);
     setProgress(0);
   };
