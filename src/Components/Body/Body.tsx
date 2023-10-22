@@ -145,7 +145,6 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
         console.log("Disconnected from the Socket.IO server");
         setError(null);
         setProgress(0);
-        handleCancel();
       });
 
       socket.on(`update`, (data) => {
@@ -182,7 +181,6 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
       });
 
       return () => {
-        handleCancel();
         socket.disconnect();
       };
     } catch (error) {
