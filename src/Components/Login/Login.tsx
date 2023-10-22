@@ -15,7 +15,6 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { validateEmail, validatePassword } from "../../utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
