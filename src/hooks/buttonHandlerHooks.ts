@@ -96,6 +96,7 @@ export const useHandleSubmit = (
       handle,
       descriptionInput,
       count,
+      depth,
     };
     console.log(requestBody);
 

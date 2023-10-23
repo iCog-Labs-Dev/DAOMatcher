@@ -193,7 +193,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
       return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading ? success : isLoading]);
+  }, [isLoading ? success : isLoading, depth]);
 
   // useEffect(() => {
   //   const milliseconds = depth * 3474;
@@ -290,6 +290,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
               </Typography>
             </div>
             <Slider
+              disabled={isLoading}
               aria-label="Temperature"
               defaultValue={10}
               getAriaValueText={valuetext}
@@ -308,6 +309,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             />
             <Stack direction="row">
               <TextField
+                disabled={isLoading}
                 aria-label="Enter depth for the search"
                 placeholder="Choose depth"
                 label="Depth of search"
