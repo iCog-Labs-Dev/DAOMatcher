@@ -162,6 +162,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
           } else {
             console.log("tempProgress: ", tempProgress);
             console.log("user: ", user);
+            console.log("depth: ", depth);
 
             const percentage = (tempProgress / depth) * 100;
             setProgress(percentage);
