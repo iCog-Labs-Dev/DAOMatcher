@@ -192,7 +192,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
       return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+  }, [isLoading ? success : isLoading]);
 
   // useEffect(() => {
   //   const milliseconds = depth * 3474;

@@ -105,7 +105,6 @@ export const useHandleSubmit = (
       setUsers([]);
 
       if (socket) {
-        setIsLoading(true);
         socket.emit("get_users", {
           query: descriptionInput,
           user_list: handle,
