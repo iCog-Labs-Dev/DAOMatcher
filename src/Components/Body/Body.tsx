@@ -120,9 +120,15 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
         const { result: users } = data;
         users.sort((a, b) => b.score - a.score);
 
+        //Additional checking to find if all users have been found
+        const foundAllUsers = users.length === count;
         setUsers(users);
-        setSuccess(true);
-        setError(null);
+        setSuccess(foundAllUsers);
+        setError(
+          !foundAllUsers
+            ? `Found only ${users.length} users instead of ${count} users`
+            : null
+        );
         setJsonData(users);
         setProgress(0);
       });

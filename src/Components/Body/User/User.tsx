@@ -9,7 +9,13 @@ interface Props {
 
 function getUrl(handle: string) {
   if (handle.includes("@")) {
-    return `https://mastodon.social/${handle}`;
+    const baseUrl = `https://mastodon.social`;
+    try {
+      const username = handle.split("@mastodon.social")[0];
+      return `${baseUrl}/${username}`;
+    } catch (error) {
+      return `${baseUrl}/${handle}`;
+    }
   } else {
     return `https://www.linkedin.com/in/${handle}/`;
   }
