@@ -137,6 +137,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
         console.log("Error: ", data);
         setError(data.message ?? "Something went wrong");
         setSuccess(false);
+        setIsLoading(false);
         setProgress(0);
       });
 
@@ -185,6 +186,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
         console.log("Error: ", error);
         setError(error.message ?? "Something went wrong");
         setSuccess(false);
+        setIsLoading(false);
         setProgress(0);
       });
 
