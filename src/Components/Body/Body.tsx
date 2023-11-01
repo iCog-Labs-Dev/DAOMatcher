@@ -57,6 +57,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, setError] = useState<any>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const [info, setInfo] = useState<string>("");
   // const [estimation, setEstimation] = useState<string>("");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [socket, setSocket] = useState<Socket<any, any>>();
@@ -124,10 +125,10 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
         const foundAllUsers = users.length === count;
         setUsers(users);
         setSuccess(true);
-        setError(
+        setInfo(
           !foundAllUsers && users.length > 0
             ? `Found only ${users.length} users instead of ${count} users`
-            : null
+            : ""
         );
         setJsonData(users);
         setProgress(0);
@@ -226,12 +227,35 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             <Typography variant="h5">
               Search for people with similar interests
             </Typography>
-            {error ? <Alert severity="error">{error}</Alert> : null}
+            {error ? (
+              <Alert
+                severity="error"
+                style={{ marginTop: "5px", marginBottom: "5px" }}
+              >
+                {error}
+              </Alert>
+            ) : null}
             {users.length === 0 && success ? (
-              <Alert severity="error">No users found with this account</Alert>
+              <Alert
+                severity="error"
+                style={{ marginTop: "5px", marginBottom: "5px" }}
+              >
+                No users found with this account
+              </Alert>
+            ) : null}
+            {success && info && !error ? (
+              <Alert
+                severity="info"
+                style={{ marginTop: "5px", marginBottom: "5px" }}
+              >
+                {info}
+              </Alert>
             ) : null}
             {success && users.length > 0 && !error ? (
-              <Alert severity="success">
+              <Alert
+                severity="success"
+                style={{ marginTop: "5px", marginBottom: "5px" }}
+              >
                 Loading successful. Click the download icon to save the result.
               </Alert>
             ) : null}
