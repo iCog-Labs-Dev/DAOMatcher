@@ -123,9 +123,9 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
         //Additional checking to find if all users have been found
         const foundAllUsers = users.length === count;
         setUsers(users);
-        setSuccess(foundAllUsers);
+        setSuccess(true);
         setError(
-          !foundAllUsers
+          !foundAllUsers && users.length > 0
             ? `Found only ${users.length} users instead of ${count} users`
             : null
         );
@@ -226,9 +226,9 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             </Typography>
             {error ? <Alert severity="error">{error}</Alert> : null}
             {users.length === 0 && success ? (
-              <Alert severity="error">No users found</Alert>
+              <Alert severity="error">No users found with this account</Alert>
             ) : null}
-            {success && users.length > 0 ? (
+            {success && users.length > 0 && !error ? (
               <Alert severity="success">
                 Loading successful. Click the download icon to save the result.
               </Alert>
