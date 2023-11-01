@@ -60,7 +60,7 @@ export const useDeleteHandle = (
 
 export const useHandleCancel = (
   setSuccess: React.Dispatch<React.SetStateAction<boolean>>,
-  setError: React.Dispatch<any>,
+  setInfo: React.Dispatch<string>,
   socket: Socket<any, any> | undefined,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setProgress: React.Dispatch<React.SetStateAction<number>>
@@ -69,8 +69,10 @@ export const useHandleCancel = (
     console.log("Cancelled request");
 
     setSuccess(false);
-    if (socket) socket.emit("stop", true);
-    else setError("Couldn't cancel request");
+    if (socket) {
+      socket.emit("stop", true);
+      setInfo("Request canceled");
+    } else setInfo("Couldn't cancel request");
 
     setIsLoading(false);
     setProgress(0);
@@ -101,6 +103,17 @@ export const useHandleSubmit = (
     console.log(requestBody);
 
     if (handle.length > 0 && descriptionInput != "") {
+      //This line of code insures all handles are of matdone format
+      const pattern = /^@[a-zA-Z0-9_]+@[a-zA-Z0-9_]+\.[a-zA-Z0-9_]+$/;
+      const isValid = handle.every((user) => {
+        return pattern.test(user);
+      });
+
+      if (!isValid) {
+        setError("User handles validation failed");
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
       setUsers([]);

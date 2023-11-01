@@ -79,7 +79,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   const { handleCancel } = useHandleCancel(
     setSuccess,
-    setError,
+    setInfo,
     socket,
     setIsLoading,
     setProgress
@@ -264,7 +264,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             <Stack direction="row">
               <TextField
                 id="outlined-basic"
-                label="User handles"
+                label="Mastodon User handles"
                 variant="outlined"
                 fullWidth
                 onChange={changeHandleInput}
@@ -272,7 +272,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
                 onKeyDown={changeHandleInput}
                 onBlur={addHandler}
                 size="small"
-                placeholder="Mastodon handle"
+                placeholder="@MarkRuffalo@mastodon.social"
               />
               <IconButton
                 aria-label="delete"
