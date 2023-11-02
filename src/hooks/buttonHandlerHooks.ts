@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Socket } from "socket.io-client";
 import { IUser } from "../Components/Body/Body";
 import { convertToCSV } from "../utils/CSV";
+import Cookies from "js-cookie";
 
 export const useAddHandler = () => {
   const [handleInput, setHandleInput] = useState<string>("");
@@ -70,7 +71,8 @@ export const useHandleCancel = (
 
     setSuccess(false);
     if (socket) {
-      socket.emit("stop", true);
+      const userId = Cookies.get("userId");
+      socket.emit("stop", userId);
       setInfo("Request canceled");
     } else setInfo("Couldn't cancel request");
 
@@ -119,11 +121,13 @@ export const useHandleSubmit = (
       setUsers([]);
 
       if (socket) {
+        const userId = Cookies.get("userId");
         socket.emit("get_users", {
           query: descriptionInput,
           user_list: handle,
           user_limit: count,
           depth: depth,
+          userId: userId ?? "",
         });
       }
     } else {

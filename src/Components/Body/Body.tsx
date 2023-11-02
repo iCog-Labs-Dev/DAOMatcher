@@ -28,6 +28,7 @@ import {
   useHandleSubmit,
 } from "../../hooks/buttonHandlerHooks";
 import { BASE_URL } from "../../config/default";
+import Cookies from "js-cookie";
 
 export interface IUser {
   id: string;
@@ -105,6 +106,11 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
         setError(null);
       });
 
+      socket.on("set_cookie", (userId: string) => {
+        Cookies.set("userId", userId, { secure: true, sameSite: "none" });
+        console.log("Setting cookies done");
+      });
+
       socket.on("connect_error", () => {
         console.log("Couldn't establish connection to server");
         setError("Couldn't establish connection to server");
@@ -151,9 +157,12 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
       });
 
       socket.on("disconnect", () => {
+        const userId = Cookies.get("userId");
+        Cookies.remove("userId");
         console.log("Disconnected from the Socket.IO server");
         setError(null);
         setProgress(0);
+        socket.emit("remove", userId);
       });
 
       socket.on(`update`, (data) => {
