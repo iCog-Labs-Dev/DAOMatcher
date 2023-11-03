@@ -51,7 +51,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [descriptionInput, setDescriptionInput] = useState<string>("");
   const [users, setUsers] = useState<IUser[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [count, setCount] = useState<any>(100);
+  const [count, setCount] = useState<any>(10);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -333,7 +333,6 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             <Slider
               disabled={isLoading}
               aria-label="Temperature"
-              defaultValue={10}
               getAriaValueText={valuetext}
               valueLabelDisplay="auto"
               step={30}

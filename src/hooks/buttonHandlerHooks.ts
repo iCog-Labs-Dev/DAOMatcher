@@ -23,7 +23,7 @@ export const useAddHandler = () => {
 };
 
 export const useHandleDepthChange = () => {
-  const [depth, setDepth] = useState<any>(200);
+  const [depth, setDepth] = useState<any>(20);
   function handleDepthChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newValue = e.target.valueAsNumber;
     setDepth(newValue);
@@ -108,6 +108,8 @@ export const useHandleSubmit = (
       //This line of code insures all handles are of matdone format
       const pattern = /^@[a-zA-Z0-9_]+@[a-zA-Z0-9_]+\.[a-zA-Z0-9_]+$/;
       const isValid = handle.every((user) => {
+        console.log("User: ", user, " Valid: ", pattern.test(user));
+
         return pattern.test(user);
       });
 
