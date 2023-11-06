@@ -124,13 +124,18 @@ export const useHandleSubmit = (
 
       if (socket) {
         const userId = Cookies.get("userId");
-        socket.emit("get_users", {
-          query: descriptionInput,
-          user_list: handle,
-          user_limit: count,
-          depth: depth,
-          userId: userId ?? "",
-        });
+        if (userId) {
+          socket.emit("get_users", {
+            query: descriptionInput,
+            user_list: handle,
+            user_limit: count,
+            depth: depth,
+            userId: userId,
+          });
+        } else {
+          setError("User session not found. Reload the page");
+          setSuccess(false);
+        }
       }
     } else {
       setError("Empty handles or description!");
