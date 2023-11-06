@@ -107,7 +107,7 @@ export const useHandleSubmit = (
     if (handle.length > 0 && descriptionInput != "") {
       //This line of code insures all handles are of matdone format
       const pattern =
-        /^@[a-zA-Z0-9_!#$%^&*()+=\-[\]{}|\\:;"'<>,.?/]+@[a-zA-Z0-9_!#$%^&*()+=\-[\]{}|\\:;"'<>,.?/]+\.[a-zA-Z0-9_!#$%^&*()+=\-[\]{}|\\:;"'<>,.?/]+$/;
+        /^@[a-zA-Z0-9_!#$%^&*()+=\-[\]{}|\\:;"'<>,?/]+@[a-zA-Z0-9_!#$%^&*()+=\-[\]{}|\\:;"'<>,?/]+\.[a-zA-Z0-9_!#$%^&*()+=\-[\]{}|\\:;"'<>,?/]+$/;
       const isValid = handle.every((user) => {
         console.log("User: ", user, " Valid: ", pattern.test(user));
 
