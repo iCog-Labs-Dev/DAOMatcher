@@ -49,12 +49,16 @@ function valuetext(value: number) {
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [descriptionInput, setDescriptionInput] = useState<string>("");
-  const [users, setUsers] = useState<IUser[]>([]);
+  const initialUserState = JSON.parse(
+    localStorage.getItem("users") || "[]"
+  ) as IUser[];
+  const [users, setUsers] = useState<IUser[]>(initialUserState);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [count, setCount] = useState<any>(10);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [progress, setProgress] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const initialLoadingState = localStorage.getItem("isLoading") === "true";
+  const [isLoading, setIsLoading] = useState(initialLoadingState);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, setError] = useState<any>(null);
   const [success, setSuccess] = useState<boolean>(false);
@@ -93,6 +97,14 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   );
 
   const { deleteHandle } = useDeleteHandle(handle, setHandle);
+
+  useEffect(() => {
+    localStorage.setItem("isLoading", isLoading.toString());
+  }, [isLoading]);
+
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
 
   useEffect(() => {
     // Connect to the Socket.IO server
