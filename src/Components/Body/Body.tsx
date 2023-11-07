@@ -112,7 +112,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
     try {
       const socket = io(`${BASE_URL}`);
       setSocket(socket);
-
+      console.log(socket.connected);
       socket.on("connect", () => {
         console.log("Connected to the Socket.IO server");
         setError(null);
@@ -223,7 +223,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
       return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading ? success : isLoading]);
+  }, [isLoading ? success : isLoading, depth]);
 
   // useEffect(() => {
   //   const milliseconds = depth * 3474;
