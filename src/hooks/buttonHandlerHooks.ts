@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Socket } from "socket.io-client";
-import { IUser } from "../../pages/Home/Body";
+import { IUser } from "../pages/Home/Body";
 import { convertToCSV } from "../utils/CSV";
 import Cookies from "js-cookie";
 

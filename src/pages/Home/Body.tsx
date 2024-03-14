@@ -10,7 +10,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import io, { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import User from "./User";
 import AddIcon from "@mui/icons-material/Add";
@@ -18,6 +17,7 @@ import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Alert from "@mui/material/Alert";
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
 import { Navigate } from "react-router-dom";
+import valueText from "pages/Home/valueText";
 import {
   useAddHandler,
   useChangeHandleInput,
@@ -26,26 +26,8 @@ import {
   useHandleDepthChange,
   useHandleDownload,
   useHandleSubmit,
-} from "../../src/hooks/buttonHandlerHooks";
-import { BASE_URL } from "../../src/config/default";
-import Cookies from "js-cookie";
-
-export interface IUser {
-  id: string;
-  username: string;
-  name: string;
-  score: number;
-  handle: string;
-  image: string;
-}
-
-export interface Response {
-  result: IUser[];
-}
-
-function valuetext(value: number) {
-  return `${value}°C`;
-}
+} from "../../hooks/buttonHandlerHooks";
+import IUser from "pages/Home/IUser";
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [descriptionInput, setDescriptionInput] = useState<string>("");
@@ -65,7 +47,6 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [info, setInfo] = useState<string>("");
   // const [estimation, setEstimation] = useState<string>("");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [socket, setSocket] = useState<Socket<any, any>>();
   const { setJsonData, handleDownloadClick } = useHandleDownload();
   const { depth, setDepth, handleDepthChange } = useHandleDepthChange();
   const { handle, handleInput, setHandle, setHandleInput, addHandler } =
@@ -107,122 +88,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   }, [users]);
 
   useEffect(() => {
-    // Connect to the Socket.IO server
-
-    try {
-      const socket = io(`${BASE_URL}`);
-      setSocket(socket);
-      console.log(socket.connected);
-      socket.on("connect", () => {
-        console.log("Connected to the Socket.IO server");
-        setError(null);
-      });
-
-      socket.on("set_cookie", (userId: string) => {
-        Cookies.set("userId", userId, { secure: true, sameSite: "none" });
-        console.log("Setting cookies done");
-      });
-
-      socket.on("connect_error", () => {
-        console.log("Couldn't establish connection to server");
-        setError("Couldn't establish connection to server");
-        setSuccess(false);
-        setIsLoading(false);
-      });
-
-      socket.on("get_users", (data: Response) => {
-        setIsLoading(false);
-        console.log("Updating completed");
-
-        console.log(data); //For debugging only
-
-        const { result: users } = data;
-        users.sort((a, b) => b.score - a.score);
-
-        //Additional checking to find if all users have been found
-        const foundAllUsers = users.length === count;
-        setUsers(users);
-        setSuccess(true);
-        setInfo(
-          !foundAllUsers && users.length > 0
-            ? `Found only ${users.length} users instead of ${count} users`
-            : ""
-        );
-        setJsonData(users);
-        setProgress(0);
-      });
-
-      socket.on("something_went_wrong", (data) => {
-        console.log("Error: ", data);
-        setError(data.message ?? "Something went wrong");
-        setSuccess(false);
-        setIsLoading(false);
-        setProgress(0);
-      });
-
-      socket.on("connect_timeout", () => {
-        console.log("Connection timed out");
-        setError("Connection timed out");
-        setSuccess(false);
-        setIsLoading(false);
-        setProgress(0);
-      });
-
-      socket.on("disconnect", () => {
-        const userId = Cookies.get("userId");
-        Cookies.remove("userId");
-        console.log("Disconnected from the Socket.IO server");
-        setError(null);
-        setProgress(0);
-        socket.emit("remove", userId);
-      });
-
-      socket.on(`update`, (data) => {
-        console.log("Update recieved");
-        setError(null);
-
-        try {
-          console.log("recieved data: ", data);
-
-          const { progress: tempProgress, curr_user: user } = data;
-
-          if (!tempProgress) {
-            console.log(data.error);
-          } else {
-            console.log("tempProgress: ", tempProgress);
-            console.log("user: ", user);
-            console.log("depth: ", depth);
-
-            const percentage = (tempProgress / depth) * 100;
-            setProgress(percentage);
-          }
-        } catch (error) {
-          console.log(error);
-          if (error instanceof ErrorEvent) setError(error.message);
-          else setError("Something went wrong connecting to socket io");
-          setSuccess(false);
-        }
-      });
-
-      socket.on("error", (error) => {
-        console.log("Error: ", error);
-        setError(error.message ?? "Something went wrong");
-        setSuccess(false);
-        setIsLoading(false);
-        setProgress(0);
-      });
-
-      return () => {
-        socket.disconnect();
-      };
-    } catch (error) {
-      console.log(error);
-      if (error instanceof ErrorEvent)
-        setError(error.message ?? "Something went wrong");
-      setSuccess(false);
-      return;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useSocket(count, socket);
   }, [isLoading ? success : isLoading, depth]);
 
   // useEffect(() => {
@@ -345,7 +211,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             <Slider
               disabled={isLoading}
               aria-label="Temperature"
-              getAriaValueText={valuetext}
+              getAriaValueText={valueText}
               valueLabelDisplay="auto"
               step={30}
               marks
