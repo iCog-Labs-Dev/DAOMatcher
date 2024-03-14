@@ -1,10 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addError, clearError } from "redux/errorSlice";
-import { setSuccess, selectAllHomeStates } from "pages/Home/homeSlice";
+import {
+  setSuccess,
+  selectAllHomeStates,
+  setSocket,
+} from "pages/Home/homeSlice";
 import { Response } from "pages/Home/Response";
 import { BASE_URL } from "config/default";
-import io, { Socket } from "socket.io-client";
-import { useEffect, useState } from "react";
+import io from "socket.io-client";
+import { useEffect } from "react";
 import {
   connectErrorHandler,
   connectHandler,
@@ -24,8 +28,10 @@ interface ISocketProps {
 const useSocket = ({ count, depth }: ISocketProps) => {
   // Connect to the Socket.IO server
   const dispatch = useDispatch();
-  const [socket] = useState<Socket>(io(`${BASE_URL}`));
+  const socket = useSelector(selectAllHomeStates).socket;
   const isLoading = useSelector(selectAllHomeStates).isLoading;
+
+  setSocket(io(`${BASE_URL}`));
 
   useEffect(() => {
     try {

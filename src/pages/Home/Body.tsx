@@ -19,77 +19,74 @@ import CircularProgressWithLabel from "./CircularProgressWithLabel";
 import { Navigate } from "react-router-dom";
 import valueText from "pages/Home/valueText";
 import {
-  useAddHandler,
-  useChangeHandleInput,
-  useDeleteHandle,
   useHandleCancel,
-  useHandleDepthChange,
   useHandleDownload,
   useHandleSubmit,
-} from "../../hooks/buttonHandlerHooks";
-import IUser from "pages/Home/IUser";
+} from "./buttonEventHooks";
+import useSocket from "./useSocket";
+import { selectAllUsers } from "./usersSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAllHomeStates, setIsLoading } from "./homeSlice";
+import { clearError, selectAllErrors } from "redux/errorSlice";
+import { selectAllInfoMessages } from "redux/infoSlice";
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
-  const [descriptionInput, setDescriptionInput] = useState<string>("");
-  const initialUserState = JSON.parse(
-    localStorage.getItem("users") || "[]"
-  ) as IUser[];
-  const [users, setUsers] = useState<IUser[]>(initialUserState);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [count, setCount] = useState<any>(10);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [progress, setProgress] = useState<number>(0);
-  const initialLoadingState = localStorage.getItem("isLoading") === "true";
-  const [isLoading, setIsLoading] = useState(initialLoadingState);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [error, setError] = useState<any>(null);
-  const [success, setSuccess] = useState<boolean>(false);
-  const [info, setInfo] = useState<string>("");
+  const [depth, setDepth] = useState<any>(20);
+  useSocket({ count, depth });
+
+  const [descriptionInput, setDescriptionInput] = useState<string>("");
+  const [handle, setHandle] = useState<string[]>([]);
+  const [handleInput, setHandleInput] = useState<string>("");
   // const [estimation, setEstimation] = useState<string>("");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { setJsonData, handleDownloadClick } = useHandleDownload();
-  const { depth, setDepth, handleDepthChange } = useHandleDepthChange();
-  const { handle, handleInput, setHandle, setHandleInput, addHandler } =
-    useAddHandler();
+
+  const users = useSelector(selectAllUsers);
+  const success = useSelector(selectAllHomeStates).success;
+  const isLoading = useSelector(selectAllHomeStates).isLoading;
+  const errors = useSelector(selectAllErrors);
+  const infoMessages = useSelector(selectAllInfoMessages);
+
+  const dispatch = useDispatch();
+
+  const { handleDownloadClick } = useHandleDownload();
+  const { handleCancel } = useHandleCancel();
   const { handleSubmit } = useHandleSubmit(
     handle,
     descriptionInput,
     count,
-    depth,
-    socket,
-    setIsLoading,
-    setError,
-    setUsers,
-    setSuccess
+    depth
   );
 
-  const { handleCancel } = useHandleCancel(
-    setSuccess,
-    setInfo,
-    socket,
-    setIsLoading,
-    setProgress
-  );
+  const addHandler = () => {
+    if (handleInput != "") {
+      const indexof = handle.indexOf(handleInput);
+      if (indexof === -1) {
+        setHandle([...handle, handleInput]);
+      }
+      setHandleInput("");
+    }
+  };
 
-  const { changeHandleInput } = useChangeHandleInput(
-    setError,
-    addHandler,
-    setHandleInput
-  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const changeHandleInput = (e: any) => {
+    dispatch(clearError());
+    if (e.key === "Enter") {
+      addHandler();
+      return;
+    }
+    setHandleInput(e.target.value);
+  };
 
-  const { deleteHandle } = useDeleteHandle(handle, setHandle);
+  const deleteHandle = (h: string) => {
+    setHandle(handle.filter((e) => e != h));
+  };
 
-  useEffect(() => {
-    localStorage.setItem("isLoading", isLoading.toString());
-  }, [isLoading]);
-
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
-
-  useEffect(() => {
-    useSocket(count, socket);
-  }, [isLoading ? success : isLoading, depth]);
+  const handleDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.valueAsNumber;
+    setDepth(newValue);
+  };
 
   // useEffect(() => {
   //   const milliseconds = depth * 3474;
@@ -99,8 +96,8 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   // }, [depth]);
 
   useEffect(() => {
-    if (users.length === 0 && success) setIsLoading(false);
-  }, [users, success]);
+    if (users.length === 0 && success) dispatch(setIsLoading(false));
+  }, [users, success, dispatch]);
 
   if (!isLoggedIn) {
     return <Navigate to="/DAOMatcher/login" />;
