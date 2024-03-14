@@ -57,7 +57,7 @@ const useSocket = ({ count, depth }: ISocketProps) => {
       dispatch(clearError());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count, depth, isLoading]);
+  }, [isLoading]);
 };
 
 export default useSocket;
