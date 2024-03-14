@@ -1,4 +1,4 @@
-import { IUser } from "../Components/Body/Body";
+import { IUser } from "../../pages/Home/Body";
 import { json2csv } from "json-2-csv";
 
 export async function convertToCSV(jsonData: IUser[]) {

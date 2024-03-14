@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material";
-import Header from "./Components/Header/Header";
+import Header from "./components/Header/Header";
 import { blueGrey, teal } from "@mui/material/colors";
-import Body from "./Components/Body/Body";
-import Login from "./Components/Login/Login";
+import Body from "../pages/Home/Body";
+import Login from "../pages/Login/Login";
 import { checkSession } from "./utils/cookies";
 
 const theme = createTheme({

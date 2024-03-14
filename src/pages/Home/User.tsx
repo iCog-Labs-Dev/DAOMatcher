@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { Fragment } from "react";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { IUser } from "../Body";
+import { IUser } from "./Body";
 
 interface Props {
   user: IUser;

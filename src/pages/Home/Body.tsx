@@ -12,11 +12,11 @@ import {
 } from "@mui/material";
 import io, { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
-import User from "./User/User";
+import User from "./User";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Alert from "@mui/material/Alert";
-import CircularProgressWithLabel from "./CircularProgressWithLabel/CircularProgressWithLabel";
+import CircularProgressWithLabel from "./CircularProgressWithLabel";
 import { Navigate } from "react-router-dom";
 import {
   useAddHandler,
@@ -26,8 +26,8 @@ import {
   useHandleDepthChange,
   useHandleDownload,
   useHandleSubmit,
-} from "../../hooks/buttonHandlerHooks";
-import { BASE_URL } from "../../config/default";
+} from "../../src/hooks/buttonHandlerHooks";
+import { BASE_URL } from "../../src/config/default";
 import Cookies from "js-cookie";
 
 export interface IUser {

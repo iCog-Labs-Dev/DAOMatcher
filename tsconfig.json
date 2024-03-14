@@ -20,6 +20,13 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "pages/Home/Body.tsx",
+    "pages/Home/CircularProgressWithLabel.tsx",
+    "pages/Home/index.tsx",
+    "pages/Home/User.tsx",
+    "pages/Login"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

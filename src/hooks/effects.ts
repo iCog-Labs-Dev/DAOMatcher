@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from "react";
 import { Socket, io } from "socket.io-client";
-import { IUser, Response } from "../Components/Body/Body";
+import { IUser, Response } from "../../pages/Home/Body";
 import { BASE_URL } from "../config/default";
 
 export const useSocket = (
