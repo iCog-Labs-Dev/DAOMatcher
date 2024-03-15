@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import {
   Box,
   Button,
-  Chip,
   Container,
   Divider,
   IconButton,
@@ -14,7 +13,6 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import User from "@/pages/Home/User";
-import AddIcon from "@mui/icons-material/Add";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import CircularProgressWithLabel from "@/pages/Home/CircularProgressWithLabel";
 import { Navigate } from "react-router-dom";
@@ -28,11 +26,11 @@ import useSocket from "@/pages/Home/useSocket";
 import { selectAllUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoading } from "@/pages/Home/homeSlice";
-import { selectAllErrors } from "@/redux/errorSlice";
 import { clearError } from "@/pages/Home/homeSlice";
-import { clearInfoMessages, selectAllInfoMessages } from "@/redux/infoSlice";
+import { clearInfoMessages } from "@/redux/infoSlice";
 import IUser from "@/types/IUser";
-import AlertMessage from "@/components/ui/AlertMessage";
+import ErrorList from "@/pages/Home/ErrorList";
+import UserHandle from "@/pages/Home/UserHandleInput";
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,54 +40,19 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   useSocket({ count, depth });
 
   const [descriptionInput, setDescriptionInput] = useState<string>("");
-  const [handle, setHandle] = useState<string[]>([]);
-  const [handleInput, setHandleInput] = useState<string>("");
   // const [estimation, setEstimation] = useState<string>("");
 
   const users = useSelector(selectAllUsers);
   const success = useSelector(selectAllHomeStates).success;
   const isLoading = useSelector(selectAllHomeStates).isLoading;
   const progress = useSelector(selectAllHomeStates).progress;
-  const errors = useSelector(selectAllErrors);
-  const infoMessages = useSelector(selectAllInfoMessages);
   const inputError = useSelector(selectAllHomeStates).error;
 
   const dispatch = useDispatch();
 
   const { handleDownloadClick } = useHandleDownload();
   const { handleCancel } = useHandleCancel();
-  const { handleSubmit } = useHandleSubmit(
-    handle,
-    descriptionInput,
-    count,
-    depth
-  );
-
-  const addHandler = () => {
-    if (handleInput != "") {
-      const indexof = handle.indexOf(handleInput);
-      if (indexof === -1) {
-        setHandle([...handle, handleInput]);
-      }
-      setHandleInput("");
-    }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const changeHandleInput = (e: any) => {
-    if (e.key === "Enter") {
-      addHandler();
-      return;
-    }
-    dispatch(clearError());
-    dispatch(clearInfoMessages());
-
-    setHandleInput(e.target.value);
-  };
-
-  const deleteHandle = (h: string) => {
-    setHandle(handle.filter((e) => e != h));
-  };
+  const { handleSubmit } = useHandleSubmit(descriptionInput, count, depth);
 
   const handleDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.valueAsNumber;
@@ -120,68 +83,12 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             <Typography variant="h5">
               Search for people with similar interests
             </Typography>
-            {errors.map((error: string) => {
-              return <AlertMessage severity="error" message={error} />;
-            })}
-            {inputError ? (
-              <AlertMessage severity="error" message={inputError} />
-            ) : null}
-            {users.length === 0 && success ? (
-              <AlertMessage
-                severity="error"
-                message="No users found with this account"
-              />
-            ) : null}
-            {errors.length == 0
-              ? infoMessages.map((info: string) => {
-                  return <AlertMessage severity="info" message={info} />;
-                })
-              : null}
-            {success && users.length > 0 && errors.length == 0 ? (
-              <AlertMessage
-                severity="success"
-                message="Loading successful. Click the download icon to save the result."
-              />
-            ) : null}
+
+            <ErrorList inputError={inputError} success={success} />
 
             <Box sx={{ height: "2rem" }} />
-            <Stack direction="row">
-              <TextField
-                id="outlined-basic"
-                label="Mastodon User handles"
-                variant="outlined"
-                fullWidth
-                onChange={changeHandleInput}
-                value={handleInput}
-                onKeyDown={changeHandleInput}
-                onBlur={addHandler}
-                size="small"
-                placeholder="@MarkRuffalo@mastodon.social"
-              />
-              <IconButton
-                aria-label="delete"
-                size="medium"
-                onClick={addHandler}
-              >
-                <AddIcon fontSize="inherit" />
-              </IconButton>
-            </Stack>
-            <Box sx={{ margin: "1rem 0" }}>
-              {handle.length ? (
-                handle.map((h, i) => (
-                  <Chip
-                    label={h}
-                    key={i}
-                    onDelete={() => deleteHandle(h)}
-                    sx={{ margin: "0.5rem" }}
-                  />
-                ))
-              ) : (
-                <Typography variant="body2">
-                  Handle list will appear here
-                </Typography>
-              )}
-            </Box>
+            <UserHandle />
+
             <Box sx={{ height: "1rem" }} />
             <Box>
               <TextField

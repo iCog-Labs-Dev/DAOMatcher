@@ -3,7 +3,12 @@ import { convertToCSV } from "@/utils/CSV";
 import Cookies from "js-cookie";
 import { selectAllUsers, setUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsLoading, setProgress, setSuccess } from "@/pages/Home/homeSlice";
+import {
+  selectAllHomeStates,
+  setIsLoading,
+  setProgress,
+  setSuccess,
+} from "@/pages/Home/homeSlice";
 import { setError, clearError } from "@/pages/Home/homeSlice";
 import { addInfoMessage, clearInfoMessages } from "@/redux/infoSlice";
 import { socket } from "@/config/default";
@@ -29,11 +34,12 @@ export const useHandleCancel = () => {
 };
 
 export const useHandleSubmit = (
-  handle: string[],
   descriptionInput: string,
   count: any,
   depth: number
 ) => {
+  const handle = useSelector(selectAllHomeStates).handle;
+
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {

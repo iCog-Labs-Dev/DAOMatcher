@@ -8,6 +8,8 @@ export interface HomeState {
   success: boolean;
   progress: number;
   error: string | null;
+  handle: string[];
+  handleInput: string;
 }
 
 const initialState: HomeState = {
@@ -16,6 +18,8 @@ const initialState: HomeState = {
   success: false,
   progress: 0,
   error: null,
+  handle: [],
+  handleInput: "",
 };
 
 const homeSlice = createSlice({
@@ -40,6 +44,12 @@ const homeSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
+    setHandle(state, action) {
+      state.handle = action.payload;
+    },
+    setHandleInput(state, action) {
+      state.handleInput = action.payload;
+    },
   },
 });
 export const selectAllHomeStates = (state: RootState) => state.home;
@@ -51,5 +61,7 @@ export const {
   setProgress,
   setError,
   clearError,
+  setHandle,
+  setHandleInput,
 } = homeSlice.actions;
 export default homeSlice.reducer;
