@@ -1,25 +1,11 @@
 import React, { useEffect } from "react";
 
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  IconButton,
-  Slider,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Container, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import User from "@/pages/Home/User";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import CircularProgressWithLabel from "@/pages/Home/CircularProgressWithLabel";
 import { Navigate } from "react-router-dom";
-import valueText from "@/pages/Home/valueText";
 import {
   useHandleCancel,
-  useHandleDownload,
   useHandleSubmit,
 } from "@/pages/Home/buttonEventHooks";
 import useSocket from "@/pages/Home/useSocket";
@@ -28,15 +14,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoading } from "@/pages/Home/homeSlice";
 import { clearError } from "@/pages/Home/homeSlice";
 import { clearInfoMessages } from "@/redux/infoSlice";
-import IUser from "@/types/IUser";
 import ErrorList from "@/pages/Home/ErrorList";
-import UserHandle from "@/pages/Home/UserHandleInput";
+import UserHandleInput from "@/pages/Home/UserHandleInput";
+import SearchButton from "@/pages/Home/SearchButton";
+import CancelButton from "@/pages/Home/CancelButton";
+import UsersList from "@/pages/Home/UsersList";
+import CountInput from "@/pages/Home/CountInput";
+import DepthInput from "@/pages/Home/DepthInput";
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [count, setCount] = useState<any>(10);
+  const [count, setCount] = useState<number>(10);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [depth, setDepth] = useState<any>(20);
+  const [depth, setDepth] = useState<number>(20);
   useSocket({ count, depth });
 
   const [descriptionInput, setDescriptionInput] = useState<string>("");
@@ -50,9 +40,14 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   const dispatch = useDispatch();
 
-  const { handleDownloadClick } = useHandleDownload();
   const { handleCancel } = useHandleCancel();
   const { handleSubmit } = useHandleSubmit(descriptionInput, count, depth);
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(clearError());
+    dispatch(clearInfoMessages());
+    setDescriptionInput(e.target.value);
+  };
 
   const handleDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.valueAsNumber;
@@ -87,9 +82,11 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             <ErrorList inputError={inputError} success={success} />
 
             <Box sx={{ height: "2rem" }} />
-            <UserHandle />
+
+            <UserHandleInput />
 
             <Box sx={{ height: "1rem" }} />
+
             <Box>
               <TextField
                 id="outlined-textarea"
@@ -99,123 +96,44 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
                 multiline
                 fullWidth
                 value={descriptionInput}
-                onChange={(e) => {
-                  dispatch(clearError());
-                  dispatch(clearInfoMessages());
-                  setDescriptionInput(e.target.value);
-                }}
+                onChange={handleDescriptionChange}
                 size="small"
               />
             </Box>
+
             <Box sx={{ height: "1rem" }} />
-            <div style={{ alignSelf: "left" }}>
-              <Typography id="users-slider" gutterBottom>
-                How many results?
-              </Typography>
-            </div>
-            <Slider
-              disabled={isLoading}
-              aria-label="Temperature"
-              getAriaValueText={valueText}
-              valueLabelDisplay="auto"
-              step={30}
-              marks
-              min={10}
-              max={1000}
-              aria-labelledby="users-slider"
-              size="small"
-              onChange={(_, v) => {
-                setCount(v);
+
+            <CountInput
+              isLoading
+              count={count}
+              handleChange={(_: Event, v: number | number[]) => {
+                setCount(v as number);
                 setDepth((v as number) * 2);
               }}
-              value={count}
             />
-            <Stack direction="row">
-              <TextField
-                disabled={isLoading}
-                aria-label="Enter depth for the search"
-                placeholder="Choose depth"
-                label="Depth of search"
-                type="number"
-                value={depth}
-                onChange={handleDepthChange}
-              />
-              <div
-                style={{
-                  marginTop: "1rem",
-                  marginLeft: "1rem",
-                  color: "#4f4c4c",
-                }}
-              >
-                <Typography id="users-slider" fontSize={14} gutterBottom>
-                  {`Searching ${count} users using depth of ${depth}`}
-                </Typography>
-              </div>
-            </Stack>
+
+            <DepthInput
+              isLoading
+              depth={depth}
+              handleDepthChange={handleDepthChange}
+            />
 
             <Box sx={{ height: "2rem" }} />
-            {!isLoading ? (
-              <Button
-                disabled={isLoading}
-                variant="contained"
-                fullWidth
-                onClick={handleSubmit}
-                size="small"
-              >
-                Search
-              </Button>
-            ) : null}
-            {isLoading ? (
-              <Button
-                disabled={!isLoading}
-                variant="contained"
-                fullWidth
-                onClick={handleCancel}
-                size="small"
-              >
-                Cancel
-              </Button>
-            ) : null}
-            {isLoading ? (
-              <CircularProgressWithLabel
-                style={{ margin: "1rem" }}
-                value={progress}
-              />
-            ) : null}
+
+            <SearchButton isLoading={isLoading} handleSubmit={handleSubmit} />
+            <CancelButton isLoading={isLoading} handleCancel={handleCancel} />
+            <CircularProgressWithLabel
+              style={{ margin: "1rem" }}
+              value={progress}
+              isLoading={isLoading}
+            />
           </Container>
         </Box>
-        <Divider flexItem>
-          {users && users.length && (
-            <Stack direction={"row"}>
-              <Typography>
-                {" "}
-                <IconButton
-                  style={{ marginRight: "0.5rem" }}
-                  aria-label="Download results"
-                  size="medium"
-                  onClick={handleDownloadClick}
-                >
-                  <DownloadRoundedIcon color="success" />
-                </IconButton>
-                Results
-              </Typography>
-            </Stack>
-          )}
-        </Divider>
-        <Container maxWidth="sm">
-          {users && users.length > 0
-            ? users.map((user: IUser) => (
-                <User key={user.id + Math.random() * 10} user={user} />
-              ))
-            : null}
-        </Container>
+
+        <UsersList users={users} />
       </Container>
     </center>
   );
 }
 
 export default Body;
-
-// username list
-// description
-// amount of users

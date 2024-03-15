@@ -16,7 +16,7 @@ import {
 } from "@/pages/Home/homeSlice";
 import { clearInfoMessages } from "@/redux/infoSlice";
 
-const UserHandle = () => {
+const UserHandleInputInput = () => {
   const handle = useSelector(selectAllHomeStates).handle;
   const handleInput = useSelector(selectAllHomeStates).handleInput;
 
@@ -85,4 +85,4 @@ const UserHandle = () => {
   );
 };
 
-export default UserHandle;
+export default UserHandleInputInput;
