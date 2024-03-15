@@ -31,7 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoading } from "@/pages/Home/homeSlice";
 import { selectAllErrors } from "@/redux/errorSlice";
 import { clearError } from "@/pages/Home/homeSlice";
-import { selectAllInfoMessages } from "@/redux/infoSlice";
+import { clearInfoMessages, selectAllInfoMessages } from "@/redux/infoSlice";
 import IUser from "@/types/IUser";
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
@@ -82,6 +82,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
       return;
     }
     dispatch(clearError());
+    dispatch(clearInfoMessages());
 
     setHandleInput(e.target.value);
   };
@@ -145,7 +146,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
                 No users found with this account
               </Alert>
             ) : null}
-            {success && errors.length == 0
+            {errors.length == 0
               ? infoMessages.map((info: string) => {
                   return (
                     <Alert
@@ -216,6 +217,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
                 value={descriptionInput}
                 onChange={(e) => {
                   dispatch(clearError());
+                  dispatch(clearInfoMessages());
                   setDescriptionInput(e.target.value);
                 }}
                 size="small"
@@ -317,7 +319,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
           )}
         </Divider>
         <Container maxWidth="sm">
-          {users && users.length
+          {users && users.length > 0
             ? users.map((user: IUser) => (
                 <User key={user.id + Math.random() * 10} user={user} />
               ))

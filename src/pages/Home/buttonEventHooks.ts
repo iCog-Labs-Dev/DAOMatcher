@@ -5,20 +5,20 @@ import { selectAllUsers, setUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsLoading, setProgress, setSuccess } from "@/pages/Home/homeSlice";
 import { setError, clearError } from "@/pages/Home/homeSlice";
-import { addInfoMessage } from "@/redux/infoSlice";
+import { addInfoMessage, clearInfoMessages } from "@/redux/infoSlice";
 import { socket } from "@/config/default";
 
 export const useHandleCancel = () => {
   const dispatch = useDispatch();
 
   const handleCancel = () => {
-    console.log("Cancelled request");
-
     dispatch(setSuccess(false));
     if (socket) {
       const userId = Cookies.get("userId");
       socket.emit("stop", userId);
+      console.log("Cancelled request");
       dispatch(addInfoMessage("Request canceled"));
+      socket.disconnect();
     } else dispatch(addInfoMessage("Couldn't cancel request"));
 
     dispatch(setIsLoading(false));
@@ -39,6 +39,7 @@ export const useHandleSubmit = (
   const handleSubmit = async () => {
     dispatch(setSuccess(false));
     dispatch(clearError());
+    dispatch(clearInfoMessages());
 
     const requestBody = {
       handle,
@@ -65,6 +66,7 @@ export const useHandleSubmit = (
 
       dispatch(setIsLoading(true));
       dispatch(clearError());
+      dispatch(clearInfoMessages());
       dispatch(setUsers([]));
 
       if (socket) {
