@@ -16,7 +16,6 @@ import { useState } from "react";
 import User from "@/pages/Home/User";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
-import Alert from "@mui/material/Alert";
 import CircularProgressWithLabel from "@/pages/Home/CircularProgressWithLabel";
 import { Navigate } from "react-router-dom";
 import valueText from "@/pages/Home/valueText";
@@ -33,6 +32,7 @@ import { selectAllErrors } from "@/redux/errorSlice";
 import { clearError } from "@/pages/Home/homeSlice";
 import { clearInfoMessages, selectAllInfoMessages } from "@/redux/infoSlice";
 import IUser from "@/types/IUser";
+import AlertMessage from "@/components/ui/AlertMessage";
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -121,50 +121,27 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
               Search for people with similar interests
             </Typography>
             {errors.map((error: string) => {
-              return (
-                <Alert
-                  severity="error"
-                  style={{ marginTop: "5px", marginBottom: "5px" }}
-                >
-                  {error}
-                </Alert>
-              );
+              return <AlertMessage severity="error" message={error} />;
             })}
             {inputError ? (
-              <Alert
-                severity="error"
-                style={{ marginTop: "5px", marginBottom: "5px" }}
-              >
-                {inputError}
-              </Alert>
+              <AlertMessage severity="error" message={inputError} />
             ) : null}
             {users.length === 0 && success ? (
-              <Alert
+              <AlertMessage
                 severity="error"
-                style={{ marginTop: "5px", marginBottom: "5px" }}
-              >
-                No users found with this account
-              </Alert>
+                message="No users found with this account"
+              />
             ) : null}
             {errors.length == 0
               ? infoMessages.map((info: string) => {
-                  return (
-                    <Alert
-                      severity="info"
-                      style={{ marginTop: "5px", marginBottom: "5px" }}
-                    >
-                      {info}
-                    </Alert>
-                  );
+                  return <AlertMessage severity="info" message={info} />;
                 })
               : null}
             {success && users.length > 0 && errors.length == 0 ? (
-              <Alert
+              <AlertMessage
                 severity="success"
-                style={{ marginTop: "5px", marginBottom: "5px" }}
-              >
-                Loading successful. Click the download icon to save the result.
-              </Alert>
+                message="Loading successful. Click the download icon to save the result."
+              />
             ) : null}
 
             <Box sx={{ height: "2rem" }} />
