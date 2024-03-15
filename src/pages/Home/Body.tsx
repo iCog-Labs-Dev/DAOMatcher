@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import User from "@/pages/Home/User";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
@@ -28,7 +28,7 @@ import {
 import useSocket from "@/pages/Home/useSocket";
 import { selectAllUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAllHomeStates, setIsLoading } from "@/pages/Home/homeSlice";
+import { selectAllHomeStates } from "@/pages/Home/homeSlice";
 import { addError, clearError, selectAllErrors } from "@/redux/errorSlice";
 import { selectAllInfoMessages } from "@/redux/infoSlice";
 import IUser from "@/types/IUser";
@@ -99,9 +99,10 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   //   setEstimation(timeString);
   // }, [depth]);
 
-  useEffect(() => {
-    if (users.length === 0 && success) dispatch(setIsLoading(false));
-  }, [users, success, dispatch]);
+  // useEffect(() => {
+  //   if (users.length === 0 && success) dispatch(setIsLoading(false));
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [users, success]);
 
   if (!isLoggedIn) {
     return <Navigate to="/DAOMatcher/login" />;
@@ -109,6 +110,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   return (
     <center>
+      setIsLoading
       <Container maxWidth="lg">
         <Box sx={{ margin: "5rem 0" }}>
           <Container maxWidth="md">

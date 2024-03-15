@@ -1,13 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addError, clearError } from "@/redux/errorSlice";
-import {
-  setSuccess,
-  selectAllHomeStates,
-  setSocket,
-} from "@/pages/Home/homeSlice";
+import { setSuccess, selectAllHomeStates } from "@/pages/Home/homeSlice";
 import { Response } from "@/pages/Home/Response";
-import { BASE_URL } from "@/config/default";
-import io from "socket.io-client";
+import { socket } from "@/config/default";
 import { useEffect } from "react";
 import {
   connectErrorHandler,
@@ -28,21 +23,11 @@ interface ISocketProps {
 const useSocket = ({ count, depth }: ISocketProps) => {
   // Connect to the Socket.IO server
   const dispatch = useDispatch();
-  const socket = useSelector(selectAllHomeStates).socket;
   const isLoading = useSelector(selectAllHomeStates).isLoading;
 
-  try {
-    setSocket(io(`${BASE_URL}`));
-  } catch (error) {
-    let message: string;
-    if (error instanceof Error)
-      message = error.message ?? "Something went wrong";
-    message = "Couldn't establish connection to socket server";
-
-    dispatch(addError(message));
-  }
-
   useEffect(() => {
+    if (!socket) return;
+
     try {
       socket.on("connect", () => connectHandler());
       socket.on("set_cookie", (userId: string) => setCookieHandler(userId));
