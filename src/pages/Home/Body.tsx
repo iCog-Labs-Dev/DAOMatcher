@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
   Box,
   Button,
@@ -11,24 +13,25 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import User from "./User";
+import User from "@/pages/Home/User";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Alert from "@mui/material/Alert";
-import CircularProgressWithLabel from "./CircularProgressWithLabel";
+import CircularProgressWithLabel from "@/pages/Home/CircularProgressWithLabel";
 import { Navigate } from "react-router-dom";
-import valueText from "pages/Home/valueText";
+import valueText from "@/pages/Home/valueText";
 import {
   useHandleCancel,
   useHandleDownload,
   useHandleSubmit,
-} from "./buttonEventHooks";
-import useSocket from "./useSocket";
-import { selectAllUsers } from "./usersSlice";
+} from "@/pages/Home/buttonEventHooks";
+import useSocket from "@/pages/Home/useSocket";
+import { selectAllUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAllHomeStates, setIsLoading } from "./homeSlice";
-import { addError, clearError, selectAllErrors } from "redux/errorSlice";
-import { selectAllInfoMessages } from "redux/infoSlice";
+import { selectAllHomeStates, setIsLoading } from "@/pages/Home/homeSlice";
+import { addError, clearError, selectAllErrors } from "@/redux/errorSlice";
+import { selectAllInfoMessages } from "@/redux/infoSlice";
+import IUser from "@/pages/Home/IUser";
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -112,7 +115,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             <Typography variant="h5">
               Search for people with similar interests
             </Typography>
-            {errors.map((error) => {
+            {errors.map((error: string) => {
               return (
                 <Alert
                   severity="error"
@@ -131,7 +134,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
               </Alert>
             ) : null}
             {success && errors.length == 0
-              ? infoMessages.map((info) => {
+              ? infoMessages.map((info: string) => {
                   return (
                     <Alert
                       severity="info"
@@ -303,7 +306,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
         </Divider>
         <Container maxWidth="sm">
           {users && users.length
-            ? users.map((user) => (
+            ? users.map((user: IUser) => (
                 <User key={user.id + Math.random() * 10} user={user} />
               ))
             : null}
