@@ -1,4 +1,4 @@
-import IUser from "pages/Home/IUser";
+import IUser from "@/types/IUser";
 
 export interface Response {
   result: IUser[];

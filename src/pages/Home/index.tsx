@@ -1,5 +1,5 @@
-import CircularProgressWithLabel from "./CircularProgressWithLabel";
-import Body from "./Body";
-import User from "./User";
+import CircularProgressWithLabel from "@/pages/Home/CircularProgressWithLabel";
+import User from "@/pages/Home/User";
+import Body from "@/pages/Home/Body";
 
 export { CircularProgressWithLabel, Body, User };

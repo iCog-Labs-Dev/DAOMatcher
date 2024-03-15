@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import homeReducer from "pages/Home/homeSlice";
-import usersReducer from "pages/Home/usersSlice";
-import errorReducer from "redux/errorSlice";
-import infoReducer from "redux/infoSlice";
+import homeReducer from "@/pages/Home/homeSlice";
+import usersReducer from "@/pages/Home/usersSlice";
+import errorReducer from "@/redux/errorSlice";
+import infoReducer from "@/redux/infoSlice";
 
 export const store = configureStore({
   reducer: {

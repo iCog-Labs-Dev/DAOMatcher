@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addError, clearError } from "redux/errorSlice";
+import { addError, clearError } from "@/redux/errorSlice";
 import {
   setSuccess,
   selectAllHomeStates,
   setSocket,
-} from "pages/Home/homeSlice";
-import { Response } from "pages/Home/Response";
-import { BASE_URL } from "config/default";
+} from "@/pages/Home/homeSlice";
+import { Response } from "@/pages/Home/Response";
+import { BASE_URL } from "@/config/default";
 import io from "socket.io-client";
 import { useEffect } from "react";
 import {
@@ -18,7 +18,7 @@ import {
   getUsers,
   setCookieHandler,
   updateHandler,
-} from "pages/Home/socketEventHandlers";
+} from "@/pages/Home/socketEventHandlers";
 
 interface ISocketProps {
   count: number;

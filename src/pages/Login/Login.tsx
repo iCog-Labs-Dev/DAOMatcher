@@ -15,12 +15,12 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import { validateEmail, validatePassword } from "../../utils/validators";
+import { validateEmail, validatePassword } from "@/pages/Login/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
-import { BASE_URL } from "../../config/default";
+import { BASE_URL } from "@/config/default";
 
 interface LoginResponse {
   success: boolean;

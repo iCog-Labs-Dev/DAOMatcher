@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { BASE_URL } from "config/default";
+import { BASE_URL } from "@/config/default";
 
-import { RootState } from "redux/store";
+import { RootState } from "@/redux/store";
 import { Socket, io } from "socket.io-client";
 
 export interface HomeState {

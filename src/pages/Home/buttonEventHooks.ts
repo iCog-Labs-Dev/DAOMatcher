@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { convertToCSV } from "../../utils/CSV";
+import { convertToCSV } from "@/utils/CSV";
 import Cookies from "js-cookie";
-import { selectAllUsers, setUsers } from "./usersSlice";
+import { selectAllUsers, setUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectAllHomeStates,
   setIsLoading,
   setProgress,
   setSuccess,
-} from "./homeSlice";
-import { addError } from "redux/errorSlice";
-import { addInfoMessage } from "redux/infoSlice";
+} from "@/pages/Home/homeSlice";
+import { addError } from "@/redux/errorSlice";
+import { addInfoMessage } from "@/redux/infoSlice";
 
 export const useHandleCancel = () => {
   const socket = useSelector(selectAllHomeStates).socket;

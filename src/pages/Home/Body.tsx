@@ -31,7 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoading } from "@/pages/Home/homeSlice";
 import { addError, clearError, selectAllErrors } from "@/redux/errorSlice";
 import { selectAllInfoMessages } from "@/redux/infoSlice";
-import IUser from "@/pages/Home/IUser";
+import IUser from "@/types/IUser";
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

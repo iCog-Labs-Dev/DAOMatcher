@@ -1,12 +1,12 @@
 import Cookies from "js-cookie";
 import { Dispatch } from "react";
-import { addError, clearError } from "redux/errorSlice";
-import { setSuccess, setIsLoading, setProgress } from "pages/Home/homeSlice";
+import { addError, clearError } from "@/redux/errorSlice";
+import { setSuccess, setIsLoading, setProgress } from "@/pages/Home/homeSlice";
 import { UnknownAction } from "@reduxjs/toolkit";
-import { UpdateData, Response } from "pages/Home/Response";
+import { UpdateData, Response } from "@/pages/Home/Response";
 import { Socket } from "socket.io-client";
-import { setUsers } from "pages/Home/usersSlice";
-import { addInfoMessage } from "redux/infoSlice";
+import { setUsers } from "@/pages/Home/usersSlice";
+import { addInfoMessage } from "@/redux/infoSlice";
 
 export const connectHandler = () => {
   console.log("Connected to the Socket.IO server");
