@@ -29,7 +29,8 @@ import useSocket from "@/pages/Home/useSocket";
 import { selectAllUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoading } from "@/pages/Home/homeSlice";
-import { addError, clearError, selectAllErrors } from "@/redux/errorSlice";
+import { selectAllErrors } from "@/redux/errorSlice";
+import { clearError } from "@/pages/Home/homeSlice";
 import { selectAllInfoMessages } from "@/redux/infoSlice";
 import IUser from "@/types/IUser";
 
@@ -51,6 +52,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   const progress = useSelector(selectAllHomeStates).progress;
   const errors = useSelector(selectAllErrors);
   const infoMessages = useSelector(selectAllInfoMessages);
+  const inputError = useSelector(selectAllHomeStates).error;
 
   const dispatch = useDispatch();
 
@@ -75,11 +77,12 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const changeHandleInput = (e: any) => {
-    dispatch(clearError());
     if (e.key === "Enter") {
       addHandler();
       return;
     }
+    dispatch(clearError());
+
     setHandleInput(e.target.value);
   };
 
@@ -126,6 +129,14 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
                 </Alert>
               );
             })}
+            {inputError ? (
+              <Alert
+                severity="error"
+                style={{ marginTop: "5px", marginBottom: "5px" }}
+              >
+                {inputError}
+              </Alert>
+            ) : null}
             {users.length === 0 && success ? (
               <Alert
                 severity="error"
@@ -204,7 +215,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
                 fullWidth
                 value={descriptionInput}
                 onChange={(e) => {
-                  dispatch(addError(null));
+                  dispatch(clearError());
                   setDescriptionInput(e.target.value);
                 }}
                 size="small"

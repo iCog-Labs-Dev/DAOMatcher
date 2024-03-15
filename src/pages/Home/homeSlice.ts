@@ -7,6 +7,7 @@ export interface HomeState {
   isLoading: boolean;
   success: boolean;
   progress: number;
+  error: string | null;
 }
 
 const initialState: HomeState = {
@@ -14,6 +15,7 @@ const initialState: HomeState = {
   isLoading: false,
   success: false,
   progress: 0,
+  error: null,
 };
 
 const homeSlice = createSlice({
@@ -32,10 +34,22 @@ const homeSlice = createSlice({
     setProgress(state, action) {
       state.progress = action.payload;
     },
+    setError(state, action) {
+      state.error = action.payload;
+    },
+    clearError(state) {
+      state.error = null;
+    },
   },
 });
 export const selectAllHomeStates = (state: RootState) => state.home;
 
-export const { setIsLoggedIn, setIsLoading, setSuccess, setProgress } =
-  homeSlice.actions;
+export const {
+  setIsLoggedIn,
+  setIsLoading,
+  setSuccess,
+  setProgress,
+  setError,
+  clearError,
+} = homeSlice.actions;
 export default homeSlice.reducer;

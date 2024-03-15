@@ -29,7 +29,7 @@ const useSocket = ({ count, depth }: ISocketProps) => {
     if (!socket) return;
 
     try {
-      socket.on("connect", () => connectHandler());
+      socket.on("connect", () => connectHandler(dispatch));
       socket.on("set_cookie", (userId: string) => setCookieHandler(userId));
       socket.on("connect_error", () => connectErrorHandler(dispatch));
       socket.on("get_users", (data: Response) =>

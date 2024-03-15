@@ -8,8 +8,9 @@ import { Socket } from "socket.io-client";
 import { setUsers } from "@/pages/Home/usersSlice";
 import { addInfoMessage } from "@/redux/infoSlice";
 
-export const connectHandler = () => {
+export const connectHandler = (dispatch: Dispatch<UnknownAction>) => {
   console.log("Connected to the Socket.IO server");
+  dispatch(clearError());
 };
 
 export const setCookieHandler = (userId: string) => {

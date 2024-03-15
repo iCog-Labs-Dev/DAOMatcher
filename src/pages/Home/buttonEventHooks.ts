@@ -3,17 +3,12 @@ import { convertToCSV } from "@/utils/CSV";
 import Cookies from "js-cookie";
 import { selectAllUsers, setUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  selectAllHomeStates,
-  setIsLoading,
-  setProgress,
-  setSuccess,
-} from "@/pages/Home/homeSlice";
-import { addError } from "@/redux/errorSlice";
+import { setIsLoading, setProgress, setSuccess } from "@/pages/Home/homeSlice";
+import { setError, clearError } from "@/pages/Home/homeSlice";
 import { addInfoMessage } from "@/redux/infoSlice";
+import { socket } from "@/config/default";
 
 export const useHandleCancel = () => {
-  const socket = useSelector(selectAllHomeStates).socket;
   const dispatch = useDispatch();
 
   const handleCancel = () => {
@@ -39,11 +34,12 @@ export const useHandleSubmit = (
   count: any,
   depth: number
 ) => {
-  const socket = useSelector(selectAllHomeStates).socket;
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
     dispatch(setSuccess(false));
+    dispatch(clearError());
+
     const requestBody = {
       handle,
       descriptionInput,
@@ -63,12 +59,12 @@ export const useHandleSubmit = (
       });
 
       if (!isValid) {
-        dispatch(addError("User handles validation failed"));
+        dispatch(setError("User handles validation failed"));
         return;
       }
 
       dispatch(setIsLoading(true));
-      dispatch(addError(null));
+      dispatch(clearError());
       dispatch(setUsers([]));
 
       if (socket) {
@@ -82,12 +78,12 @@ export const useHandleSubmit = (
             userId: userId,
           });
         } else {
-          dispatch(addError("User session not found. Reload the page"));
+          dispatch(setError("User session not found. Reload the page"));
           dispatch(setSuccess(false));
         }
       }
     } else {
-      dispatch(addError("Empty handles or description!"));
+      dispatch(setError("Empty handles or description!"));
       dispatch(setSuccess(false));
     }
   };
