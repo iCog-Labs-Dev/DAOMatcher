@@ -1,14 +1,14 @@
 import { Stack, TextField, Typography } from "@mui/material";
-import { count } from "console";
 import React from "react";
 
 interface IProps {
   isLoading: boolean;
   depth: number;
+  count: number;
   handleDepthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const DepthInput = ({ isLoading, depth, handleDepthChange }: IProps) => {
+const DepthInput = ({ isLoading, depth, count, handleDepthChange }: IProps) => {
   return (
     <>
       <Stack direction="row">

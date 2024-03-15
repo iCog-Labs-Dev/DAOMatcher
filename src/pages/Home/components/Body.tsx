@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { Box, Container, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import CircularProgressWithLabel from "@/pages/Home/CircularProgressWithLabel";
+import CircularProgressWithLabel from "@/pages/Home/components/CircularProgressWithLabel";
 import { Navigate } from "react-router-dom";
 import {
   useHandleCancel,
@@ -14,13 +14,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoading } from "@/pages/Home/homeSlice";
 import { clearError } from "@/pages/Home/homeSlice";
 import { clearInfoMessages } from "@/redux/infoSlice";
-import ErrorList from "@/pages/Home/ErrorList";
-import UserHandleInput from "@/pages/Home/UserHandleInput";
-import SearchButton from "@/pages/Home/SearchButton";
-import CancelButton from "@/pages/Home/CancelButton";
-import UsersList from "@/pages/Home/UsersList";
-import CountInput from "@/pages/Home/CountInput";
-import DepthInput from "@/pages/Home/DepthInput";
+import ErrorList from "@/pages/Home/components/ErrorList";
+import UserHandleInput from "@/pages/Home/components/UserHandleInput";
+import SearchButton from "@/pages/Home/components/SearchButton";
+import CancelButton from "@/pages/Home/components/CancelButton";
+import UsersList from "@/pages/Home/components/UsersList";
+import CountInput from "@/pages/Home/components/CountInput";
+import DepthInput from "@/pages/Home/components/DepthInput";
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,7 +104,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             <Box sx={{ height: "1rem" }} />
 
             <CountInput
-              isLoading
+              isLoading={isLoading}
               count={count}
               handleChange={(_: Event, v: number | number[]) => {
                 setCount(v as number);
@@ -113,8 +113,9 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             />
 
             <DepthInput
-              isLoading
+              isLoading={isLoading}
               depth={depth}
+              count={count}
               handleDepthChange={handleDepthChange}
             />
 

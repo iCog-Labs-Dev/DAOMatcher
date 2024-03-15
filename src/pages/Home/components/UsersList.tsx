@@ -1,8 +1,8 @@
-import User from "@/pages/Home/User";
+import User from "@/pages/Home/components/User";
 import IUser from "@/types/IUser";
 import { Divider, Stack, Typography, Container } from "@mui/material";
-import DownloadButton from "@/pages/Home/DownloadButton";
-import { useHandleDownload } from "./buttonEventHooks";
+import DownloadButton from "@/pages/Home/components/DownloadButton";
+import { useHandleDownload } from "../buttonEventHooks";
 
 interface IProps {
   users: IUser[];

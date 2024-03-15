@@ -10,7 +10,7 @@ const CancelButton = ({ isLoading, handleCancel }: IProps) => {
     <>
       {isLoading ? (
         <Button
-          disabled={isLoading}
+          disabled={!isLoading}
           variant="contained"
           fullWidth
           onClick={handleCancel}

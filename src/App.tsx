@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material";
 import Header from "@/components/Header";
 import { blueGrey, teal } from "@mui/material/colors";
-import Body from "@/pages/Home/Body";
+import Body from "@/pages/Home/components/Body";
 import Login from "@/pages/Login/Login";
 import { checkSession } from "@/utils/cookies";
 

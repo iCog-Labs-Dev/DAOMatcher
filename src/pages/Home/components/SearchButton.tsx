@@ -8,7 +8,7 @@ interface IProps {
 const SearchButton = ({ isLoading, handleSubmit }: IProps) => {
   return (
     <>
-      {isLoading ? (
+      {!isLoading ? (
         <Button
           disabled={isLoading}
           variant="contained"
