@@ -31,7 +31,16 @@ const useSocket = ({ count, depth }: ISocketProps) => {
   const socket = useSelector(selectAllHomeStates).socket;
   const isLoading = useSelector(selectAllHomeStates).isLoading;
 
-  setSocket(io(`${BASE_URL}`));
+  try {
+    setSocket(io(`${BASE_URL}`));
+  } catch (error) {
+    let message: string;
+    if (error instanceof Error)
+      message = error.message ?? "Something went wrong";
+    message = "Couldn't establish connection to socket server";
+
+    dispatch(addError(message));
+  }
 
   useEffect(() => {
     try {

@@ -4,7 +4,7 @@ import usersReducer from "@/pages/Home/usersSlice";
 import errorReducer from "@/redux/errorSlice";
 import infoReducer from "@/redux/infoSlice";
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
     home: homeReducer,
     errors: errorReducer,
@@ -15,3 +15,5 @@ export const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export default store;
