@@ -27,7 +27,7 @@ import useSocket from "./useSocket";
 import { selectAllUsers } from "./usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoading } from "./homeSlice";
-import { clearError, selectAllErrors } from "redux/errorSlice";
+import { addError, clearError, selectAllErrors } from "redux/errorSlice";
 import { selectAllInfoMessages } from "redux/infoSlice";
 
 function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
@@ -45,6 +45,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   const users = useSelector(selectAllUsers);
   const success = useSelector(selectAllHomeStates).success;
   const isLoading = useSelector(selectAllHomeStates).isLoading;
+  const progress = useSelector(selectAllHomeStates).progress;
   const errors = useSelector(selectAllErrors);
   const infoMessages = useSelector(selectAllInfoMessages);
 
@@ -111,14 +112,16 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
             <Typography variant="h5">
               Search for people with similar interests
             </Typography>
-            {error ? (
-              <Alert
-                severity="error"
-                style={{ marginTop: "5px", marginBottom: "5px" }}
-              >
-                {error}
-              </Alert>
-            ) : null}
+            {errors.map((error) => {
+              return (
+                <Alert
+                  severity="error"
+                  style={{ marginTop: "5px", marginBottom: "5px" }}
+                >
+                  {error}
+                </Alert>
+              );
+            })}
             {users.length === 0 && success ? (
               <Alert
                 severity="error"
@@ -127,15 +130,19 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
                 No users found with this account
               </Alert>
             ) : null}
-            {success && info && !error ? (
-              <Alert
-                severity="info"
-                style={{ marginTop: "5px", marginBottom: "5px" }}
-              >
-                {info}
-              </Alert>
-            ) : null}
-            {success && users.length > 0 && !error ? (
+            {success && errors.length == 0
+              ? infoMessages.map((info) => {
+                  return (
+                    <Alert
+                      severity="info"
+                      style={{ marginTop: "5px", marginBottom: "5px" }}
+                    >
+                      {info}
+                    </Alert>
+                  );
+                })
+              : null}
+            {success && users.length > 0 && errors.length == 0 ? (
               <Alert
                 severity="success"
                 style={{ marginTop: "5px", marginBottom: "5px" }}
@@ -193,7 +200,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
                 fullWidth
                 value={descriptionInput}
                 onChange={(e) => {
-                  setError(null);
+                  dispatch(addError(null));
                   setDescriptionInput(e.target.value);
                 }}
                 size="small"
