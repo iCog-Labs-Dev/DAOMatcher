@@ -28,7 +28,8 @@ export const getUsers = (
   console.log("Updating completed");
   console.log(data); //For debugging only
 
-  const { result: users } = data;
+  const { result } = data;
+  const users = [...result];
   users.sort((a, b) => b.score - a.score);
 
   //Additional checking to find if all users have been found
