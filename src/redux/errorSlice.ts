@@ -14,7 +14,8 @@ const errorSlice = createSlice({
   initialState,
   reducers: {
     addError: (state, action) => {
-      state.messages.push(action.payload);
+      if (!state.messages.includes(action.payload))
+        state.messages.push(action.payload);
     },
     clearError: (state) => {
       state.messages = [];

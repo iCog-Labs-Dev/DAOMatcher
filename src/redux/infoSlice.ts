@@ -14,7 +14,8 @@ const infoSlice = createSlice({
   initialState,
   reducers: {
     addInfoMessage: (state, action) => {
-      state.messages.push(action.payload);
+      if (!state.messages.includes(action.payload))
+        state.messages.push(action.payload);
     },
     clearInfoMessages: (state) => {
       state.messages = [];
