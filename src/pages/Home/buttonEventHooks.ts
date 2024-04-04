@@ -78,7 +78,7 @@ export const useHandleSubmit = (
       if (socket) {
         const userId = Cookies.get("userId");
         if (userId) {
-          socket.emit("get_users", {
+          socket.emit("search", {
             query: descriptionInput,
             user_list: handle,
             user_limit: count,

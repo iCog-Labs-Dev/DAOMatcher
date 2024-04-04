@@ -32,9 +32,7 @@ const useSocket = ({ count, depth }: ISocketProps) => {
       socket.on("connect", () => connectHandler(dispatch));
       socket.on("set_cookie", (userId: string) => setCookieHandler(userId));
       socket.on("connect_error", () => connectErrorHandler(dispatch));
-      socket.on("get_users", (data: Response) =>
-        getUsers(dispatch, data, count)
-      );
+      socket.on("search", (data: Response) => getUsers(dispatch, data, count));
       socket.on("something_went_wrong", (data) =>
         genericErrorHandler(dispatch, data)
       );
