@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { convertToCSV } from "@/utils/CSV";
-import Cookies from "js-cookie";
 import { selectAllUsers, setUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,14 +11,16 @@ import {
 import { setError, clearError } from "@/pages/Home/homeSlice";
 import { addInfoMessage, clearInfoMessages } from "@/redux/infoSlice";
 import { socket } from "@/config/default";
+import { selectUser } from "@/redux/userSlice";
 
 export const useHandleCancel = () => {
   const dispatch = useDispatch();
+  const userData = useSelector(selectUser);
 
   const handleCancel = () => {
     dispatch(setSuccess(false));
     if (socket) {
-      const userId = Cookies.get("userId");
+      const userId = userData.id;
       socket.emit("stop", userId);
       console.log("Cancelled request");
       dispatch(addInfoMessage("Request canceled"));
@@ -41,6 +42,7 @@ export const useHandleSubmit = (
   const handle = useSelector(selectAllHomeStates).handle;
 
   const dispatch = useDispatch();
+  const userData = useSelector(selectUser);
 
   const handleSubmit = async () => {
     dispatch(setSuccess(false));
@@ -76,7 +78,7 @@ export const useHandleSubmit = (
       dispatch(setUsers([]));
 
       if (socket) {
-        const userId = Cookies.get("userId");
+        const userId = userData.id;
         if (userId) {
           socket.emit("search", {
             query: descriptionInput,

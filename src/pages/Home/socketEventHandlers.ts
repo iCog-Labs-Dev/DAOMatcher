@@ -49,10 +49,9 @@ export const getUsers = (
 
 export const disconnectHandler = (
   dispatch: Dispatch<UnknownAction>,
-  socket: Socket
+  socket: Socket,
+  userId: string
 ) => {
-  const userId = Cookies.get("userId");
-
   Cookies.remove("userId");
   socket.emit("remove", userId);
 

@@ -14,6 +14,7 @@ import {
   setCookieHandler,
   updateHandler,
 } from "@/pages/Home/socketEventHandlers";
+import { selectUser } from "@/redux/userSlice";
 
 interface ISocketProps {
   count: number;
@@ -23,6 +24,7 @@ interface ISocketProps {
 const useSocket = ({ count, depth }: ISocketProps) => {
   // Connect to the Socket.IO server
   const dispatch = useDispatch();
+  const userData = useSelector(selectUser);
   const isLoading = useSelector(selectAllHomeStates).isLoading;
 
   useEffect(() => {
@@ -39,7 +41,9 @@ const useSocket = ({ count, depth }: ISocketProps) => {
       socket.on("connect_timeout", () =>
         connectionTimedOutErrorHandler(dispatch)
       );
-      socket.on("disconnect", () => disconnectHandler(dispatch, socket));
+      socket.on("disconnect", () =>
+        disconnectHandler(dispatch, socket, userData.id)
+      );
       socket.on(`update`, (data) => updateHandler(dispatch, data, depth));
       socket.on("error", (error) => genericErrorHandler(dispatch, error));
     } catch (error) {
@@ -51,7 +55,7 @@ const useSocket = ({ count, depth }: ISocketProps) => {
     }
 
     return () => {
-      disconnectHandler(dispatch, socket);
+      disconnectHandler(dispatch, socket, userData.id);
       dispatch(clearError());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

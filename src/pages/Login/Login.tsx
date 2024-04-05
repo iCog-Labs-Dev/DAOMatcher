@@ -19,7 +19,6 @@ import { validateEmail, validatePassword } from "@/pages/Login/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
-import Cookies from "js-cookie";
 import { BASE_URL } from "@/config/default";
 import LoginData from "@/types/LoginData";
 import { addUser } from "@/redux/userSlice";
@@ -133,7 +132,6 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     if (!success) {
       return setError(error ?? "Something went wrong");
     } else {
-      Cookies.set("email", email, { secure: true, sameSite: "none" });
       setEmail("");
       setPassword("");
       setSuccessMessage(message ?? "Login Successful");
