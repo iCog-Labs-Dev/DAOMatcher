@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import homeReducer from "@/pages/Home/homeSlice";
 import usersReducer from "@/pages/Home/usersSlice";
+import userReducer from "@/redux/userSlice";
 import errorReducer from "@/redux/errorSlice";
 import infoReducer from "@/redux/infoSlice";
 
@@ -10,6 +11,7 @@ const store = configureStore({
     errors: errorReducer,
     users: usersReducer,
     infoMessages: infoReducer,
+    user: userReducer,
   },
 });
 

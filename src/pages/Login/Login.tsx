@@ -21,10 +21,15 @@ import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 import { BASE_URL } from "@/config/default";
+import LoginData from "@/types/LoginData";
+import { addUser } from "@/redux/userSlice";
+import { useDispatch } from "react-redux";
 
 interface LoginResponse {
+  data: LoginData | null;
   success: boolean;
-  message: string;
+  message: string | null;
+  error: string | null;
 }
 
 const styles = {
@@ -57,12 +62,13 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const dispatch = useDispatch();
 
   if (isLoggedIn) {
     return <Navigate to="/DAOMatcher" replace />;
   }
 
-  const tooglePasswordVisibility = () => {
+  const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
@@ -84,7 +90,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
     try {
       const { data: successData }: AxiosResponse<LoginResponse> =
         await axios.post(
-          `${BASE_URL}/login`,
+          `${BASE_URL}/api/auth/login`,
           {
             email,
             password,
@@ -104,24 +110,33 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
 
         data = errorData
           ? errorData
-          : { success: false, message: "Login Failed due to server error" };
+          : {
+              success: false,
+              data: null,
+              error: "Login Failed due to server error",
+              message: null,
+            };
       } else {
         data = {
           success: false,
-          message: "Something went wrong with your login",
+          data: null,
+          error: "Something went wrong with your login",
+          message: null,
         };
       }
     }
 
-    const { success, message } = data;
+    const { success, message, error, data: loginData } = data;
     setSuccess(success);
+    dispatch(addUser(loginData?.user));
+
     if (!success) {
-      return setError(message);
+      return setError(error ?? "Something went wrong");
     } else {
       Cookies.set("email", email, { secure: true, sameSite: "none" });
       setEmail("");
       setPassword("");
-      setSuccessMessage(message);
+      setSuccessMessage(message ?? "Login Successful");
       setError("");
       window.location.reload();
     }
@@ -180,7 +195,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={tooglePasswordVisibility} edge="end">
+                  <IconButton onClick={togglePasswordVisibility} edge="end">
                     {showPassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
                 </InputAdornment>
