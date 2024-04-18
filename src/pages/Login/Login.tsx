@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { validateEmail, validatePassword } from "@/pages/Login/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
 import LoginData from "@/types/LoginData";
@@ -61,6 +61,7 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
@@ -137,7 +138,7 @@ const LoginPage = () => {
       setPassword("");
       setSuccessMessage(message ?? "Login Successful");
       setError("");
-      window.location.reload();
+      navigate("/DAOMatcher");
     }
   };
 

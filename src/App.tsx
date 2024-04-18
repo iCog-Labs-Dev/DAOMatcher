@@ -4,7 +4,6 @@ import Header from "@/components/Header";
 import { blueGrey, teal } from "@mui/material/colors";
 import Body from "@/pages/Home/components/Body";
 import Login from "@/pages/Login/Login";
-import { checkSession } from "@/utils/cookies";
 
 const theme = createTheme({
   typography: {
