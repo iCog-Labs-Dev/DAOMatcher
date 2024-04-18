@@ -11,6 +11,7 @@ export interface ILoginUser {
 
 interface LoginData {
   token: string;
+  isLoggedIn: boolean;
   user: ILoginUser;
 }
 

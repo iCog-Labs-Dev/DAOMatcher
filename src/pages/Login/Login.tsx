@@ -21,8 +21,8 @@ import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
 import LoginData from "@/types/LoginData";
-import { addUser } from "@/redux/userSlice";
-import { useDispatch } from "react-redux";
+import { addUser, selectIsLoggedIn } from "@/redux/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 interface LoginResponse {
   data: LoginData | null;
@@ -52,7 +52,7 @@ const styles = {
   },
 };
 
-const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
@@ -62,6 +62,7 @@ const LoginPage = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   if (isLoggedIn) {
     return <Navigate to="/DAOMatcher" replace />;

@@ -4,6 +4,7 @@ import LoginData from "@/types/LoginData";
 
 const initialState: LoginData = {
   token: "",
+  isLoggedIn: false,
   user: {
     api_key: "",
     display_name: "",
@@ -21,15 +22,18 @@ const userSlice = createSlice({
   reducers: {
     addUser: (state, action) => {
       state = action.payload;
+      state.isLoggedIn = true;
     },
     clearUser: (state) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       state = initialState;
+      state.isLoggedIn = false;
     },
   },
 });
 export const selectUser = (state: RootState) => state.user.user;
 export const selectToken = (state: RootState) => state.user.token;
+export const selectIsLoggedIn = (state: RootState) => state.user.isLoggedIn;
 
 export const { addUser, clearUser } = userSlice.actions;
 

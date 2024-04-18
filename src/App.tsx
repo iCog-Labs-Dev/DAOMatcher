@@ -27,8 +27,6 @@ const theme = createTheme({
   },
 });
 
-const isLoggedIn = checkSession("email");
-
 function App() {
   return (
     <>
@@ -36,14 +34,8 @@ function App() {
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Routes>
-            <Route
-              path="/DAOMatcher/"
-              element={<Body isLoggedIn={isLoggedIn} />}
-            />
-            <Route
-              path="/DAOMatcher/login/"
-              element={<Login isLoggedIn={isLoggedIn} />}
-            />
+            <Route path="/DAOMatcher/" element={<Body />} />
+            <Route path="/DAOMatcher/login/" element={<Login />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

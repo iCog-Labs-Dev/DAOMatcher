@@ -21,8 +21,9 @@ import CancelButton from "@/pages/Home/components/CancelButton";
 import UsersList from "@/pages/Home/components/UsersList";
 import CountInput from "@/pages/Home/components/CountInput";
 import DepthInput from "@/pages/Home/components/DepthInput";
+import { selectIsLoggedIn } from "@/redux/userSlice";
 
-function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
+function Body() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [count, setCount] = useState<number>(10);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,6 +40,7 @@ function Body({ isLoggedIn }: { isLoggedIn: boolean }) {
   const inputError = useSelector(selectAllHomeStates).error;
 
   const dispatch = useDispatch();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const { handleCancel } = useHandleCancel();
   const { handleSubmit } = useHandleSubmit(descriptionInput, count, depth);
