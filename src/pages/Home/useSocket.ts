@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addError, clearError } from "@/redux/errorSlice";
 import { setSuccess, selectAllHomeStates } from "@/pages/Home/homeSlice";
 import { Response } from "@/pages/Home/Response";
-import { socket } from "@/config/default";
+import { getSocket } from "@/config/default";
 import { useEffect } from "react";
 import {
   connectErrorHandler,
@@ -14,7 +14,7 @@ import {
   setCookieHandler,
   updateHandler,
 } from "@/pages/Home/socketEventHandlers";
-import { selectUser } from "@/redux/userSlice";
+import { selectToken, selectUser } from "@/redux/userSlice";
 
 interface ISocketProps {
   count: number;
@@ -26,6 +26,8 @@ const useSocket = ({ count, depth }: ISocketProps) => {
   const dispatch = useDispatch();
   const userData = useSelector(selectUser);
   const isLoading = useSelector(selectAllHomeStates).isLoading;
+  const token = useSelector(selectToken);
+  const socket = getSocket(token);
 
   useEffect(() => {
     if (!socket) return;

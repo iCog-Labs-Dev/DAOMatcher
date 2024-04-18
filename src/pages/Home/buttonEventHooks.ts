@@ -10,12 +10,14 @@ import {
 } from "@/pages/Home/homeSlice";
 import { setError, clearError } from "@/pages/Home/homeSlice";
 import { addInfoMessage, clearInfoMessages } from "@/redux/infoSlice";
-import { socket } from "@/config/default";
-import { selectUser } from "@/redux/userSlice";
+import { getSocket } from "@/config/default";
+import { selectUser, selectToken } from "@/redux/userSlice";
 
 export const useHandleCancel = () => {
   const dispatch = useDispatch();
   const userData = useSelector(selectUser);
+  const token = useSelector(selectToken);
+  const socket = getSocket(token);
 
   const handleCancel = () => {
     dispatch(setSuccess(false));
@@ -43,6 +45,8 @@ export const useHandleSubmit = (
 
   const dispatch = useDispatch();
   const userData = useSelector(selectUser);
+  const token = useSelector(selectToken);
+  const socket = getSocket(token);
 
   const handleSubmit = async () => {
     dispatch(setSuccess(false));
