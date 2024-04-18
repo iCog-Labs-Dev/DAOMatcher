@@ -17,11 +17,11 @@ import {
 } from "@mui/material";
 import { validateEmail, validatePassword } from "@/pages/Login/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
 import LoginData from "@/types/LoginData";
-import { addUser, selectIsLoggedIn } from "@/redux/userSlice";
+import { addUser, selectIsLoggedIn, selectUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 interface LoginResponse {
@@ -61,9 +61,9 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
+  const user = useSelector(selectUser);
 
   if (isLoggedIn) {
     return <Navigate to="/DAOMatcher" replace />;
@@ -129,7 +129,7 @@ const LoginPage = () => {
 
     const { success, message, error, data: loginData } = data;
     setSuccess(success);
-    dispatch(addUser(loginData?.user));
+    dispatch(addUser(loginData));
 
     if (!success) {
       return setError(error ?? "Something went wrong");
@@ -138,7 +138,8 @@ const LoginPage = () => {
       setPassword("");
       setSuccessMessage(message ?? "Login Successful");
       setError("");
-      navigate("/DAOMatcher");
+
+      window.location.reload();
     }
   };
 
