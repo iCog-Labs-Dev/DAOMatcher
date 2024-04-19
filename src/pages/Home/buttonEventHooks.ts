@@ -80,6 +80,7 @@ export const useHandleSubmit = (
       dispatch(setUsers([]));
 
       if (socket) {
+        socket.connect(); // The socket will be disconnect and needs reconnecting since only a single instance is being used
         const userId = userData.id;
         if (userId) {
           socket.emit("search", {

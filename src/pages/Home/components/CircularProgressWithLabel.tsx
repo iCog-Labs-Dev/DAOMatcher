@@ -29,6 +29,7 @@ export default function CircularProgressWithLabel({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              color: "blue",
             }}
           >
             <Typography
