@@ -49,11 +49,11 @@ export const getUsers = (
 
 export const disconnectHandler = (
   dispatch: Dispatch<UnknownAction>,
-  socket: Socket,
+  socket: Socket | null,
   userId: string
 ) => {
   Cookies.remove("userId");
-  socket.emit("remove", userId);
+  if (socket) socket.emit("remove", userId);
 
   dispatch(setProgress(0));
   console.log("Disconnected from the Socket.IO server");

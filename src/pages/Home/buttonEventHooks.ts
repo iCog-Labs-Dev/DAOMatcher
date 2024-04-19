@@ -12,14 +12,15 @@ import { setError, clearError } from "@/pages/Home/homeSlice";
 import { addInfoMessage, clearInfoMessages } from "@/redux/infoSlice";
 import { getSocket } from "@/config/default";
 import { selectUser, selectToken } from "@/redux/userSlice";
+import useSocket from "@/pages/Home/useSocket";
 
 export const useHandleCancel = () => {
   const dispatch = useDispatch();
   const userData = useSelector(selectUser);
-  const token = useSelector(selectToken);
+  const socket = useSocket({ count: 1, depth: 1 });
 
   const handleCancel = () => {
-    const socket = getSocket(token);
+    // const socket = getSocket(token);
     dispatch(setSuccess(false));
     if (socket) {
       const userId = userData.id;
@@ -45,10 +46,10 @@ export const useHandleSubmit = (
 
   const dispatch = useDispatch();
   const userData = useSelector(selectUser);
-  const token = useSelector(selectToken);
+  const socket = useSocket({ count: 1, depth: 1 });
 
   const handleSubmit = async () => {
-    const socket = getSocket(token);
+    // const socket = getSocket(token);
     dispatch(setSuccess(false));
     dispatch(clearError());
     dispatch(clearInfoMessages());
