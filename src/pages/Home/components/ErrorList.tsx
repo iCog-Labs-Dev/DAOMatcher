@@ -16,7 +16,13 @@ const ErrorList = ({ inputError, success }: IProps) => {
   return (
     <>
       {errors.map((error: string) => {
-        return <AlertMessage severity="error" message={error} />;
+        return (
+          <AlertMessage
+            key={Math.random() * 100000}
+            severity="error"
+            message={error}
+          />
+        );
       })}
       {inputError ? (
         <AlertMessage severity="error" message={inputError} />
