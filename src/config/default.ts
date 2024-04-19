@@ -4,9 +4,10 @@ import { io, Socket } from "socket.io-client";
 export const BASE_URL = "http://localhost:8000";
 
 export const getSocket = (token: string): Socket => {
-  return io(`${BASE_URL}`, {
+  const socket = io(`${BASE_URL}`, {
     query: {
       token,
     },
   });
+  return socket;
 };

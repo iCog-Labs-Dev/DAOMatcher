@@ -17,9 +17,9 @@ export const useHandleCancel = () => {
   const dispatch = useDispatch();
   const userData = useSelector(selectUser);
   const token = useSelector(selectToken);
-  const socket = getSocket(token);
 
   const handleCancel = () => {
+    const socket = getSocket(token);
     dispatch(setSuccess(false));
     if (socket) {
       const userId = userData.id;
@@ -46,9 +46,9 @@ export const useHandleSubmit = (
   const dispatch = useDispatch();
   const userData = useSelector(selectUser);
   const token = useSelector(selectToken);
-  const socket = getSocket(token);
 
   const handleSubmit = async () => {
+    const socket = getSocket(token);
     dispatch(setSuccess(false));
     dispatch(clearError());
     dispatch(clearInfoMessages());

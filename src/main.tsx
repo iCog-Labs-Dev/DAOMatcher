@@ -4,6 +4,7 @@ import App from "@/App.tsx";
 import "@/index.css";
 import { Provider } from "react-redux";
 import store, { persistor } from "@/redux/store";
+// import store from "@/redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 
 import "@fontsource/roboto/300.css";

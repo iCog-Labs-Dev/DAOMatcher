@@ -27,15 +27,19 @@ const useSocket = ({ count, depth }: ISocketProps) => {
   const userData = useSelector(selectUser);
   const isLoading = useSelector(selectAllHomeStates).isLoading;
   const token = useSelector(selectToken);
-  const socket = getSocket(token);
 
   useEffect(() => {
+    const socket = getSocket(token);
+
     if (!socket) return;
 
     try {
       socket.on("connect", () => connectHandler(dispatch));
       socket.on("set_cookie", (userId: string) => setCookieHandler(userId));
-      socket.on("connect_error", () => connectErrorHandler(dispatch));
+      socket.on("connect_error", () => {
+        socket.connect();
+        connectErrorHandler(dispatch);
+      });
       socket.on("search", (data: Response) => getUsers(dispatch, data, count));
       socket.on("something_went_wrong", (data) =>
         genericErrorHandler(dispatch, data)
