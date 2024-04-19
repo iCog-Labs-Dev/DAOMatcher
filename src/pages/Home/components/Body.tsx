@@ -28,7 +28,7 @@ function Body() {
   const [count, setCount] = useState<number>(10);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [depth, setDepth] = useState<number>(20);
-  useSocket({ count, depth });
+  const socket = useSocket({ count, depth });
 
   const [descriptionInput, setDescriptionInput] = useState<string>("");
   // const [estimation, setEstimation] = useState<string>("");
@@ -42,8 +42,13 @@ function Body() {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
-  const { handleCancel } = useHandleCancel();
-  const { handleSubmit } = useHandleSubmit(descriptionInput, count, depth);
+  const { handleCancel } = useHandleCancel(socket);
+  const { handleSubmit } = useHandleSubmit(
+    socket,
+    descriptionInput,
+    count,
+    depth
+  );
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(clearError());

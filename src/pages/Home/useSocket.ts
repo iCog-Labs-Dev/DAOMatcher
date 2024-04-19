@@ -73,7 +73,7 @@ const useSocket = ({ count, depth }: ISocketProps) => {
       socket = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [BASE_URL]);
 
   return socketState;
 };

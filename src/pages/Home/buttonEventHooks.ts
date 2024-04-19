@@ -10,14 +10,12 @@ import {
 } from "@/pages/Home/homeSlice";
 import { setError, clearError } from "@/pages/Home/homeSlice";
 import { addInfoMessage, clearInfoMessages } from "@/redux/infoSlice";
-import { getSocket } from "@/config/default";
-import { selectUser, selectToken } from "@/redux/userSlice";
-import useSocket from "@/pages/Home/useSocket";
+import { selectUser } from "@/redux/userSlice";
+import { Socket } from "socket.io-client";
 
-export const useHandleCancel = () => {
+export const useHandleCancel = (socket: Socket | null) => {
   const dispatch = useDispatch();
   const userData = useSelector(selectUser);
-  const socket = useSocket({ count: 1, depth: 1 });
 
   const handleCancel = () => {
     // const socket = getSocket(token);
@@ -38,6 +36,7 @@ export const useHandleCancel = () => {
 };
 
 export const useHandleSubmit = (
+  socket: Socket | null,
   descriptionInput: string,
   count: any,
   depth: number
@@ -46,10 +45,8 @@ export const useHandleSubmit = (
 
   const dispatch = useDispatch();
   const userData = useSelector(selectUser);
-  const socket = useSocket({ count: 1, depth: 1 });
 
   const handleSubmit = async () => {
-    // const socket = getSocket(token);
     dispatch(setSuccess(false));
     dispatch(clearError());
     dispatch(clearInfoMessages());
@@ -93,7 +90,7 @@ export const useHandleSubmit = (
             userId: userId,
           });
         } else {
-          dispatch(setError("User session not found. Reload the page"));
+          dispatch(setError("User session not found."));
           dispatch(setSuccess(false));
         }
       }
