@@ -10,7 +10,7 @@ import {
 } from "@/pages/Home/buttonEventHooks";
 import useSocket from "@/pages/Home/useSocket";
 import { selectAllUsers } from "@/pages/Home/usersSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, Provider } from "react-redux";
 import { selectAllHomeStates, setIsLoading } from "@/pages/Home/homeSlice";
 import { clearError } from "@/pages/Home/homeSlice";
 import { clearInfoMessages } from "@/redux/infoSlice";
@@ -22,6 +22,7 @@ import UsersList from "@/pages/Home/components/UsersList";
 import CountInput from "@/pages/Home/components/CountInput";
 import DepthInput from "@/pages/Home/components/DepthInput";
 import { selectIsLoggedIn } from "@/redux/userSlice";
+import SocketContext from "../../../redux/SocketContext";
 
 function Body() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,17 +39,14 @@ function Body() {
   const isLoading = useSelector(selectAllHomeStates).isLoading;
   const progress = useSelector(selectAllHomeStates).progress;
   const inputError = useSelector(selectAllHomeStates).error;
+  const connect = useSelector(selectAllHomeStates).connect;
+  const disconnect = useSelector(selectAllHomeStates).disconnect;
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
-  const { handleCancel } = useHandleCancel(socket);
-  const { handleSubmit } = useHandleSubmit(
-    socket,
-    descriptionInput,
-    count,
-    depth
-  );
+  const { handleCancel } = useHandleCancel();
+  const { handleSubmit } = useHandleSubmit(descriptionInput, count, depth);
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(clearError());
@@ -72,6 +70,11 @@ function Body() {
     if (users.length === 0 && success) dispatch(setIsLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users, success]);
+
+  useEffect(() => {
+    if (!socket.current.connected && connect) socket.current.connect();
+    if (socket.current.connected && disconnect) socket.current.disconnect();
+  }, [isLoading]);
 
   if (!isLoggedIn) {
     return <Navigate to="/DAOMatcher/login" />;
@@ -125,16 +128,16 @@ function Body() {
               count={count}
               handleDepthChange={handleDepthChange}
             />
-
-            <Box sx={{ height: "2rem" }} />
-
-            <SearchButton isLoading={isLoading} handleSubmit={handleSubmit} />
-            <CancelButton isLoading={isLoading} handleCancel={handleCancel} />
-            <CircularProgressWithLabel
-              style={{ margin: "1rem" }}
-              value={progress}
-              isLoading={isLoading}
-            />
+            <SocketContext.Provider value={socket.current}>
+              <Box sx={{ height: "2rem" }} />
+              <SearchButton isLoading={isLoading} handleSubmit={handleSubmit} />
+              <CancelButton isLoading={isLoading} handleCancel={handleCancel} />
+              <CircularProgressWithLabel
+                style={{ margin: "1rem" }}
+                value={progress}
+                isLoading={isLoading}
+              />
+            </SocketContext.Provider>
           </Container>
         </Box>
 

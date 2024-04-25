@@ -1,7 +1,12 @@
 import Cookies from "js-cookie";
 import { Dispatch } from "react";
 import { addError, clearError } from "@/redux/errorSlice";
-import { setSuccess, setIsLoading, setProgress } from "@/pages/Home/homeSlice";
+import {
+  setSuccess,
+  setIsLoading,
+  setProgress,
+  setConnect,
+} from "@/pages/Home/homeSlice";
 import { UnknownAction } from "@reduxjs/toolkit";
 import { UpdateData, Response } from "@/pages/Home/Response";
 import { Socket } from "socket.io-client";
@@ -11,6 +16,7 @@ import { addInfoMessage } from "@/redux/infoSlice";
 export const connectHandler = (dispatch: Dispatch<UnknownAction>) => {
   console.log("Connected to the Socket.IO server");
   dispatch(clearError());
+  dispatch(setConnect(true));
 };
 
 export const setCookieHandler = (userId: string) => {
@@ -56,6 +62,7 @@ export const disconnectHandler = (
   if (socket) socket.emit("remove", userId);
 
   dispatch(setProgress(0));
+  dispatch(setConnect(false));
   console.log("Disconnected from the Socket.IO server");
 };
 

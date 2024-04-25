@@ -4,6 +4,7 @@ import { selectAllUsers, setUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectAllHomeStates,
+  setConnect,
   setIsLoading,
   setProgress,
   setSuccess,
@@ -11,21 +12,26 @@ import {
 import { setError, clearError } from "@/pages/Home/homeSlice";
 import { addInfoMessage, clearInfoMessages } from "@/redux/infoSlice";
 import { selectUser } from "@/redux/userSlice";
-import { Socket } from "socket.io-client";
+import SocketContext from "@/redux/SocketContext";
+import { useContext } from "react";
 
-export const useHandleCancel = (socket: Socket | null) => {
+export const useHandleCancel = () => {
   const dispatch = useDispatch();
   const userData = useSelector(selectUser);
+  const socket = useContext(SocketContext);
 
   const handleCancel = () => {
     // const socket = getSocket(token);
     dispatch(setSuccess(false));
     if (socket) {
       const userId = userData.id;
+
       socket.emit("stop", userId);
       console.log("Cancelled request");
+
       dispatch(addInfoMessage("Request canceled"));
-      socket.disconnect();
+
+      dispatch(setConnect(false));
     } else dispatch(addInfoMessage("Couldn't cancel request"));
 
     dispatch(setIsLoading(false));
@@ -36,12 +42,12 @@ export const useHandleCancel = (socket: Socket | null) => {
 };
 
 export const useHandleSubmit = (
-  socket: Socket | null,
   descriptionInput: string,
   count: any,
   depth: number
 ) => {
   const handle = useSelector(selectAllHomeStates).handle;
+  const socket = useContext(SocketContext);
 
   const dispatch = useDispatch();
   const userData = useSelector(selectUser);
@@ -78,11 +84,12 @@ export const useHandleSubmit = (
       dispatch(clearError());
       dispatch(clearInfoMessages());
       dispatch(setUsers([]));
+      const userId = userData.id;
 
       if (socket) {
         console.log("Calling connect method.");
-        socket.connect(); // The socket will be disconnect and needs reconnecting since only a single instance is being used
-        const userId = userData.id;
+        console.log("Connected to socket: ", socket.connected);
+        dispatch(setConnect(true));
         if (userId) {
           socket.emit("search", {
             query: descriptionInput,
