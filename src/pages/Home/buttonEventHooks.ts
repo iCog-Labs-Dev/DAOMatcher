@@ -84,12 +84,13 @@ export const useHandleSubmit = (
       dispatch(clearError());
       dispatch(clearInfoMessages());
       dispatch(setUsers([]));
+      dispatch(setConnect(true));
+
       const userId = userData.id;
 
       if (socket) {
         console.log("Calling connect method.");
         console.log("Connected to socket: ", socket.connected);
-        dispatch(setConnect(true));
         if (userId) {
           socket.emit("search", {
             query: descriptionInput,

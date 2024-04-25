@@ -21,7 +21,7 @@ import CancelButton from "@/pages/Home/components/CancelButton";
 import UsersList from "@/pages/Home/components/UsersList";
 import CountInput from "@/pages/Home/components/CountInput";
 import DepthInput from "@/pages/Home/components/DepthInput";
-import { selectIsLoggedIn } from "@/redux/userSlice";
+import { selectIsLoggedIn, selectToken, selectUser } from "@/redux/userSlice";
 import SocketContext from "../../../redux/SocketContext";
 
 function Body() {
@@ -41,6 +41,9 @@ function Body() {
   const inputError = useSelector(selectAllHomeStates).error;
   const connect = useSelector(selectAllHomeStates).connect;
   const disconnect = useSelector(selectAllHomeStates).disconnect;
+
+  const userData = useSelector(selectUser);
+  const token = useSelector(selectToken);
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -72,9 +75,14 @@ function Body() {
   }, [users, success]);
 
   useEffect(() => {
-    if (!socket.current.connected && connect) socket.current.connect();
-    if (socket.current.connected && disconnect) socket.current.disconnect();
-  }, [isLoading]);
+    if (!socket.current.connected && connect) {
+      socket.current.connect();
+    }
+    if (socket.current.connected && disconnect) {
+      socket.current.emit("remove", userData.id);
+      socket.current.disconnect();
+    }
+  }, [connect, disconnect]);
 
   if (!isLoggedIn) {
     return <Navigate to="/DAOMatcher/login" />;

@@ -13,7 +13,7 @@ import {
   setCookieHandler,
   updateHandler,
 } from "@/pages/Home/socketEventHandlers";
-import { selectToken, selectUser } from "@/redux/userSlice";
+import { selectToken } from "@/redux/userSlice";
 import { useEffect, useRef } from "react";
 
 interface ISocketProps {
@@ -24,7 +24,6 @@ interface ISocketProps {
 const useSocket = ({ count, depth }: ISocketProps) => {
   // Connect to the Socket.IO server
   const dispatch = useDispatch();
-  const userData = useSelector(selectUser);
   // const isConnected = useSelector(selectAllHomeStates).isConnected;
   const token = useSelector(selectToken);
   const socket = useRef(socketConnection);
@@ -55,9 +54,7 @@ const useSocket = ({ count, depth }: ISocketProps) => {
       socket.current.on("connect_timeout", () =>
         connectionTimedOutErrorHandler(dispatch)
       );
-      socket.current.on("disconnect", () =>
-        disconnectHandler(dispatch, socket.current, userData.id)
-      );
+      socket.current.on("disconnect", () => disconnectHandler(dispatch));
       socket.current.on(`update`, (data) =>
         updateHandler(dispatch, data, depth)
       );

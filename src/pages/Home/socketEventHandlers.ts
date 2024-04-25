@@ -9,7 +9,6 @@ import {
 } from "@/pages/Home/homeSlice";
 import { UnknownAction } from "@reduxjs/toolkit";
 import { UpdateData, Response } from "@/pages/Home/Response";
-import { Socket } from "socket.io-client";
 import { setUsers } from "@/pages/Home/usersSlice";
 import { addInfoMessage } from "@/redux/infoSlice";
 
@@ -29,6 +28,7 @@ export const getUsers = (
   count: number
 ) => {
   dispatch(setIsLoading(false));
+  dispatch(setConnect(false));
   dispatch(clearError());
 
   console.log("Updating completed");
@@ -53,14 +53,8 @@ export const getUsers = (
   setProgress(0);
 };
 
-export const disconnectHandler = (
-  dispatch: Dispatch<UnknownAction>,
-  socket: Socket | null,
-  userId: string
-) => {
+export const disconnectHandler = (dispatch: Dispatch<UnknownAction>) => {
   Cookies.remove("userId");
-  if (socket) socket.emit("remove", userId);
-
   dispatch(setProgress(0));
   dispatch(setConnect(false));
   console.log("Disconnected from the Socket.IO server");
