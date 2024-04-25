@@ -54,8 +54,6 @@ export const useHandleSubmit = (
 
   const handleSubmit = async () => {
     dispatch(setSuccess(false));
-    dispatch(clearError());
-    dispatch(clearInfoMessages());
 
     const requestBody = {
       handle,

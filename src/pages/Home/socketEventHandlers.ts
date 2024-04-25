@@ -11,6 +11,7 @@ import { UnknownAction } from "@reduxjs/toolkit";
 import { UpdateData, Response } from "@/pages/Home/Response";
 import { setUsers } from "@/pages/Home/usersSlice";
 import { addInfoMessage } from "@/redux/infoSlice";
+import SocketError, { isSocketError } from "@/types/SocketError";
 
 export const connectHandler = (dispatch: Dispatch<UnknownAction>) => {
   console.log("Connected to the Socket.IO server");
@@ -29,7 +30,6 @@ export const getUsers = (
 ) => {
   dispatch(setIsLoading(false));
   dispatch(setConnect(false));
-  dispatch(clearError());
 
   console.log("Updating completed");
   console.log(data); //For debugging only
@@ -74,7 +74,6 @@ export const updateHandler = (
   depth: number
 ) => {
   console.log("Update received");
-  dispatch(clearError());
 
   try {
     console.log("received data: ", data);
@@ -115,13 +114,16 @@ const errorHandler = (
 
 export const genericErrorHandler = (
   dispatch: Dispatch<UnknownAction>,
-  error?: ErrorEvent | Error | unknown
+  error?: ErrorEvent | Error | SocketError | unknown
 ) => {
-  let message: string;
+  let message: string | null = null;
   if (error instanceof ErrorEvent || error instanceof Error)
     message = error.message;
+  else if (isSocketError(error as SocketError))
+    dispatch(addInfoMessage((error as SocketError).message));
   else message = "Something went wrong while connecting to socket io";
-  errorHandler(dispatch, message, error);
+
+  if (message != null) errorHandler(dispatch, message, error);
 };
 
 export const connectionTimedOutErrorHandler = (

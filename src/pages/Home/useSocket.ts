@@ -51,6 +51,10 @@ const useSocket = ({ count, depth }: ISocketProps) => {
         console.log("Error data found");
         return genericErrorHandler(dispatch, data);
       });
+      socket.current.on("search_error", (data) => {
+        console.log("Error found after completed searching");
+        return genericErrorHandler(dispatch, data);
+      });
       socket.current.on("connect_timeout", () =>
         connectionTimedOutErrorHandler(dispatch)
       );
