@@ -138,7 +138,7 @@ const LoginPage = () => {
       setSuccessMessage(message ?? "Login Successful");
       setError("");
 
-      window.location.reload();
+      return <Navigate to="/DAOMatcher" replace />;
     }
   };
 
