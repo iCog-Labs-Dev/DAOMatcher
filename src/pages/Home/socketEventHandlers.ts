@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { Dispatch } from "react";
+import { Dispatch, MutableRefObject } from "react";
 import { addError, clearError } from "@/redux/errorSlice";
 import {
   setSuccess,
@@ -43,7 +43,7 @@ export const getUsers = (
   dispatch(setUsers(users));
   dispatch(setSuccess(true));
 
-  if (foundAllUsers && users.length > 0)
+  if (!foundAllUsers && users.length > 0)
     dispatch(
       addInfoMessage(
         `Found only ${users.length} users instead of ${count} users`
@@ -56,6 +56,7 @@ export const getUsers = (
 export const disconnectHandler = (dispatch: Dispatch<UnknownAction>) => {
   Cookies.remove("userId");
   dispatch(setProgress(0));
+  dispatch(setIsLoading(false));
   dispatch(setConnect(false));
   console.log("Disconnected from the Socket.IO server");
 };
@@ -71,7 +72,7 @@ export const connectErrorHandler = (dispatch: Dispatch<UnknownAction>) => {
 export const updateHandler = (
   dispatch: Dispatch<UnknownAction>,
   data: UpdateData,
-  depth: number
+  depth: MutableRefObject<number>
 ) => {
   console.log("Update received");
 
@@ -87,7 +88,7 @@ export const updateHandler = (
       console.log("user: ", user);
       console.log("depth: ", depth);
 
-      const percentage = (tempProgress / depth) * 100;
+      const percentage = (tempProgress / depth.current) * 100;
       dispatch(setProgress(percentage));
     }
   } catch (error) {

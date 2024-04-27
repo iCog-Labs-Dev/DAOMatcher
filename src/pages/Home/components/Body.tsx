@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { Box, Container, TextField, Typography } from "@mui/material";
 import { useState } from "react";
@@ -34,7 +34,8 @@ function Body() {
   const [count, setCount] = useState<number>(10);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [depth, setDepth] = useState<number>(20);
-  const socket = useSocket({ count, depth });
+  const depthRef = useRef<number>(depth);
+  const socket = useSocket({ count, depth: depthRef });
 
   const [descriptionInput, setDescriptionInput] = useState<string>("");
   // const [estimation, setEstimation] = useState<string>("");
@@ -54,7 +55,11 @@ function Body() {
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const { handleCancel } = useHandleCancel();
-  const { handleSubmit } = useHandleSubmit(descriptionInput, count, depth);
+  const { handleSubmit } = useHandleSubmit(
+    descriptionInput,
+    count,
+    depthRef.current
+  );
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(clearError());
@@ -65,6 +70,7 @@ function Body() {
   const handleDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.valueAsNumber;
     setDepth(newValue);
+    depthRef.current = newValue;
   };
 
   useEffect(() => {

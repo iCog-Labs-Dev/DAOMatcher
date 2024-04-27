@@ -14,11 +14,11 @@ import {
   updateHandler,
 } from "@/pages/Home/socketEventHandlers";
 import { selectToken } from "@/redux/userSlice";
-import { useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 
 interface ISocketProps {
   count: number;
-  depth: number;
+  depth: MutableRefObject<number>;
 }
 
 const useSocket = ({ count, depth }: ISocketProps) => {
