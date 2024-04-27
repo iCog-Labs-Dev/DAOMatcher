@@ -110,7 +110,7 @@ const LoginPage = () => {
               : null
             : null
           : null;
-
+        console.log("Error found on login: ", errorData);
         data = errorData
           ? errorData
           : {
@@ -134,7 +134,7 @@ const LoginPage = () => {
     dispatch(addUser(loginData));
 
     if (!success) {
-      return setError(error ?? "Something went wrong");
+      return setError(message ?? error ?? "Something went wrong");
     } else {
       setEmail("");
       setPassword("");
