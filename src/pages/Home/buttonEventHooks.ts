@@ -21,7 +21,6 @@ export const useHandleCancel = () => {
   const socket = useContext(SocketContext);
 
   const handleCancel = () => {
-    // const socket = getSocket(token);
     dispatch(setSuccess(false));
     if (socket) {
       const userId = userData.id;
@@ -30,8 +29,6 @@ export const useHandleCancel = () => {
       console.log("Cancelled request");
 
       dispatch(addInfoMessage("Request canceled"));
-
-      dispatch(setConnect(false));
     } else dispatch(addInfoMessage("Couldn't cancel request"));
 
     dispatch(setIsLoading(false));
