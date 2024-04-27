@@ -63,8 +63,7 @@ const LoginPage = () => {
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
-  const user = useSelector(selectUser);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   if (isLoggedIn) {
     return <Navigate to="/DAOMatcher" replace />;
@@ -100,7 +99,6 @@ const LoginPage = () => {
           { withCredentials: true }
         );
       data = successData;
-      dispatch(setIsLoggedIn(true));
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorData: LoginResponse = error
@@ -110,7 +108,6 @@ const LoginPage = () => {
               : null
             : null
           : null;
-        console.log("Error found on login: ", errorData);
         data = errorData
           ? errorData
           : {

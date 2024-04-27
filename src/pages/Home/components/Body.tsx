@@ -21,7 +21,12 @@ import CancelButton from "@/pages/Home/components/CancelButton";
 import UsersList from "@/pages/Home/components/UsersList";
 import CountInput from "@/pages/Home/components/CountInput";
 import DepthInput from "@/pages/Home/components/DepthInput";
-import { selectIsLoggedIn, selectToken, selectUser } from "@/redux/userSlice";
+import {
+  clearUser,
+  selectIsLoggedIn,
+  selectToken,
+  selectUser,
+} from "@/redux/userSlice";
 import SocketContext from "../../../redux/SocketContext";
 
 function Body() {
@@ -46,7 +51,7 @@ function Body() {
   const token = useSelector(selectToken);
 
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const { handleCancel } = useHandleCancel();
   const { handleSubmit } = useHandleSubmit(descriptionInput, count, depth);
@@ -62,12 +67,10 @@ function Body() {
     setDepth(newValue);
   };
 
-  // useEffect(() => {
-  //   const milliseconds = depth * 3474;
-  //   const timeString = formatTime(milliseconds);
-
-  //   setEstimation(timeString);
-  // }, [depth]);
+  useEffect(() => {
+    dispatch(clearError());
+    dispatch(clearInfoMessages());
+  }, []);
 
   useEffect(() => {
     if (users.length === 0 && success) dispatch(setIsLoading(false));
