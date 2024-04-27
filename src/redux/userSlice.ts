@@ -21,9 +21,15 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     addUser: (state, action) => {
-      state.token = action.payload.token;
-      state.user = action.payload.user;
-      state.isLoggedIn = true;
+      if (action.payload) {
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.isLoggedIn = true;
+      } else {
+        console.log(
+          "Invalid payload received while adding user state in userSlice"
+        );
+      }
     },
     clearUser: (state) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

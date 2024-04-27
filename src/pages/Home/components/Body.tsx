@@ -46,7 +46,7 @@ function Body() {
   const token = useSelector(selectToken);
 
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
 
   const { handleCancel } = useHandleCancel();
   const { handleSubmit } = useHandleSubmit(descriptionInput, count, depth);

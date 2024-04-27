@@ -23,6 +23,7 @@ import { BASE_URL } from "@/config/default";
 import LoginData from "@/types/LoginData";
 import { addUser, selectIsLoggedIn, selectUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
 
 interface LoginResponse {
   data: LoginData | null;
@@ -62,7 +63,7 @@ const LoginPage = () => {
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
   const user = useSelector(selectUser);
 
   if (isLoggedIn) {
@@ -99,6 +100,7 @@ const LoginPage = () => {
           { withCredentials: true }
         );
       data = successData;
+      dispatch(setIsLoggedIn(true));
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorData: LoginResponse = error
