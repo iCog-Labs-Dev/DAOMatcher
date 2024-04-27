@@ -6,17 +6,53 @@ import {
   setIsLoading,
   setProgress,
   setConnect,
+  setIsLoggedIn,
 } from "@/pages/Home/homeSlice";
 import { UnknownAction } from "@reduxjs/toolkit";
 import { UpdateData, Response } from "@/pages/Home/Response";
 import { setUsers } from "@/pages/Home/usersSlice";
 import { addInfoMessage } from "@/redux/infoSlice";
 import SocketError, { isSocketError } from "@/types/SocketError";
+import axios, { AxiosError } from "axios";
+import { BASE_URL } from "@/config/default";
+import { clearUser, updateToken } from "@/redux/userSlice";
 
 export const connectHandler = (dispatch: Dispatch<UnknownAction>) => {
   console.log("Connected to the Socket.IO server");
   dispatch(clearError());
   dispatch(setConnect(true));
+};
+
+export const refreshHandler = (dispatch: Dispatch<UnknownAction>) => {
+  const errorUpdates = (message: string) => {
+    dispatch(addError(message));
+    dispatch(setIsLoggedIn(false));
+    dispatch(clearUser());
+    dispatch(setConnect(false));
+  };
+
+  console.log("Refreshing token");
+  axios
+    .get(`${BASE_URL}/api/auth/refresh`, { withCredentials: true })
+    .then((data) => {
+      const { token, success, message } = data.data;
+      if (success) {
+        dispatch(updateToken(token));
+        dispatch(setConnect(true));
+        console.log("Token refreshed");
+      } else {
+        errorUpdates(message);
+      }
+    })
+    .catch((error) => {
+      if (error instanceof AxiosError)
+        dispatch(addError("Session expired. Please login again."));
+      else errorUpdates("Something went wrong. Please login again");
+
+      dispatch(setIsLoggedIn(false));
+      dispatch(clearUser());
+      dispatch(setConnect(false));
+    });
 };
 
 export const setCookieHandler = (userId: string) => {

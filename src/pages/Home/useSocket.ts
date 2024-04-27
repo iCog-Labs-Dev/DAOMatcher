@@ -10,6 +10,7 @@ import {
   disconnectHandler,
   genericErrorHandler,
   getUsers,
+  refreshHandler,
   setCookieHandler,
   updateHandler,
 } from "@/pages/Home/socketEventHandlers";
@@ -31,7 +32,6 @@ const useSocket = ({ count, depth }: ISocketProps) => {
   useEffect(() => {
     if (!socket.current) return;
 
-    console.log("Socket.current connected", socket.current.connected);
     socket.current.io.opts.query = {
       token,
     };
@@ -39,7 +39,15 @@ const useSocket = ({ count, depth }: ISocketProps) => {
     dispatch(setConnect(true));
 
     try {
-      socket.current.on("connect", () => connectHandler(dispatch));
+      socket.current.on("connect", () => {
+        connectHandler(dispatch);
+        console.log("connection id", socket.current.id);
+      });
+      socket.current.on("refresh_token", (data) => {
+        console.log("refresh token event fired with data: ", data);
+        refreshHandler(dispatch);
+        return;
+      });
       socket.current.on("set_cookie", (userId: string) =>
         setCookieHandler(userId)
       );
