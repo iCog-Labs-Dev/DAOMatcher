@@ -10,7 +10,7 @@ import {
 } from "@/pages/Home/buttonEventHooks";
 import useSocket from "@/pages/Home/useSocket";
 import { selectAllUsers } from "@/pages/Home/usersSlice";
-import { useDispatch, useSelector, Provider } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoading } from "@/pages/Home/homeSlice";
 import { clearError } from "@/pages/Home/homeSlice";
 import { clearInfoMessages } from "@/redux/infoSlice";
@@ -21,12 +21,7 @@ import CancelButton from "@/pages/Home/components/CancelButton";
 import UsersList from "@/pages/Home/components/UsersList";
 import CountInput from "@/pages/Home/components/CountInput";
 import DepthInput from "@/pages/Home/components/DepthInput";
-import {
-  clearUser,
-  selectIsLoggedIn,
-  selectToken,
-  selectUser,
-} from "@/redux/userSlice";
+import { selectToken, selectUser } from "@/redux/userSlice";
 import SocketContext from "../../../redux/SocketContext";
 
 function Body() {
@@ -52,7 +47,7 @@ function Body() {
   const token = useSelector(selectToken);
 
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
 
   const { handleCancel } = useHandleCancel();
   const { handleSubmit } = useHandleSubmit(
@@ -91,7 +86,7 @@ function Body() {
       socket.current.emit("remove", userData.id);
       socket.current.disconnect();
     }
-  }, [connect, disconnect]);
+  }, [connect, disconnect, token]);
 
   if (!isLoggedIn) {
     return <Navigate to="/DAOMatcher/login" />;

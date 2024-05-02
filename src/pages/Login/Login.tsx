@@ -63,7 +63,7 @@ const LoginPage = () => {
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
 
   if (isLoggedIn) {
     return <Navigate to="/DAOMatcher" replace />;
@@ -129,6 +129,7 @@ const LoginPage = () => {
     const { success, message, error, data: loginData } = data;
     setSuccess(success);
     dispatch(addUser(loginData));
+    dispatch(setIsLoggedIn(true));
 
     if (!success) {
       return setError(message ?? error ?? "Something went wrong");

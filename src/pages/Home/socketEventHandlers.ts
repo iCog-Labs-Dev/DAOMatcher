@@ -32,6 +32,7 @@ export const refreshHandler = (dispatch: Dispatch<UnknownAction>) => {
   };
 
   console.log("Refreshing token");
+
   axios
     .get(`${BASE_URL}/api/auth/refresh`, { withCredentials: true })
     .then((data) => {
@@ -41,6 +42,8 @@ export const refreshHandler = (dispatch: Dispatch<UnknownAction>) => {
         dispatch(setConnect(true));
         console.log("Token refreshed");
       } else {
+        console.log("Token refresh failed: ", message);
+
         errorUpdates(message);
       }
     })
@@ -48,6 +51,7 @@ export const refreshHandler = (dispatch: Dispatch<UnknownAction>) => {
       if (error instanceof AxiosError)
         dispatch(addError("Session expired. Please login again."));
       else errorUpdates("Something went wrong. Please login again");
+      console.log("Error found while refreshing: ", error);
 
       dispatch(setIsLoggedIn(false));
       dispatch(clearUser());

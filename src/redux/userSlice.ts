@@ -37,7 +37,6 @@ const userSlice = createSlice({
     clearUser: (state) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       state = initialState;
-      state.isLoggedIn = false;
     },
   },
 });
