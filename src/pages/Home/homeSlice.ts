@@ -6,6 +6,7 @@ export interface HomeState {
   connect: boolean;
   disconnect: boolean;
   isLoggedIn: boolean;
+  isTokenRefreshed: boolean;
   isLoading: boolean;
   success: boolean;
   progress: number;
@@ -18,6 +19,7 @@ const initialState: HomeState = {
   connect: true,
   disconnect: false,
   isLoggedIn: false,
+  isTokenRefreshed: false,
   isLoading: false,
   success: false,
   progress: 0,
@@ -40,6 +42,9 @@ const homeSlice = createSlice({
     },
     setIsLoggedIn(state, action) {
       state.isLoggedIn = action.payload;
+    },
+    setIsTokenRefreshed(state, action) {
+      state.isTokenRefreshed = action.payload;
     },
     setIsLoading(state, action) {
       state.isLoading = action.payload;
@@ -70,6 +75,7 @@ export const {
   setConnect,
   setDisconnect,
   setIsLoggedIn,
+  setIsTokenRefreshed,
   setIsLoading,
   setSuccess,
   setProgress,

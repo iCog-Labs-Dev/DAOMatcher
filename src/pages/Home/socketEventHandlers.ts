@@ -7,6 +7,7 @@ import {
   setProgress,
   setConnect,
   setIsLoggedIn,
+  setIsTokenRefreshed,
 } from "@/pages/Home/homeSlice";
 import { UnknownAction } from "@reduxjs/toolkit";
 import { UpdateData, Response } from "@/pages/Home/Response";
@@ -48,6 +49,7 @@ export const refreshHandler = (
       const { token } = responseData;
       if (success) {
         dispatch(updateToken(token));
+        dispatch(setIsTokenRefreshed(true));
         dispatch(setConnect(true));
         console.log("Token refreshed");
       } else {

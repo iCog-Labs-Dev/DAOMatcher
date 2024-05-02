@@ -11,7 +11,12 @@ import {
 import useSocket from "@/pages/Home/useSocket";
 import { selectAllUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAllHomeStates, setIsLoading } from "@/pages/Home/homeSlice";
+import {
+  selectAllHomeStates,
+  setConnect,
+  setIsLoading,
+  setIsTokenRefreshed,
+} from "@/pages/Home/homeSlice";
 import { clearError } from "@/pages/Home/homeSlice";
 import { clearInfoMessages } from "@/redux/infoSlice";
 import ErrorList from "@/pages/Home/components/ErrorList";
@@ -42,6 +47,7 @@ function Body() {
   const inputError = useSelector(selectAllHomeStates).error;
   const connect = useSelector(selectAllHomeStates).connect;
   const disconnect = useSelector(selectAllHomeStates).disconnect;
+  const isTokenRefreshed = useSelector(selectAllHomeStates).isTokenRefreshed;
 
   const userData = useSelector(selectUser);
   const token = useSelector(selectToken);
@@ -89,10 +95,12 @@ function Body() {
   }, [connect, disconnect]);
 
   useEffect(() => {
-    // if (!socket.current) return;
+    if (!isTokenRefreshed) return;
     socket.current.io.opts.query = { token };
     console.log("Socket update with new token");
-  }, [token]);
+    dispatch(setConnect(true));
+    dispatch(setIsTokenRefreshed(false));
+  }, [token, isTokenRefreshed]);
 
   if (!isLoggedIn) {
     return <Navigate to="/DAOMatcher/login" />;
