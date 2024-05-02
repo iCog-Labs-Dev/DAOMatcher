@@ -84,7 +84,6 @@ export const useHandleSubmit = (
       const userId = userData.id;
 
       if (socket) {
-        console.log("Calling connect method.");
         console.log("Connected to socket: ", socket.connected);
         if (userId) {
           socket.emit("search", {

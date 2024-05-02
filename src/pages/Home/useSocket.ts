@@ -14,7 +14,7 @@ import {
   setCookieHandler,
   updateHandler,
 } from "@/pages/Home/socketEventHandlers";
-import { selectToken } from "@/redux/userSlice";
+import { selectToken, selectUser } from "@/redux/userSlice";
 import { MutableRefObject, useEffect, useRef } from "react";
 
 interface ISocketProps {
@@ -27,6 +27,7 @@ const useSocket = ({ count, depth }: ISocketProps) => {
   const dispatch = useDispatch();
   // const isConnected = useSelector(selectAllHomeStates).isConnected;
   const token = useSelector(selectToken);
+  const userData = useSelector(selectUser);
   const socket = useRef(socketConnection);
 
   useEffect(() => {
@@ -45,7 +46,7 @@ const useSocket = ({ count, depth }: ISocketProps) => {
       });
       socket.current.on("refresh_token", (data) => {
         console.log("refresh token event fired with data: ", data);
-        refreshHandler(dispatch);
+        refreshHandler(dispatch, socket, userData.id);
         return;
       });
       socket.current.on("set_cookie", (userId: string) =>

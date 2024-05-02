@@ -86,7 +86,13 @@ function Body() {
       socket.current.emit("remove", userData.id);
       socket.current.disconnect();
     }
-  }, [connect, disconnect, token]);
+  }, [connect, disconnect]);
+
+  useEffect(() => {
+    // if (!socket.current) return;
+    socket.current.io.opts.query = { token };
+    console.log("Socket update with new token");
+  }, [token]);
 
   if (!isLoggedIn) {
     return <Navigate to="/DAOMatcher/login" />;

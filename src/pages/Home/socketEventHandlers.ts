@@ -16,6 +16,8 @@ import SocketError, { isSocketError } from "@/types/SocketError";
 import axios, { AxiosError } from "axios";
 import { BASE_URL } from "@/config/default";
 import { clearUser, updateToken } from "@/redux/userSlice";
+import { Socket } from "socket.io-client";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 export const connectHandler = (dispatch: Dispatch<UnknownAction>) => {
   console.log("Connected to the Socket.IO server");
@@ -23,7 +25,11 @@ export const connectHandler = (dispatch: Dispatch<UnknownAction>) => {
   dispatch(setConnect(true));
 };
 
-export const refreshHandler = (dispatch: Dispatch<UnknownAction>) => {
+export const refreshHandler = (
+  dispatch: Dispatch<UnknownAction>,
+  socket: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap>>,
+  userId: string
+) => {
   const errorUpdates = (message: string) => {
     dispatch(addError(message));
     dispatch(setIsLoggedIn(false));
@@ -32,18 +38,20 @@ export const refreshHandler = (dispatch: Dispatch<UnknownAction>) => {
   };
 
   console.log("Refreshing token");
+  socket.current.emit("remove", userId);
+  socket.current.disconnect();
 
   axios
     .get(`${BASE_URL}/api/auth/refresh`, { withCredentials: true })
     .then((data) => {
-      const { token, success, message } = data.data;
+      const { data: responseData, success, message } = data.data;
+      const { token } = responseData;
       if (success) {
         dispatch(updateToken(token));
         dispatch(setConnect(true));
         console.log("Token refreshed");
       } else {
         console.log("Token refresh failed: ", message);
-
         errorUpdates(message);
       }
     })
