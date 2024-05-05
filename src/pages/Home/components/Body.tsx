@@ -29,6 +29,8 @@ import DepthInput from "@/pages/Home/components/DepthInput";
 import { selectToken, selectUser } from "@/redux/userSlice";
 import SocketContext from "../../../redux/SocketContext";
 
+import { addError } from "@/redux/errorSlice";
+
 function Body() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [count, setCount] = useState<number>(10);
@@ -51,6 +53,9 @@ function Body() {
 
   const userData = useSelector(selectUser);
   const token = useSelector(selectToken);
+
+  // const searchParam = useSelector(selectSearchParams);
+  // const resubmitCount = useSelector(selectResubmitCount);
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
@@ -92,16 +97,15 @@ function Body() {
       socket.current.emit("remove", userData.id);
       socket.current.disconnect();
     }
-  }, [connect, disconnect]);
-
-  useEffect(() => {
-    if (!isTokenRefreshed) return;
-    socket.current.io.opts.query = { token };
-    console.log("Socket update with new token");
-    dispatch(setConnect(true));
-    dispatch(setIsTokenRefreshed(false));
-  }, [token, isTokenRefreshed]);
-
+    if (isTokenRefreshed) {
+      socket.current.io.opts.query = { token };
+      console.log("Socket update with new token");
+      socket.current.connect();
+      dispatch(setConnect(true));
+      dispatch(setIsTokenRefreshed(false));
+      dispatch(addError("Searching failed! Resubmit to try again!"));
+    }
+  }, [connect, disconnect, token, isTokenRefreshed]);
   if (!isLoggedIn) {
     return <Navigate to="/DAOMatcher/login" />;
   }

@@ -15,6 +15,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import searchParamReducer from "@/redux/searchParamSlice";
 
 const persistConfig = {
   key: "root",
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   users: usersReducer,
   infoMessages: infoReducer,
   user: userReducer,
+  searchParameters: searchParamReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

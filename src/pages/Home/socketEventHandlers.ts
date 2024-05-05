@@ -15,10 +15,15 @@ import { setUsers } from "@/pages/Home/usersSlice";
 import { addInfoMessage } from "@/redux/infoSlice";
 import SocketError, { isSocketError } from "@/types/SocketError";
 import axios, { AxiosError } from "axios";
-import { BASE_URL } from "@/config/default";
+import { BASE_URL, RESUBMIT_COUNT_LIMIT } from "@/config/default";
 import { clearUser, updateToken } from "@/redux/userSlice";
 import { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
+import {
+  clearSearchParam,
+  incrementResubmitCount,
+  SearchParams,
+} from "@/redux/searchParamSlice";
 
 export const connectHandler = (dispatch: Dispatch<UnknownAction>) => {
   console.log("Connected to the Socket.IO server");
@@ -69,6 +74,25 @@ export const refreshHandler = (
     });
 };
 
+export const resendSearchHandler = (
+  dispatch: Dispatch<UnknownAction>,
+  socket: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap>>,
+  resubmitCount: number,
+  searchParam: SearchParams
+) => {
+  console.log("resending search parameters");
+  console.log("Resubmit count: ", resubmitCount);
+  console.log("SearchParam: ", searchParam);
+  if (resubmitCount < RESUBMIT_COUNT_LIMIT) {
+    socket.current.emit("search", searchParam);
+    dispatch(incrementResubmitCount());
+  } else {
+    dispatch(setIsLoading(false));
+    dispatch(addError("Searching failed! Try resubmitting"));
+    dispatch(setConnect(false));
+  }
+};
+
 export const setCookieHandler = (userId: string) => {
   Cookies.set("userId", userId, { secure: true, sameSite: "none" });
   console.log("Setting cookies done");
@@ -80,6 +104,7 @@ export const getUsers = (
 ) => {
   dispatch(setIsLoading(false));
   dispatch(setConnect(false));
+  dispatch(clearSearchParam());
 
   console.log("Updating completed");
   console.log(data); //For debugging only

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addError, clearError } from "@/redux/errorSlice";
-import { setConnect, setSuccess } from "@/pages/Home/homeSlice";
+import { setConnect, setIsLoading, setSuccess } from "@/pages/Home/homeSlice";
 import { Response } from "@/pages/Home/Response";
 import { socket as socketConnection } from "@/config/default";
 import {
@@ -16,7 +16,6 @@ import {
 } from "@/pages/Home/socketEventHandlers";
 import { selectToken, selectUser } from "@/redux/userSlice";
 import { MutableRefObject, useEffect, useRef } from "react";
-
 interface ISocketProps {
   count: number;
   depth: MutableRefObject<number>;
@@ -29,6 +28,9 @@ const useSocket = ({ count, depth }: ISocketProps) => {
   const token = useSelector(selectToken);
   const userData = useSelector(selectUser);
   const socket = useRef(socketConnection);
+
+  // const resubmitCount = useSelector(selectResubmitCount);
+  // const searchParam = useSelector(selectSearchParams);
 
   useEffect(() => {
     if (!socket.current) return;
@@ -45,10 +47,14 @@ const useSocket = ({ count, depth }: ISocketProps) => {
         console.log("connection id", socket.current.id);
       });
       socket.current.on("refresh_token", (data) => {
+        dispatch(setIsLoading(true));
         console.log("refresh token event fired with data: ", data);
         refreshHandler(dispatch, socket, userData.id);
         return;
       });
+      // socket.current.on("resend_search", () =>
+      //   resendSearchHandler(dispatch, socket, resubmitCount, searchParam)
+      // );
       socket.current.on("set_cookie", (userId: string) =>
         setCookieHandler(userId)
       );

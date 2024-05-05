@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
 
-interface SearchParams {
+export interface SearchParams {
   query: string;
   user_list: string[];
   user_limit: number;
@@ -23,6 +23,7 @@ const searchParamSlice = createSlice({
   initialState,
   reducers: {
     addSearchParam: (state, action) => {
+      console.log("Adding search param: ", action.payload);
       if (action.payload) {
         state.searchParam.query = action.payload.query;
         state.searchParam.user_list = action.payload.user_list;
@@ -46,11 +47,11 @@ const searchParamSlice = createSlice({
     },
   },
 });
-// export const selectSearchParams = (state: RootState) =>
-//   state.searchParameters.searchParam;
-// export const selectResubmitCount = (state: RootState) =>
-//   state.searchParameters.resubmitCount;
-// export const { addSearchParam, clearSearchParam, incrementResubmitCount } =
-//   searchParamSlice.actions;
+export const selectSearchParams = (state: RootState) =>
+  state.searchParameters.searchParam;
+export const selectResubmitCount = (state: RootState) =>
+  state.searchParameters.resubmitCount;
+export const { addSearchParam, clearSearchParam, incrementResubmitCount } =
+  searchParamSlice.actions;
 
 export default searchParamSlice.reducer;

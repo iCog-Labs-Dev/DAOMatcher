@@ -14,6 +14,7 @@ import { addInfoMessage, clearInfoMessages } from "@/redux/infoSlice";
 import { selectUser } from "@/redux/userSlice";
 import SocketContext from "@/redux/SocketContext";
 import { useContext } from "react";
+import { addSearchParam } from "@/redux/searchParamSlice";
 
 export const useHandleCancel = () => {
   const dispatch = useDispatch();
@@ -86,13 +87,15 @@ export const useHandleSubmit = (
       if (socket) {
         console.log("Connected to socket: ", socket.connected);
         if (userId) {
-          socket.emit("search", {
+          const searchParams = {
             query: descriptionInput,
             user_list: handle,
             user_limit: count,
             depth: depth,
             userId: userId,
-          });
+          };
+          socket.emit("search", searchParams);
+          dispatch(addSearchParam(searchParams));
         } else {
           dispatch(setError("User session not found."));
           dispatch(setSuccess(false));
