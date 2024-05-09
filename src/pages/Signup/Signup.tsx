@@ -15,15 +15,19 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import { validateEmail, validatePassword, confirmPassword,validateName } from "@/pages/Login/validators";
+import {
+  validateEmail,
+  validatePassword,
+  confirmPassword,
+  validateName,
+} from "@/pages/Login/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
 import LoginData from "@/types/LoginData";
-import { addUser, selectIsLoggedIn, selectUser } from "@/redux/userSlice";
+import { addUser, selectIsLoggedIn } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
 
 interface LoginResponse {
   data: LoginData | null;
@@ -80,26 +84,24 @@ const SignupPage = () => {
     e.preventDefault();
 
     if (!validateName(name, setNameError)) {
-        console.log("Name is invalid : ", name);
-        return;
-      }
+      console.log("Name is invalid : ", name);
+      return;
+    }
 
     if (!validateEmail(email, setEmailError)) {
       console.log("Email is invalid : ", email);
       return;
     }
 
-    if (!validatePassword(password, setPassError)) {    
+    if (!validatePassword(password, setPassError)) {
       console.log("Password is invalid: ", email);
       return;
     }
 
     if (!confirmPassword(password, confirmedPassword, setPassError)) {
-        console.log("Password do not match: ", email);
-        return;
-      }
-
-
+      console.log("Password do not match: ", email);
+      return;
+    }
 
     console.log(`Email: ${email} Password: ${password}`);
 
@@ -196,10 +198,9 @@ const SignupPage = () => {
             onBlur={() => validateName(name, setNameError)}
           />
 
-        <FormHelperText error>{nameError}</FormHelperText>
+          <FormHelperText error>{nameError}</FormHelperText>
 
-
-            <TextField
+          <TextField
             variant="outlined"
             margin="normal"
             required
@@ -252,19 +253,20 @@ const SignupPage = () => {
             // autoComplete="current-password"
             value={confirmedPassword}
             onChange={(e) => setCOnfirmedPassword(e.target.value)}
-            onBlur={() => confirmPassword(password,confirmedPassword, setPassError)}
+            onBlur={() =>
+              confirmPassword(password, confirmedPassword, setPassError)
+            }
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton onClick={togglePasswordVisibility} edge="end">
                     {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>                                                     
+                  </IconButton>
                 </InputAdornment>
               ),
             }}
           />
           <FormHelperText error>{passError}</FormHelperText>
-
 
           <Button
             type="button"
