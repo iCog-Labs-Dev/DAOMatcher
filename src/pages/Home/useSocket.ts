@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addError, clearError } from "@/redux/errorSlice";
-import { setConnect, setIsLoading, setSuccess } from "@/pages/Home/homeSlice";
+import { setConnect, setSuccess } from "@/pages/Home/homeSlice";
 import { Response } from "@/pages/Home/Response";
 import { socket as socketConnection } from "@/config/default";
 import {
@@ -22,15 +22,10 @@ interface ISocketProps {
 }
 
 const useSocket = ({ count, depth }: ISocketProps) => {
-  // Connect to the Socket.IO server
   const dispatch = useDispatch();
-  // const isConnected = useSelector(selectAllHomeStates).isConnected;
   const token = useSelector(selectToken);
   const userData = useSelector(selectUser);
   const socket = useRef(socketConnection);
-
-  // const resubmitCount = useSelector(selectResubmitCount);
-  // const searchParam = useSelector(selectSearchParams);
 
   useEffect(() => {
     if (!socket.current) return;
@@ -51,9 +46,6 @@ const useSocket = ({ count, depth }: ISocketProps) => {
         refreshHandler(dispatch, socket, userData.id);
         return;
       });
-      // socket.current.on("resend_search", () =>
-      //   resendSearchHandler(dispatch, socket, resubmitCount, searchParam)
-      // );
       socket.current.on("set_cookie", (userId: string) =>
         setCookieHandler(userId)
       );

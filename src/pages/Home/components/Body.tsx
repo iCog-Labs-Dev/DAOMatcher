@@ -29,7 +29,6 @@ import DepthInput from "@/pages/Home/components/DepthInput";
 import { selectToken, selectUser } from "@/redux/userSlice";
 import SocketContext from "../../../redux/SocketContext";
 
-import { addError } from "@/redux/errorSlice";
 import { selectSearchParams } from "@/redux/searchParamSlice";
 
 function Body() {
@@ -114,8 +113,12 @@ function Body() {
       console.log("resending search parameters");
       console.log("SearchParam: ", searchParam);
       socket.current.emit("search", searchParam);
+      dispatch(setIsLoading(true));
       setResubmit(false);
     }
+    return () => {
+      setResubmit(false);
+    };
   }, [resubmit, searchParam]);
   if (!isLoggedIn) {
     return <Navigate to="/DAOMatcher/login" />;

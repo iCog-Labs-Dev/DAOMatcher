@@ -9,20 +9,12 @@ export interface SearchParams {
   userId: string;
 }
 
-interface SearchSlice {
-  resubmitCount: number;
-  searchParam: SearchParams;
-}
-
-const initialState: SearchSlice = {
-  searchParam: {
-    query: "",
-    user_list: [],
-    user_limit: 0,
-    depth: 0,
-    userId: "",
-  },
-  resubmitCount: 0,
+const initialState: SearchParams = {
+  query: "",
+  user_list: [],
+  user_limit: 0,
+  depth: 0,
+  userId: "",
 };
 
 const searchParamSlice = createSlice({
@@ -32,35 +24,27 @@ const searchParamSlice = createSlice({
     addSearchParam: (state, action) => {
       console.log("Adding search param: ", action.payload);
       if (action.payload) {
-        state.searchParam.query = action.payload.query;
-        state.searchParam.user_list = action.payload.user_list;
-        state.searchParam.user_limit = action.payload.user_limit;
-        state.searchParam.depth = action.payload.depth;
-        state.searchParam.userId = action.payload.userId;
+        state.query = action.payload.query;
+        state.user_list = action.payload.user_list;
+        state.user_limit = action.payload.user_limit;
+        state.depth = action.payload.depth;
+        state.userId = action.payload.userId;
       } else {
         console.log(
           "Invalid payload received while adding user state in userSlice"
         );
       }
     },
-    incrementResubmitCount: (state) => {
-      state.resubmitCount += 1;
-    },
     clearSearchParam: (state) => {
-      state.searchParam.query = initialState.searchParam.query;
-      state.searchParam.user_list = initialState.searchParam.user_list;
-      state.searchParam.user_limit = initialState.searchParam.user_limit;
-      state.searchParam.depth = initialState.searchParam.depth;
-      state.searchParam.userId = initialState.searchParam.userId;
-      state.resubmitCount = 0;
+      state.query = initialState.query;
+      state.user_list = initialState.user_list;
+      state.user_limit = initialState.user_limit;
+      state.depth = initialState.depth;
+      state.userId = initialState.userId;
     },
   },
 });
-export const selectSearchParams = (state: RootState) =>
-  state.searchParameters.searchParam;
-export const selectResubmitCount = (state: RootState) =>
-  state.searchParameters.resubmitCount;
-export const { addSearchParam, clearSearchParam, incrementResubmitCount } =
-  searchParamSlice.actions;
+export const selectSearchParams = (state: RootState) => state.searchParameters;
+export const { addSearchParam, clearSearchParam } = searchParamSlice.actions;
 
 export default searchParamSlice.reducer;
