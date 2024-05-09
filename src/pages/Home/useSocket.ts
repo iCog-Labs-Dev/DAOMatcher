@@ -47,7 +47,6 @@ const useSocket = ({ count, depth }: ISocketProps) => {
         console.log("connection id", socket.current.id);
       });
       socket.current.on("refresh_token", (data) => {
-        dispatch(setIsLoading(true));
         console.log("refresh token event fired with data: ", data);
         refreshHandler(dispatch, socket, userData.id);
         return;
