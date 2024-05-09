@@ -103,7 +103,6 @@ function Body() {
       socket.current.connect();
       dispatch(setConnect(true));
       dispatch(setIsTokenRefreshed(false));
-      dispatch(addError("Searching failed! Resubmit to try again!"));
     }
   }, [connect, disconnect, token, isTokenRefreshed]);
   if (!isLoggedIn) {
