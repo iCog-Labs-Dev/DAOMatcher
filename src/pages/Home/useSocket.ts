@@ -88,7 +88,7 @@ const useSocket = ({ count, depth }: ISocketProps) => {
     }
 
     return () => {
-      // disconnectHandler(dispatch, socket.current, userData.id);
+      socket.current.off();
       dispatch(clearError());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
