@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import { blueGrey, teal } from "@mui/material/colors";
 import Body from "@/pages/Home/components/Body";
 import Login from "@/pages/Login/Login";
+import Signup from "@/pages/Signup/Signup";
 
 const theme = createTheme({
   typography: {
@@ -35,6 +36,8 @@ function App() {
           <Routes>
             <Route path="/DAOMatcher/" element={<Body />} />
             <Route path="/DAOMatcher/login/" element={<Login />} />
+            <Route path="/DAOMatcher/signup/" element={<Signup />} />
+
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
