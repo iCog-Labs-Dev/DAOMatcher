@@ -15,7 +15,7 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import { validateEmail, validatePassword } from "@/pages/Login/validators";
+import { validateEmail, validatePassword, confirmPassword,validateName } from "@/pages/Login/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
@@ -53,17 +53,20 @@ const styles = {
   },
 };
 
-const LoginPage = () => {
+const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [name, setName] = useState("");
+  const [nameError, setNameError] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmedPassword, setCOnfirmedPassword] = useState("");
   const [passError, setPassError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   if (isLoggedIn) {
     return <Navigate to="/DAOMatcher" replace />;
@@ -73,17 +76,30 @@ const LoginPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = async (e: any) => {
+  const handleSignup = async (e: any) => {
     e.preventDefault();
+
+    if (!validateName(name, setNameError)) {
+        console.log("Name is invalid : ", name);
+        return;
+      }
+
     if (!validateEmail(email, setEmailError)) {
       console.log("Email is invalid : ", email);
       return;
     }
 
-    if (!validatePassword(password, setPassError)) {
+    if (!validatePassword(password, setPassError)) {    
       console.log("Password is invalid: ", email);
       return;
     }
+
+    if (!confirmPassword(password, confirmedPassword, setPassError)) {
+        console.log("Password do not match: ", email);
+        return;
+      }
+
+
 
     console.log(`Email: ${email} Password: ${password}`);
 
@@ -91,8 +107,9 @@ const LoginPage = () => {
     try {
       const { data: successData }: AxiosResponse<LoginResponse> =
         await axios.post(
-          `${BASE_URL}/api/auth/login`,
+          `${BASE_URL}/api/auth/register`,
           {
+            name,
             email,
             password,
           },
@@ -113,14 +130,14 @@ const LoginPage = () => {
           : {
               success: false,
               data: null,
-              error: "Login Failed due to server error",
+              error: "Signup Failed due to server error",
               message: null,
             };
       } else {
         data = {
           success: false,
           data: null,
-          error: "Something went wrong with your login",
+          error: "Something went wrong with your signup",
           message: null,
         };
       }
@@ -129,14 +146,13 @@ const LoginPage = () => {
     const { success, message, error, data: loginData } = data;
     setSuccess(success);
     dispatch(addUser(loginData));
-    dispatch(setIsLoggedIn(true));
 
     if (!success) {
       return setError(message ?? error ?? "Something went wrong");
     } else {
       setEmail("");
       setPassword("");
-      setSuccessMessage(message ?? "Login Successful");
+      setSuccessMessage(message ?? "Signup Successful");
       setError("");
 
       return <Navigate to="/DAOMatcher" replace />;
@@ -149,14 +165,14 @@ const LoginPage = () => {
       <div style={styles.paper}>
         <Avatar style={styles.avatar} src="vite.svg" />
         <Typography component="h1" variant="h5">
-          Sign in
+          Sign Up
         </Typography>
         <form
           style={styles.form}
           noValidate
           onKeyDown={(event) => {
             if (event.key === "Enter") {
-              handleLogin(event);
+              handleSignup(event);
             }
           }}
         >
@@ -169,17 +185,36 @@ const LoginPage = () => {
             margin="normal"
             required
             fullWidth
+            id="name"
+            label="Name"
+            name="name"
+            type="name"
+            autoComplete="name"
+            autoFocus
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onBlur={() => validateName(name, setNameError)}
+          />
+
+        <FormHelperText error>{nameError}</FormHelperText>
+
+
+            <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
             id="email"
             label="Email Address"
             name="email"
             type="email"
             autoComplete="email"
-            autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onBlur={() => validateEmail(email, setEmailError)}
           />
           <FormHelperText error>{emailError}</FormHelperText>
+
           <TextField
             variant="outlined"
             margin="normal"
@@ -204,15 +239,42 @@ const LoginPage = () => {
             }}
           />
           <FormHelperText error>{passError}</FormHelperText>
+
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Confirm Password"
+            type={showPassword ? "text" : "password"}
+            id="confirmPassword"
+            // autoComplete="current-password"
+            value={confirmedPassword}
+            onChange={(e) => setCOnfirmedPassword(e.target.value)}
+            onBlur={() => confirmPassword(password,confirmedPassword, setPassError)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={togglePasswordVisibility} edge="end">
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>                                                     
+                </InputAdornment>
+              ),
+            }}
+          />
+          <FormHelperText error>{passError}</FormHelperText>
+
+
           <Button
             type="button"
             fullWidth
             variant="contained"
             color="primary"
             style={styles.submit}
-            onClick={handleLogin}
+            onClick={handleSignup}
           >
-            Sign In
+            Sign Up
           </Button>
         </form>
       </div>
@@ -220,4 +282,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;

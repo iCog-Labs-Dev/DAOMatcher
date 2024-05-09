@@ -18,7 +18,8 @@ export default function CircularProgressWithLabel({
     <>
       {isLoading ? (
         <Box sx={{ position: "relative", display: "inline-flex" }}>
-          <CircularProgress variant="determinate" {...props} />
+          {/* <CircularProgress color="success" /> */}
+          <CircularProgress variant="determinate" value={value} {...props} />
           <Box
             sx={{
               top: 0,
@@ -29,6 +30,7 @@ export default function CircularProgressWithLabel({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              color: "blue",
             }}
           >
             <Typography

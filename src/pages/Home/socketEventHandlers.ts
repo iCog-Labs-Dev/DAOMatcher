@@ -1,16 +1,74 @@
 import Cookies from "js-cookie";
-import { Dispatch } from "react";
+import { Dispatch, MutableRefObject } from "react";
 import { addError, clearError } from "@/redux/errorSlice";
-import { setSuccess, setIsLoading, setProgress } from "@/pages/Home/homeSlice";
+import {
+  setSuccess,
+  setIsLoading,
+  setProgress,
+  setConnect,
+  setIsLoggedIn,
+  setIsTokenRefreshed,
+} from "@/pages/Home/homeSlice";
 import { UnknownAction } from "@reduxjs/toolkit";
 import { UpdateData, Response } from "@/pages/Home/Response";
-import { Socket } from "socket.io-client";
 import { setUsers } from "@/pages/Home/usersSlice";
 import { addInfoMessage } from "@/redux/infoSlice";
+import SocketError, { isSocketError } from "@/types/SocketError";
+import axios, { AxiosError } from "axios";
+import { BASE_URL } from "@/config/default";
+import { clearUser, updateToken } from "@/redux/userSlice";
+import { Socket } from "socket.io-client";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
+import { clearSearchParam } from "@/redux/searchParamSlice";
 
 export const connectHandler = (dispatch: Dispatch<UnknownAction>) => {
   console.log("Connected to the Socket.IO server");
   dispatch(clearError());
+  dispatch(setConnect(true));
+};
+
+export const refreshHandler = (
+  dispatch: Dispatch<UnknownAction>,
+  socket: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap>>,
+  userId: string
+) => {
+  const errorUpdates = (message: string) => {
+    dispatch(addError(message));
+    dispatch(setIsLoggedIn(false));
+    dispatch(clearUser());
+    dispatch(setConnect(false));
+  };
+
+  console.log("Refreshing token");
+  socket.current.emit("remove", userId);
+  socket.current.disconnect();
+
+  axios
+    .get(`${BASE_URL}/api/auth/refresh`, { withCredentials: true })
+    .then((data) => {
+      const { data: responseData, success, message } = data.data;
+      const { token } = responseData;
+      if (success) {
+        dispatch(updateToken(token));
+        dispatch(setIsTokenRefreshed(true));
+        dispatch(setConnect(true));
+        console.log("Socket reconnected");
+        console.log("Token refreshed");
+      } else {
+        console.log("Token refresh failed: ", message);
+        errorUpdates(message);
+      }
+    })
+    .catch((error) => {
+      if (error instanceof AxiosError)
+        dispatch(addError("Session expired. Please login again."));
+      else errorUpdates("Something went wrong. Please login again");
+      console.log("Error found while refreshing: ", error);
+
+      dispatch(setIsLoggedIn(false));
+      dispatch(clearUser());
+      dispatch(setConnect(false));
+    });
 };
 
 export const setCookieHandler = (userId: string) => {
@@ -23,7 +81,8 @@ export const getUsers = (
   count: number
 ) => {
   dispatch(setIsLoading(false));
-  dispatch(clearError());
+  dispatch(setConnect(false));
+  dispatch(clearSearchParam());
 
   console.log("Updating completed");
   console.log(data); //For debugging only
@@ -37,7 +96,7 @@ export const getUsers = (
   dispatch(setUsers(users));
   dispatch(setSuccess(true));
 
-  if (foundAllUsers && users.length > 0)
+  if (!foundAllUsers && users.length > 0)
     dispatch(
       addInfoMessage(
         `Found only ${users.length} users instead of ${count} users`
@@ -47,16 +106,11 @@ export const getUsers = (
   setProgress(0);
 };
 
-export const disconnectHandler = (
-  dispatch: Dispatch<UnknownAction>,
-  socket: Socket
-) => {
-  const userId = Cookies.get("userId");
-
+export const disconnectHandler = (dispatch: Dispatch<UnknownAction>) => {
   Cookies.remove("userId");
-  socket.emit("remove", userId);
-
   dispatch(setProgress(0));
+  dispatch(setIsLoading(false));
+  dispatch(setConnect(false));
   console.log("Disconnected from the Socket.IO server");
 };
 
@@ -71,10 +125,9 @@ export const connectErrorHandler = (dispatch: Dispatch<UnknownAction>) => {
 export const updateHandler = (
   dispatch: Dispatch<UnknownAction>,
   data: UpdateData,
-  depth: number
+  depth: MutableRefObject<number>
 ) => {
   console.log("Update received");
-  dispatch(clearError());
 
   try {
     console.log("received data: ", data);
@@ -88,7 +141,7 @@ export const updateHandler = (
       console.log("user: ", user);
       console.log("depth: ", depth);
 
-      const percentage = (tempProgress / depth) * 100;
+      const percentage = (tempProgress / depth.current) * 100;
       dispatch(setProgress(percentage));
     }
   } catch (error) {
@@ -115,13 +168,16 @@ const errorHandler = (
 
 export const genericErrorHandler = (
   dispatch: Dispatch<UnknownAction>,
-  error?: ErrorEvent | Error | unknown
+  error?: ErrorEvent | Error | SocketError | unknown
 ) => {
-  let message: string;
+  let message: string | null = null;
   if (error instanceof ErrorEvent || error instanceof Error)
     message = error.message;
+  else if (isSocketError(error as SocketError))
+    dispatch(addInfoMessage((error as SocketError).message));
   else message = "Something went wrong while connecting to socket io";
-  errorHandler(dispatch, message, error);
+
+  if (message != null) errorHandler(dispatch, message, error);
 };
 
 export const connectionTimedOutErrorHandler = (

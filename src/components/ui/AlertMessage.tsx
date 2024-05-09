@@ -1,4 +1,5 @@
 import { Alert } from "@mui/material";
+import { nanoid } from "@reduxjs/toolkit";
 
 interface IProps {
   message: string;
@@ -7,7 +8,11 @@ interface IProps {
 
 const AlertMessage = ({ message, severity }: IProps) => {
   return (
-    <Alert severity={severity} style={{ marginTop: "5px", marginBottom: "5px" }}>
+    <Alert
+      key={nanoid()}
+      severity={severity}
+      style={{ marginTop: "5px", marginBottom: "5px" }}
+    >
       {message}
     </Alert>
   );

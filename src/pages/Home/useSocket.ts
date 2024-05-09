@@ -1,9 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addError, clearError } from "@/redux/errorSlice";
-import { setSuccess, selectAllHomeStates } from "@/pages/Home/homeSlice";
+import { setConnect, setSuccess } from "@/pages/Home/homeSlice";
 import { Response } from "@/pages/Home/Response";
-import { socket } from "@/config/default";
-import { useEffect } from "react";
+import { socket as socketConnection } from "@/config/default";
 import {
   connectErrorHandler,
   connectHandler,
@@ -11,37 +10,67 @@ import {
   disconnectHandler,
   genericErrorHandler,
   getUsers,
+  refreshHandler,
   setCookieHandler,
   updateHandler,
 } from "@/pages/Home/socketEventHandlers";
-
+import { selectToken, selectUser } from "@/redux/userSlice";
+import { MutableRefObject, useEffect, useRef } from "react";
 interface ISocketProps {
   count: number;
-  depth: number;
+  depth: MutableRefObject<number>;
 }
 
 const useSocket = ({ count, depth }: ISocketProps) => {
-  // Connect to the Socket.IO server
   const dispatch = useDispatch();
-  const isLoading = useSelector(selectAllHomeStates).isLoading;
+  const token = useSelector(selectToken);
+  const userData = useSelector(selectUser);
+  const socket = useRef(socketConnection);
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket.current) return;
+
+    socket.current.io.opts.query = {
+      token,
+    };
+    socket.current.connect();
+    dispatch(setConnect(true));
 
     try {
-      socket.on("connect", () => connectHandler(dispatch));
-      socket.on("set_cookie", (userId: string) => setCookieHandler(userId));
-      socket.on("connect_error", () => connectErrorHandler(dispatch));
-      socket.on("search", (data: Response) => getUsers(dispatch, data, count));
-      socket.on("something_went_wrong", (data) =>
-        genericErrorHandler(dispatch, data)
+      socket.current.on("connect", () => {
+        connectHandler(dispatch);
+        console.log("connection id", socket.current.id);
+      });
+      socket.current.on("refresh_token", (data) => {
+        console.log("refresh token event fired with data: ", data);
+        refreshHandler(dispatch, socket, userData.id);
+        return;
+      });
+      socket.current.on("set_cookie", (userId: string) =>
+        setCookieHandler(userId)
       );
-      socket.on("connect_timeout", () =>
+      socket.current.on("connect_error", () => connectErrorHandler(dispatch));
+      socket.current.on("search", (data: Response) =>
+        getUsers(dispatch, data, count)
+      );
+      socket.current.on("something_went_wrong", (data) => {
+        console.log("Error data found");
+        return genericErrorHandler(dispatch, data);
+      });
+      socket.current.on("search_error", (data) => {
+        console.log("Error found after completed searching");
+        return genericErrorHandler(dispatch, data);
+      });
+      socket.current.on("connect_timeout", () =>
         connectionTimedOutErrorHandler(dispatch)
       );
-      socket.on("disconnect", () => disconnectHandler(dispatch, socket));
-      socket.on(`update`, (data) => updateHandler(dispatch, data, depth));
-      socket.on("error", (error) => genericErrorHandler(dispatch, error));
+      socket.current.on("disconnect", () => disconnectHandler(dispatch));
+      socket.current.on(`update`, (data) =>
+        updateHandler(dispatch, data, depth)
+      );
+      socket.current.on("error", (error) =>
+        genericErrorHandler(dispatch, error)
+      );
     } catch (error) {
       console.log(error);
       if (error instanceof ErrorEvent)
@@ -51,11 +80,13 @@ const useSocket = ({ count, depth }: ISocketProps) => {
     }
 
     return () => {
-      disconnectHandler(dispatch, socket);
+      socket.current.off();
       dispatch(clearError());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+  }, [token]);
+
+  return socket;
 };
 
 export default useSocket;

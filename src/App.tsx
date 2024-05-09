@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import { blueGrey, teal } from "@mui/material/colors";
 import Body from "@/pages/Home/components/Body";
 import Login from "@/pages/Login/Login";
-import { checkSession } from "@/utils/cookies";
+import Signup from "@/pages/Signup/Signup";
 
 const theme = createTheme({
   typography: {
@@ -27,8 +27,6 @@ const theme = createTheme({
   },
 });
 
-const isLoggedIn = checkSession("email");
-
 function App() {
   return (
     <>
@@ -36,14 +34,10 @@ function App() {
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Routes>
-            <Route
-              path="/DAOMatcher/"
-              element={<Body isLoggedIn={isLoggedIn} />}
-            />
-            <Route
-              path="/DAOMatcher/login/"
-              element={<Login isLoggedIn={isLoggedIn} />}
-            />
+            <Route path="/DAOMatcher/" element={<Body />} />
+            <Route path="/DAOMatcher/login/" element={<Login />} />
+            <Route path="/DAOMatcher/signup/" element={<Signup />} />
+
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

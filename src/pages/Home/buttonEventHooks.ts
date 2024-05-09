@@ -1,29 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { convertToCSV } from "@/utils/CSV";
-import Cookies from "js-cookie";
 import { selectAllUsers, setUsers } from "@/pages/Home/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectAllHomeStates,
+  setConnect,
   setIsLoading,
   setProgress,
   setSuccess,
 } from "@/pages/Home/homeSlice";
 import { setError, clearError } from "@/pages/Home/homeSlice";
 import { addInfoMessage, clearInfoMessages } from "@/redux/infoSlice";
-import { socket } from "@/config/default";
+import { selectUser } from "@/redux/userSlice";
+import SocketContext from "@/redux/SocketContext";
+import { useContext } from "react";
+import { addSearchParam } from "@/redux/searchParamSlice";
 
 export const useHandleCancel = () => {
   const dispatch = useDispatch();
+  const userData = useSelector(selectUser);
+  const socket = useContext(SocketContext);
 
   const handleCancel = () => {
     dispatch(setSuccess(false));
     if (socket) {
-      const userId = Cookies.get("userId");
+      const userId = userData.id;
+
       socket.emit("stop", userId);
       console.log("Cancelled request");
+
       dispatch(addInfoMessage("Request canceled"));
-      socket.disconnect();
     } else dispatch(addInfoMessage("Couldn't cancel request"));
 
     dispatch(setIsLoading(false));
@@ -39,13 +45,13 @@ export const useHandleSubmit = (
   depth: number
 ) => {
   const handle = useSelector(selectAllHomeStates).handle;
+  const socket = useContext(SocketContext);
 
   const dispatch = useDispatch();
+  const userData = useSelector(selectUser);
 
   const handleSubmit = async () => {
     dispatch(setSuccess(false));
-    dispatch(clearError());
-    dispatch(clearInfoMessages());
 
     const requestBody = {
       handle,
@@ -74,19 +80,24 @@ export const useHandleSubmit = (
       dispatch(clearError());
       dispatch(clearInfoMessages());
       dispatch(setUsers([]));
+      dispatch(setConnect(true));
+
+      const userId = userData.id;
 
       if (socket) {
-        const userId = Cookies.get("userId");
+        console.log("Connected to socket: ", socket.connected);
         if (userId) {
-          socket.emit("search", {
+          const searchParams = {
             query: descriptionInput,
             user_list: handle,
             user_limit: count,
             depth: depth,
             userId: userId,
-          });
+          };
+          socket.emit("search", searchParams);
+          dispatch(addSearchParam(searchParams));
         } else {
-          dispatch(setError("User session not found. Reload the page"));
+          dispatch(setError("User session not found."));
           dispatch(setSuccess(false));
         }
       }
