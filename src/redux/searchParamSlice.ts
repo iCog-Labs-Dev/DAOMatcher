@@ -6,6 +6,7 @@ export interface SearchParams {
   user_list: string[];
   user_limit: number;
   depth: number;
+  userId: string;
 }
 
 interface SearchSlice {
@@ -14,7 +15,13 @@ interface SearchSlice {
 }
 
 const initialState: SearchSlice = {
-  searchParam: { query: "", user_list: [], user_limit: 0, depth: 0 },
+  searchParam: {
+    query: "",
+    user_list: [],
+    user_limit: 0,
+    depth: 0,
+    userId: "",
+  },
   resubmitCount: 0,
 };
 
@@ -29,6 +36,7 @@ const searchParamSlice = createSlice({
         state.searchParam.user_list = action.payload.user_list;
         state.searchParam.user_limit = action.payload.user_limit;
         state.searchParam.depth = action.payload.depth;
+        state.searchParam.userId = action.payload.userId;
       } else {
         console.log(
           "Invalid payload received while adding user state in userSlice"
@@ -43,6 +51,7 @@ const searchParamSlice = createSlice({
       state.searchParam.user_list = initialState.searchParam.user_list;
       state.searchParam.user_limit = initialState.searchParam.user_limit;
       state.searchParam.depth = initialState.searchParam.depth;
+      state.searchParam.userId = initialState.searchParam.userId;
       state.resubmitCount = 0;
     },
   },

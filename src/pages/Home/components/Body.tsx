@@ -30,6 +30,7 @@ import { selectToken, selectUser } from "@/redux/userSlice";
 import SocketContext from "../../../redux/SocketContext";
 
 import { addError } from "@/redux/errorSlice";
+import { selectSearchParams } from "@/redux/searchParamSlice";
 
 function Body() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,6 +41,7 @@ function Body() {
   const socket = useSocket({ count, depth: depthRef });
 
   const [descriptionInput, setDescriptionInput] = useState<string>("");
+  const [resubmit, setResubmit] = useState<boolean>(false);
   // const [estimation, setEstimation] = useState<string>("");
 
   const users = useSelector(selectAllUsers);
@@ -54,7 +56,7 @@ function Body() {
   const userData = useSelector(selectUser);
   const token = useSelector(selectToken);
 
-  // const searchParam = useSelector(selectSearchParams);
+  const searchParam = useSelector(selectSearchParams);
   // const resubmitCount = useSelector(selectResubmitCount);
 
   const dispatch = useDispatch();
@@ -103,8 +105,18 @@ function Body() {
       socket.current.connect();
       dispatch(setConnect(true));
       dispatch(setIsTokenRefreshed(false));
+      setResubmit(true);
     }
   }, [connect, disconnect, token, isTokenRefreshed]);
+
+  useEffect(() => {
+    if (resubmit) {
+      console.log("resending search parameters");
+      console.log("SearchParam: ", searchParam);
+      socket.current.emit("search", searchParam);
+      setResubmit(false);
+    }
+  }, [resubmit, searchParam]);
   if (!isLoggedIn) {
     return <Navigate to="/DAOMatcher/login" />;
   }

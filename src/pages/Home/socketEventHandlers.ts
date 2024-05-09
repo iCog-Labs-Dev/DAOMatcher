@@ -56,8 +56,6 @@ export const refreshHandler = (
         dispatch(updateToken(token));
         dispatch(setIsTokenRefreshed(true));
         dispatch(setConnect(true));
-        socket.current.io.opts.query = { token };
-        socket.current.connect();
         console.log("Socket reconnected");
         console.log("Token refreshed");
       } else {
