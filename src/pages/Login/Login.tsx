@@ -24,6 +24,7 @@ import LoginData from "@/types/LoginData";
 import { addUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
+import OptionLink from "@/components/ui/OptionLink";
 
 interface LoginResponse {
   data: LoginData | null;
@@ -128,8 +129,6 @@ const LoginPage = () => {
 
     const { success, message, error, data: loginData } = data;
     setSuccess(success);
-    dispatch(addUser(loginData));
-    dispatch(setIsLoggedIn(true));
 
     if (!success) {
       return setError(message ?? error ?? "Something went wrong");
@@ -138,6 +137,8 @@ const LoginPage = () => {
       setPassword("");
       setSuccessMessage(message ?? "Login Successful");
       setError("");
+      dispatch(addUser(loginData));
+      dispatch(setIsLoggedIn(true));
 
       return <Navigate to="/DAOMatcher" replace />;
     }
@@ -214,6 +215,10 @@ const LoginPage = () => {
           >
             Sign In
           </Button>
+          <OptionLink
+            text="Don't have an account yet? Sign up"
+            to="/DAOMatcher/signup"
+          />
         </form>
       </div>
     </Container>
