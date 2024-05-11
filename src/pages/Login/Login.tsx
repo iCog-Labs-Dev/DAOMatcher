@@ -128,8 +128,6 @@ const LoginPage = () => {
 
     const { success, message, error, data: loginData } = data;
     setSuccess(success);
-    dispatch(addUser(loginData));
-    dispatch(setIsLoggedIn(true));
 
     if (!success) {
       return setError(message ?? error ?? "Something went wrong");
@@ -138,6 +136,8 @@ const LoginPage = () => {
       setPassword("");
       setSuccessMessage(message ?? "Login Successful");
       setError("");
+      dispatch(addUser(loginData));
+      dispatch(setIsLoggedIn(true));
 
       return <Navigate to="/DAOMatcher" replace />;
     }
