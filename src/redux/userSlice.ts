@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
-import LoginData from "@/types/LoginData";
+import AuthData from "@/types/AuthData";
 
-const initialState: LoginData = {
+const initialState: AuthData = {
   token: "",
   isLoggedIn: false,
   user: {

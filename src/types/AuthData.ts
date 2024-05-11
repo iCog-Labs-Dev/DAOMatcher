@@ -9,10 +9,10 @@ export interface ILoginUser {
   verified: boolean;
 }
 
-interface LoginData {
+interface AuthData {
   token: string;
   isLoggedIn: boolean;
   user: ILoginUser;
 }
 
-export default LoginData;
+export default AuthData;
