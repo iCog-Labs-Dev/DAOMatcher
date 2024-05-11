@@ -22,12 +22,13 @@ import {
   validateName,
 } from "@/pages/Login/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
 import LoginData from "@/types/LoginData";
 import { addUser, selectIsLoggedIn } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
 
 interface LoginResponse {
   data: LoginData | null;
@@ -70,7 +71,7 @@ const SignupPage = () => {
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
 
   if (isLoggedIn) {
     return <Navigate to="/DAOMatcher" replace />;
@@ -111,7 +112,7 @@ const SignupPage = () => {
         await axios.post(
           `${BASE_URL}/api/auth/register`,
           {
-            name,
+            display_name: name,
             email,
             password,
           },
@@ -147,7 +148,6 @@ const SignupPage = () => {
 
     const { success, message, error, data: loginData } = data;
     setSuccess(success);
-    dispatch(addUser(loginData));
 
     if (!success) {
       return setError(message ?? error ?? "Something went wrong");
@@ -156,6 +156,8 @@ const SignupPage = () => {
       setPassword("");
       setSuccessMessage(message ?? "Signup Successful");
       setError("");
+      dispatch(addUser(loginData));
+      dispatch(setIsLoggedIn(true));
 
       return <Navigate to="/DAOMatcher" replace />;
     }
@@ -278,6 +280,7 @@ const SignupPage = () => {
           >
             Sign Up
           </Button>
+          <Link to="/login">Already have an account? Login</Link>
         </form>
       </div>
     </Container>
