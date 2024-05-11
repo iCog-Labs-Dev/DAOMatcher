@@ -24,6 +24,7 @@ import LoginData from "@/types/LoginData";
 import { addUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
+import OptionLink from "@/components/ui/OptionLink";
 
 interface LoginResponse {
   data: LoginData | null;
@@ -214,6 +215,10 @@ const LoginPage = () => {
           >
             Sign In
           </Button>
+          <OptionLink
+            text="Don't have an account yet? Sign up"
+            to="/DAOMatcher/signup"
+          />
         </form>
       </div>
     </Container>

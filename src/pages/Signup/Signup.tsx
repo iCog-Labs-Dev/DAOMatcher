@@ -22,13 +22,14 @@ import {
   validateName,
 } from "@/pages/Login/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
 import LoginData from "@/types/LoginData";
-import { addUser, selectIsLoggedIn } from "@/redux/userSlice";
+import { addUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
+import OptionLink from "@/components/ui/OptionLink";
 
 interface LoginResponse {
   data: LoginData | null;
@@ -280,7 +281,10 @@ const SignupPage = () => {
           >
             Sign Up
           </Button>
-          <Link to="/login">Already have an account? Login</Link>
+          <OptionLink
+            text="Already have an account? Login"
+            to="/DAOMatcher/login"
+          />
         </form>
       </div>
     </Container>
