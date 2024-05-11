@@ -15,7 +15,7 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import { validateEmail, validatePassword } from "@/pages/Login/validators";
+import { validateEmail, validatePassword } from "@/utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";

@@ -20,7 +20,7 @@ import {
   validatePassword,
   confirmPassword,
   validateName,
-} from "@/pages/Login/validators";
+} from "@/utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
