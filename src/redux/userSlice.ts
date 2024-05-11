@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
-import AuthData from "@/types/AuthData";
+import AuthData from "@/types/AuthTypes";
 
 const initialState: AuthData = {
   token: "",

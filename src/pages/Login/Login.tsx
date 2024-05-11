@@ -15,23 +15,17 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { validateEmail, validatePassword } from "@/utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
-import AuthData from "@/types/AuthData";
+import AuthResponse from "@/types/AuthTypes";
 import { addUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
 import OptionLink from "@/components/ui/OptionLink";
-
-interface LoginResponse {
-  data: AuthData | null;
-  success: boolean;
-  message: string | null;
-  error: string | null;
-}
 
 const styles = {
   paper: {
@@ -88,9 +82,9 @@ const LoginPage = () => {
 
     console.log(`Email: ${email} Password: ${password}`);
 
-    let data: LoginResponse;
+    let data: AuthResponse;
     try {
-      const { data: successData }: AxiosResponse<LoginResponse> =
+      const { data: successData }: AxiosResponse<AuthResponse> =
         await axios.post(
           `${BASE_URL}/api/auth/login`,
           {
@@ -102,7 +96,7 @@ const LoginPage = () => {
       data = successData;
     } catch (error) {
       if (error instanceof AxiosError) {
-        const errorData: LoginResponse = error
+        const errorData: AuthResponse = error
           ? error.response
             ? error.response.data
               ? error.response.data
