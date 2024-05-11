@@ -40,7 +40,9 @@ export const validatePassword = (
     !password ||
     !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W])[A-Za-z\d\W]{8,}$/.test(password)
   ) {
-    setPassError("Enter a strong password");
+    setPassError(
+      "Password should contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character"
+    );
     return false;
   }
   setPassError("");
