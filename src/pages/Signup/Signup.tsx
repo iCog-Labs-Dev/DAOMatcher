@@ -4,7 +4,6 @@
 
 import { useState, CSSProperties } from "react";
 import {
-  Button,
   TextField,
   Typography,
   Container,
@@ -25,18 +24,12 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
-import AuthData from "@/types/AuthData";
+import AuthResponse from "@/types/AuthTypes";
 import { addUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
 import OptionLink from "@/components/ui/OptionLink";
-
-interface LoginResponse {
-  data: AuthData | null;
-  success: boolean;
-  message: string | null;
-  error: string | null;
-}
+import Button from "@/components/ui/Button";
 
 const styles = {
   paper: {
@@ -70,6 +63,7 @@ const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
@@ -107,9 +101,11 @@ const SignupPage = () => {
 
     console.log(`Email: ${email} Password: ${password}`);
 
-    let data: LoginResponse;
+    let data: AuthResponse;
     try {
-      const { data: successData }: AxiosResponse<LoginResponse> =
+      setIsLoading(true);
+
+      const { data: successData }: AxiosResponse<AuthResponse> =
         await axios.post(
           `${BASE_URL}/api/auth/register`,
           {
@@ -122,7 +118,7 @@ const SignupPage = () => {
       data = successData;
     } catch (error) {
       if (error instanceof AxiosError) {
-        const errorData: LoginResponse = error
+        const errorData: AuthResponse = error
           ? error.response
             ? error.response.data
               ? error.response.data
@@ -145,6 +141,7 @@ const SignupPage = () => {
           message: null,
         };
       }
+      setIsLoading(false);
     }
 
     const { success, message, error, data: loginData } = data;
@@ -271,16 +268,8 @@ const SignupPage = () => {
           />
           <FormHelperText error>{passError}</FormHelperText>
 
-          <Button
-            type="button"
-            fullWidth
-            variant="contained"
-            color="primary"
-            style={styles.submit}
-            onClick={handleSignup}
-          >
-            Sign Up
-          </Button>
+          <Button text="Sign Up" loading={isLoading} onClick={handleSignup} />
+
           <OptionLink
             text="Already have an account? Login"
             to="/DAOMatcher/login"
