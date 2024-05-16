@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Divider, Stack, Typography, Pagination } from "@mui/material";
 import { Fragment } from "react";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import IUser from "@/types/IUser";
