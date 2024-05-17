@@ -37,15 +37,15 @@ const UserHandleInputInput = () => {
     if (mastodonHandleInput || linkedInHandleInput || twitterHandleInput) {
       const handlesToAdd = [];
       const annotatedHandles = [];
-      if (mastodonHandleInput && !handle.includes(mastodonHandleInput)) {
+      if (mastodonHandleInput && !displayHandle.includes(mastodonHandleInput)) {
         handlesToAdd.push(mastodonHandleInput);
         annotatedHandles.push(mastodonHandleInput);
       }
-      if (linkedInHandleInput && !handle.includes(linkedInHandleInput)) {
+      if (linkedInHandleInput && !displayHandle.includes(linkedInHandleInput)) {
         handlesToAdd.push(linkedInHandleInput);
         annotatedHandles.push(`${LINKEDIN_PREFIX}${linkedInHandleInput}`);
       }
-      if (twitterHandleInput && !handle.includes(twitterHandleInput)) {
+      if (twitterHandleInput && !displayHandle.includes(twitterHandleInput)) {
         handlesToAdd.push(twitterHandleInput);
         annotatedHandles.push(`${TWITTER_PREFIX}${twitterHandleInput}`);
       }
