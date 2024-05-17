@@ -101,6 +101,9 @@ const UserHandleInputInput = () => {
           size="small"
           placeholder="@MarkRuffalo@mastodon.social"
         />
+
+        <Box sx={{ width: "1rem" }} />
+
         <TextField
           id="outlined-basic"
           name="linkedInHandleInput"
@@ -114,6 +117,9 @@ const UserHandleInputInput = () => {
           size="small"
           placeholder="benjamin-grant-72381ujy3u"
         />
+
+        <Box sx={{ width: "1rem" }} />
+
         <TextField
           id="outlined-basic"
           name="twitterHandleInput"
