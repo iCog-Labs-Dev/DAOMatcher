@@ -5,7 +5,7 @@ import { blueGrey, teal } from "@mui/material/colors";
 import Body from "@/pages/Home/components/Body";
 import Login from "@/pages/Login/Login";
 import Signup from "@/pages/Signup/Signup";
-
+import History from "./pages/Home/components/History";
 const theme = createTheme({
   typography: {
     fontFamily: [
@@ -37,6 +37,7 @@ function App() {
             <Route path="/DAOMatcher/" element={<Body />} />
             <Route path="/DAOMatcher/login/" element={<Login />} />
             <Route path="/DAOMatcher/signup/" element={<Signup />} />
+            <Route path="/DAOMatcher/history/" element={<History />} />
 
           </Routes>
         </BrowserRouter>
