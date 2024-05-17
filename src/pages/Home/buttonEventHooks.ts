@@ -63,12 +63,24 @@ export const useHandleSubmit = (
 
     if (handle.length > 0 && descriptionInput != "") {
       //This line of code insures all handles are of Mastodon format
-      const pattern =
+      const mastodonPattern =
         /^@[a-zA-Z0-9_!#$%^&*()+=\-[\]{}|\\:;"'<>,?/]+@[a-zA-Z0-9_!#$%^&*()+=\-[\]{}|\\:;"'<>,?/]+\.[a-zA-Z0-9_!#$%^&*()+=\-[\]{}|\\:;"'<>,?/]+$/;
-      const isValid = handle.every((user) => {
-        console.log("User: ", user, " Valid: ", pattern.test(user));
+      const otherPattern = /^[a-zA-Z]([a-zA-Z0-9_-]*[a-zA-Z0-9])?$/;
 
-        return pattern.test(user);
+      const isValid = handle.every((user) => {
+        console.log(
+          "User: ",
+          user,
+          " Valid: ",
+          mastodonPattern.test(user) || otherPattern.test(user.split("li+")[1])
+        );
+
+        const linkedInUser = user.split("li+");
+        const twitterUser = user.split("tw+");
+        if (linkedInUser.length > 1) user = linkedInUser[1];
+        if (twitterUser.length > 1) user = twitterUser[1];
+
+        return mastodonPattern.test(user) || otherPattern.test(user);
       });
 
       if (!isValid) {
