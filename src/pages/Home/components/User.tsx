@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Divider, Stack, Typography, Pagination } from "@mui/material";
+import { Avatar, Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { Fragment } from "react";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import IUser from "@/types/IUser";
@@ -7,8 +7,8 @@ interface Props {
   user: IUser;
 }
 
-function getUrl(handle: string) {
-  if (handle.includes("@")) {
+function getUrl(handle: string, social_media: string) {
+  if (social_media === "mastodon") {
     const baseUrl = `https://mastodon.social`;
     try {
       const username = handle.split("@mastodon.social")[0];
@@ -16,8 +16,13 @@ function getUrl(handle: string) {
     } catch (error) {
       return `${baseUrl}/${handle}`;
     }
-  } else {
+  } else if (social_media == "linkedin") {
     return `https://www.linkedin.com/in/${handle}/`;
+  } else if (social_media == "twitter") {
+    return `https://twitter.com/${handle}`;
+  } else {
+    let searchQuery = `${handle} ${social_media}`;
+    return `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
   }
 }
 
@@ -44,7 +49,7 @@ function User({ user }: Props) {
           </Stack>
           <Button
             startIcon={<OpenInNewIcon />}
-            href={getUrl(user.handle)}
+            href={getUrl(user.handle, user.social_media)}
             target="blank"
           >
             Visit profile

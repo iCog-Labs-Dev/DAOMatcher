@@ -50,17 +50,23 @@ const UsersList = ({ users }: IProps) => {
           <User key={user.id} user={user} />
         ))}
       </Container>
-      <Box sx={{ display: "flex", justifyContent:"center" }}>
-        <Pagination
-            count={Math.ceil(users.length / itemsPerPage)}
-            page={currentPage}
-            onChange={handlePageChange}
-            variant="outlined"
-            shape="rounded"
-            color="primary"
-          />
-      </Box>
-      
+
+      {currentUsers.length > 0 && (
+        <>
+          <Box sx={{ height: "1rem" }} />
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Pagination
+              count={Math.ceil(users.length / itemsPerPage)}
+              page={currentPage}
+              onChange={handlePageChange}
+              variant="outlined"
+              shape="rounded"
+              color="primary"
+            />
+          </Box>
+          <Box sx={{ height: "2rem" }} />
+        </>
+      )}
     </>
   );
 };

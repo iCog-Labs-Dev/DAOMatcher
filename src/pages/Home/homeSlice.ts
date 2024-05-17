@@ -12,7 +12,9 @@ export interface HomeState {
   progress: number;
   error: string | null;
   handle: string[];
-  handleInput: string;
+  mastodonHandleInput: string;
+  linkedInHandleInput: string;
+  twitterHandleInput: string;
 }
 
 const initialState: HomeState = {
@@ -25,7 +27,9 @@ const initialState: HomeState = {
   progress: 0,
   error: null,
   handle: [],
-  handleInput: "",
+  mastodonHandleInput: "",
+  linkedInHandleInput: "",
+  twitterHandleInput: "",
 };
 
 const homeSlice = createSlice({
@@ -64,8 +68,19 @@ const homeSlice = createSlice({
     setHandle(state, action) {
       state.handle = action.payload;
     },
-    setHandleInput(state, action) {
-      state.handleInput = action.payload;
+    setMastodonHandleInput(state, action) {
+      state.mastodonHandleInput = action.payload;
+    },
+    setLinkedInHandleInput(state, action) {
+      state.linkedInHandleInput = action.payload;
+    },
+    setTwitterHandleInput(state, action) {
+      state.twitterHandleInput = action.payload;
+    },
+    clearHandleInputs(state) {
+      state.mastodonHandleInput = "";
+      state.linkedInHandleInput = "";
+      state.twitterHandleInput = "";
     },
   },
 });
@@ -82,6 +97,9 @@ export const {
   setError,
   clearError,
   setHandle,
-  setHandleInput,
+  setMastodonHandleInput,
+  setLinkedInHandleInput,
+  setTwitterHandleInput,
+  clearHandleInputs,
 } = homeSlice.actions;
 export default homeSlice.reducer;
