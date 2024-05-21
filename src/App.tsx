@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material";
 import Header from "@/components/Header";
 import { blueGrey, teal } from "@mui/material/colors";
@@ -30,7 +30,7 @@ const theme = createTheme({
 });
 
 function App() {
-  const {token} = useParams();
+
   return (
     <>
       <Header />
@@ -41,7 +41,7 @@ function App() {
             <Route path="/DAOMatcher/login/" element={<Login />} />
             <Route path="/DAOMatcher/signup/" element={<Signup />} />
             <Route path="/DAOMatcher/verifyEmail/" element={<Verification />} />
-            <Route path={`/api/auth/confirm/${token || ""}`} element={<Confirm token={token || ""} />} />
+            <Route path="/DAOMatcher/api/auth/confirm/:token" element={<Confirm />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

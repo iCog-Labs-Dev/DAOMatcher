@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from '@/redux/store';
 import { BASE_URL } from '@/config/default';
 import axios, { AxiosError, AxiosResponse } from "axios";
+import AlertMessage from "@/components/ui/AlertMessage";
 
 interface AuthResponse {
   success: boolean;
@@ -19,8 +20,9 @@ export default function Verification() {
   const token = useSelector((state: RootState) => selectToken(state));
   const user = useSelector((state: RootState) => selectUser(state));
   const navigate = useNavigate();
-  const [countdown, setCountdown] = useState(10);
-  const [resendDisabled, setResendDisabled] = useState(false);
+  const [countdown, setCountdown] = useState(120);
+  const [resendDisabled, setResendDisabled] = useState(true);  
+  const [alert, setAlert] = useState<{ message: string; severity: "error" | "warning" | "info" | "success" } | null>(null);
 
   useEffect(() => {
     if (!token) {
@@ -37,6 +39,8 @@ export default function Verification() {
       countdownTimer = setInterval(() => {
         setCountdown(prevCountdown => Math.max(0, prevCountdown - 1));
       }, 1000);
+    } else if (countdown === 0) {
+      setResendDisabled(false);
     }
     return () => clearInterval(countdownTimer);
   }, [resendDisabled, countdown]);
@@ -44,7 +48,7 @@ export default function Verification() {
   const handleResendClick = async () => {
     if (!resendDisabled) {
       setResendDisabled(true);
-      setCountdown(10);
+      setCountdown(120);
 
       try {
         const { data: successData }: AxiosResponse<AuthResponse> = await axios.get(
@@ -54,9 +58,9 @@ export default function Verification() {
         );
 
         if (successData.success) {
-          console.log(successData.message || 'Verification email resent successfully');
+          setAlert({ message: successData.message || 'Verification email resent successfully', severity: 'success' });
         } else {
-          console.error('Failed to resend verification email:', successData.message);
+          setAlert({ message: successData.message || 'The email is already verified', severity: 'info' });
         }
       } catch (error) {
         let errorData: AuthResponse | null = null;
@@ -74,12 +78,12 @@ export default function Verification() {
           message: null,
         };
 
-        console.error('Error resending verification email:', data.error);
+        setAlert({ message: `${data.error}`, severity: 'error' });
       }
 
       setTimeout(() => {
         setResendDisabled(false);
-      }, 10000);
+      },120000);
     }
   };
 
@@ -99,11 +103,12 @@ export default function Verification() {
         <br/>
         <Typography variant="body2" gutterBottom align="center">
           If you didn't receive the verification email, click the button below 
-          {countdown > 0 && ` after ${countdown} seconds`}
+          { countdown > 0 && ` after ${countdown} seconds`}
         </Typography>
         <Button variant="contained" onClick={handleResendClick} disabled={resendDisabled}>
           Resend The Verification Email
         </Button>
+        {alert && <AlertMessage message={alert.message} severity={alert.severity} />}
       </Container>
     </div>
   );

@@ -2,7 +2,18 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, CircularProgress } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { BASE_URL } from '@/config/default';
+import { selectToken } from "@/redux/userSlice";
+import { useSelector } from "react-redux";
+import { RootState } from '@/redux/store';
+
+
+interface AuthResponse {
+  data?: any;
+  error?: string;
+  message?: string;
+}
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -17,15 +28,21 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function Confirm({ token }:{ token: string }) {
+function Confirm() {
   const classes = useStyles();
   const navigate = useNavigate();
   const [confirmationStatus, setConfirmationStatus] = useState('pending');
-
+  const authtoken = useSelector((state: RootState) => selectToken(state));
+  //useParam
+  const token = window.location.pathname.split('/').pop();
+  
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const response = await axios.get(`/api/auth/confirm/${token}`);
+        const response: AxiosResponse<AuthResponse> = await axios.get(`${BASE_URL}/api/auth/confirm/${token}`, 
+        { withCredentials: true, headers: { Authorization: `Bearer ${authtoken}` }}
+        );
+        
         if (response.status === 200) {
           setConfirmationStatus('success');
         } else {
