@@ -5,6 +5,7 @@ interface IUser {
   score: number;
   handle: string;
   image: string;
+  social_media: string;
 }
 
 export default IUser;
