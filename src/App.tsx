@@ -6,7 +6,7 @@ import Body from "@/pages/Home/components/Body";
 import Login from "@/pages/Login/Login";
 import Signup from "@/pages/Signup/Signup";
 import Verification from "@/pages/Verification/Verification";
-import Confirm from "./pages/Verification/Confirm";
+import Confirm from "@/pages/Verification/Confirm";
 
 const theme = createTheme({
   typography: {

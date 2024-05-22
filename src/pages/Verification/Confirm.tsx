@@ -6,14 +6,8 @@ import axios, { AxiosResponse } from 'axios';
 import { BASE_URL } from '@/config/default';
 import { selectToken } from "@/redux/userSlice";
 import { useSelector } from "react-redux";
-import { RootState } from '@/redux/store';
+import AuthResponse from '@/types/AuthTypes'
 
-
-interface AuthResponse {
-  data?: any;
-  error?: string;
-  message?: string;
-}
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -28,11 +22,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+type ConfirmationStatus = 'pending' | 'success' | 'error';
+
 function Confirm() {
   const classes = useStyles();
   const navigate = useNavigate();
-  const [confirmationStatus, setConfirmationStatus] = useState('pending');
-  const authtoken = useSelector((state: RootState) => selectToken(state));
+  const [confirmationStatus, setConfirmationStatus] = useState<ConfirmationStatus>('pending');
+  const authtoken = useSelector(selectToken);
   //useParam
   const token = window.location.pathname.split('/').pop();
   
@@ -62,10 +58,10 @@ function Confirm() {
     }
   }, [confirmationStatus, navigate]);
 
-  let confirmationMessage;
+  let ConfirmationMessageComponent;
   switch (confirmationStatus) {
     case 'pending':
-      confirmationMessage = (
+      ConfirmationMessageComponent = (
         <>
           <CircularProgress />
           <Typography variant="body1" className={classes.message}>
@@ -75,20 +71,20 @@ function Confirm() {
       );
       break;
     case 'error':
-      confirmationMessage = (
+      ConfirmationMessageComponent = (
         <Typography variant="body1" className={classes.message}>
           Error confirming email. Please try again later.
         </Typography>
       );
       break;
     default:
-      confirmationMessage = null;
+      ConfirmationMessageComponent = null;
   }
 
   return (
     <div className={classes.root}>
       <Typography variant="h2">Email Confirmation</Typography>
-      {confirmationMessage}
+      {ConfirmationMessageComponent}
     </div>
   );
 }

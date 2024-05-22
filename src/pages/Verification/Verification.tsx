@@ -4,25 +4,20 @@ import { MailOutline } from '@mui/icons-material';
 import { selectToken, selectUser } from "@/redux/userSlice";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { RootState } from '@/redux/store';
 import { BASE_URL } from '@/config/default';
 import axios, { AxiosError, AxiosResponse } from "axios";
 import AlertMessage from "@/components/ui/AlertMessage";
+import AuthResponse from '@/types/AuthTypes'
 
-interface AuthResponse {
-  success: boolean;
-  data?: any;
-  error?: string;
-  message?: string;
-}
+type Severity = "error" | "warning" | "info" | "success";
 
 export default function Verification() {
-  const token = useSelector((state: RootState) => selectToken(state));
-  const user = useSelector((state: RootState) => selectUser(state));
+  const token = useSelector(selectToken);
+  const user = useSelector(selectUser);
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(120);
   const [resendDisabled, setResendDisabled] = useState(true);  
-  const [alert, setAlert] = useState<{ message: string; severity: "error" | "warning" | "info" | "success" } | null>(null);
+  const [alert, setAlert] = useState<{ message: string; severity: Severity } | null>(null);
 
   useEffect(() => {
     if (!token) {
