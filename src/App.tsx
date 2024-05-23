@@ -5,7 +5,7 @@ import { blueGrey, teal } from "@mui/material/colors";
 import Body from "@/pages/Home/components/Body";
 import Login from "@/pages/Login/Login";
 import Signup from "@/pages/Signup/Signup";
-import History from "./pages/Home/components/History";
+import History from "./pages/History/History";
 const theme = createTheme({
   typography: {
     fontFamily: [

@@ -125,7 +125,7 @@ function History() {
                   </Typography> 
                   <Typography variant="body2">
                     {user.score}%
-                  </Typography>
+                  </Typography> 
                 </UserCard>
               ))}
               {visibleCounts[index] < historyItem.user_results.length && (
