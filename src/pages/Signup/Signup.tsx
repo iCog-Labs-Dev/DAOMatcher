@@ -24,6 +24,11 @@ import LoginData from "@/types/LoginData";
 import { addUser, selectIsLoggedIn, selectUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
+import { GoogleLogin } from '@react-oauth/google';
+import { useGoogleOneTapLogin } from '@react-oauth/google';
+
+
+
 
 interface LoginResponse {
   data: LoginData | null;
@@ -277,6 +282,17 @@ const SignupPage = () => {
             Sign Up
           </Button>
         </form>
+        
+
+        <GoogleLogin
+          onSuccess={credentialResponse => {
+            console.log(credentialResponse);
+          }}
+          onError={() => {
+            console.log('Login Failed');
+          }}
+        />
+
       </div>
     </Container>
   );
