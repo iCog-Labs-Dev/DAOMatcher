@@ -21,7 +21,7 @@ import {
   validateName,
 } from "@/utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Navigate } from "react-router-dom";
+
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
 import AuthResponse from "@/types/AuthTypes";
@@ -30,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
 import OptionLink from "@/components/ui/OptionLink";
 import Button from "@/components/ui/Button";
+import { Navigate } from "react-router-dom";
 
 const styles = {
   paper: {
@@ -69,7 +70,7 @@ const SignupPage = () => {
   const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
 
   if (isLoggedIn) {
-    return <Navigate to="/DAOMatcher" replace />;
+    return <Navigate to="/DAOMatcher/verifyEmail" replace />;
   }
 
   const togglePasswordVisibility = () => {

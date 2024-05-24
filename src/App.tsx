@@ -6,6 +6,9 @@ import Body from "@/pages/Home/components/Body";
 import Login from "@/pages/Login/Login";
 import Signup from "@/pages/Signup/Signup";
 import History from "./pages/History/History";
+import Verification from "@/pages/Verification/Verification";
+import Confirm from "@/pages/Verification/Confirm";
+
 const theme = createTheme({
   typography: {
     fontFamily: [
@@ -28,6 +31,7 @@ const theme = createTheme({
 });
 
 function App() {
+
   return (
     <>
       <Header />
@@ -39,6 +43,8 @@ function App() {
             <Route path="/DAOMatcher/signup/" element={<Signup />} />
             <Route path="/DAOMatcher/history/" element={<History />} />
 
+            <Route path="/DAOMatcher/verifyEmail/" element={<Verification />} />
+            <Route path="/DAOMatcher/api/auth/confirm/:token" element={<Confirm />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
