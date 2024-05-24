@@ -25,7 +25,7 @@ import { addUser, selectIsLoggedIn, selectUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
 import { GoogleLogin } from '@react-oauth/google';
-import { useGoogleOneTapLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
 
 
@@ -286,7 +286,8 @@ const SignupPage = () => {
 
         <GoogleLogin
           onSuccess={credentialResponse => {
-            console.log(credentialResponse);
+            const decoded = jwtDecode(credentialResponse?.credential);
+            console.log(decoded);
           }}
           onError={() => {
             console.log('Login Failed');

@@ -24,6 +24,8 @@ import LoginData from "@/types/LoginData";
 import { addUser, selectIsLoggedIn, selectUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
 interface LoginResponse {
   data: LoginData | null;
@@ -214,6 +216,17 @@ const LoginPage = () => {
             Sign In
           </Button>
         </form>
+
+        <GoogleLogin
+          onSuccess={credentialResponse => {
+            const decoded = jwtDecode(credentialResponse?.credential);
+            console.log(decoded);
+          }}
+          onError={() => {
+            console.log('Login Failed');
+          }}
+        />
+
       </div>
     </Container>
   );
