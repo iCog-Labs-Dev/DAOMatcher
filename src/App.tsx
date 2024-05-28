@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Header from "@/components/Header";
 import { blueGrey, teal } from "@mui/material/colors";
 import Body from "@/pages/Home/components/Body";
