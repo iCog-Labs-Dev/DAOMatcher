@@ -61,7 +61,6 @@ const styles = {
 };
 
 const LoginPage = () => {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
