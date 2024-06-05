@@ -293,10 +293,8 @@ const SignupPage = () => {
         <GoogleLogin
           onSuccess={credentialResponse => {
             const decoded: DecodedToken = jwtDecode(credentialResponse?.credential);
-            // const email = decoded.email;
-            // const name = decoded.name;
-            setEmail(decoded.email);
-            setName(decoded.name);
+            let email = decoded.email;
+            let name = decoded.name;
             console.log('Decoded JWT:', decoded);
             console.log('Email:', email);
             console.log('Name:', name);
