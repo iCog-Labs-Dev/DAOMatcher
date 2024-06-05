@@ -42,7 +42,7 @@ const UsersList = ({ users }: IProps) => {
           </Stack>
         )}
       </Divider>
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" id="tour-users-list">
         {currentUsers.map((user: IUser) => (
           <User key={user.id} user={user} />
         ))}

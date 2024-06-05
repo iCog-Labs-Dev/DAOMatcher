@@ -30,6 +30,7 @@ import { clearUser, selectToken, selectUser } from "@/redux/userSlice";
 import SocketContext from "../../../redux/SocketContext";
 
 import { selectSearchParams } from "@/redux/searchParamSlice";
+import Joyride, { STATUS, ACTIONS } from "react-joyride";
 
 function Body() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,6 +69,15 @@ function Body() {
     depthRef.current
   );
 
+  const [tourCompleted, setTourCompleted] = useState<boolean>(false);
+
+  useEffect(() => {
+    const isTourCompleted = localStorage.getItem("tourCompleted");
+    if (isTourCompleted === "true") {
+      setTourCompleted(true);
+    }
+  }, []);
+  
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(clearError());
     dispatch(clearInfoMessages());
@@ -125,12 +135,76 @@ function Body() {
     return <Navigate to="/DAOMatcher/login" />;
   }
 
+  const steps = [
+    {
+      target: "#tour-typography",
+      content:
+        "Welcome to the search page! This is where you'll begin your tour.",
+    },
+    {
+      target: "#outlined-basic",
+      content:
+        "Enter user handles here. Provide the usernames of the users you want to search for.",
+    },
+    {
+      target: "#tour-add-user-handle-input",
+      content:
+        "Click this button to add the user handles that you've inserted.",
+    },
+    {
+      target: "#outlined-textarea",
+      content:
+        "Enter a description for the search here. Describe what you're looking for in the users.",
+    },
+    {
+      target: "#tour-count-input",
+      content:
+        "Choose the number of users to search for. Specify how many similar users you want to find.",
+    },
+    {
+      target: "#tour-depth-input",
+      content:
+        "Enter the depth to search the user. Define how deep the search should go into the user network.",
+    },
+    {
+      target: "#tour-search-button",
+      content:
+        "Click this button to start the search. Initiate the process to find users with similar interests.",
+    },
+    {
+      target: "#tour-users-list",
+      content:
+        "Here you will see the list of users matching your search. View the results of your search here.",
+    },
+  ];
+
+  const handleJoyrideCallback = (data: any) => {
+    const { status, action } = data;
+    if (
+      [STATUS.FINISHED, STATUS.SKIPPED].includes(status) ||
+      action === ACTIONS.CLOSE
+    ) {
+      setTourCompleted(true);
+
+      localStorage.setItem("tourCompleted", "true");
+    }
+  };
+  console.log("tour completed", tourCompleted)
+
   return (
     <center>
-      <Container maxWidth="lg">
+      <Container
+        maxWidth="lg"
+        sx={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
         <Box sx={{ margin: "5rem 0" }}>
           <Container maxWidth="md">
-            <Typography variant="h5">
+            <Typography variant="h5" id="tour-typography">
               Search for people with similar interests
             </Typography>
 
@@ -187,6 +261,31 @@ function Body() {
         </Box>
 
         <UsersList users={users} />
+        {!tourCompleted && (
+          <Joyride
+            steps={steps}
+            continuous={true}
+            styles={{
+              options: {
+                arrowColor: "#5caeab",
+                backgroundColor: "#5caeab",
+                overlayColor: "",
+                primaryColor: "#5caeab",
+                textColor: "#fff",
+              },
+              spotlight: {
+                backgroundColor: "transparent",
+                transition: "opacity 0.3s ease-in-out",
+              },
+              buttonClose: {
+                display: "none", // Hide the close button
+              },
+            }}
+            showProgress={true}
+            callback={handleJoyrideCallback}
+            showSkipButton={true}
+          />
+        )}
       </Container>
     </center>
   );
