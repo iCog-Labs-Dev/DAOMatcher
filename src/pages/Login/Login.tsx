@@ -56,6 +56,7 @@ const styles = {
 };
 
 const LoginPage = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
@@ -219,8 +220,40 @@ const LoginPage = () => {
 
         <GoogleLogin
           onSuccess={credentialResponse => {
-            const decoded = jwtDecode(credentialResponse?.credential);
-            console.log(decoded);
+            const decoded: DecodedToken = jwtDecode(credentialResponse?.credential);
+            // const email = decoded.email;
+            // const name = decoded.name;
+            setEmail(decoded.email);
+            setName(decoded.name);
+            console.log('Decoded JWT:', decoded);
+            console.log('Email:', email);
+            console.log('Name:', name);
+
+            // Prepare data to send to backend
+      const data = {
+        name,
+        email
+      };
+
+      // Send data to backend
+      fetch(`${BASE_URL}/api/auth/google-signin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        // Handle successful login, maybe redirect the user or show a message
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        // Handle errors
+      });
+    
+
           }}
           onError={() => {
             console.log('Login Failed');
