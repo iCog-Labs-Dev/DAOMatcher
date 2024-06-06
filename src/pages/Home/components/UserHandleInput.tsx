@@ -23,7 +23,7 @@ import { useState } from "react";
 
 const UserHandleInputInput = () => {
   const handle = useSelector(selectAllHomeStates).handle;
-  const [displayHandle, setDisplayHandle] = useState<string[]>([]);
+  const [displayHandle, setDisplayHandle] = useState<string[]>(handle);
   const mastodonHandleInput =
     useSelector(selectAllHomeStates).mastodonHandleInput;
   const linkedInHandleInput =
