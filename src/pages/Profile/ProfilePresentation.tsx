@@ -12,22 +12,41 @@ import Card from "@mui/joy/Card";
 import CardActions from "@mui/joy/CardActions";
 import CardOverflow from "@mui/joy/CardOverflow";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
+import { Alert } from "@mui/material";
 
-type Props = {
+export type ProfileDataType = {
 	displayName: string;
 	email: string;
 	apiKey: string;
-	handleInputChange:(e: ChangeEvent<HTMLInputElement>) => void
+};
+
+export type MessageType = {
+	text: string;
+	status: boolean;
+} | null;
+
+type Props = {
+	profileData: ProfileDataType;
+	isLoading: boolean;
+	message: { status: boolean; text: string } | null;
+	handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+	handleUpdateProfile: () => Promise<void>;
 };
 
 const ProfilePresentation: FC<Props> = ({
-	displayName,
-	email,
-	apiKey,
+	profileData,
+	isLoading,
+	message,
 	handleInputChange,
+	handleUpdateProfile,
 }) => {
+	const { displayName, email, apiKey } = profileData;
 	return (
 		<>
+			{message?.status && <Alert severity="success">{message.text}</Alert>}
+			{message?.status === false && (
+				<Alert severity="error">{message?.text}</Alert>
+			)}
 			<CssVarsProvider>
 				<Box sx={{ flex: 1, width: "100%", marginTop: "3rem" }}>
 					{/* *personal info */}
@@ -88,10 +107,12 @@ const ProfilePresentation: FC<Props> = ({
 								sx={{ borderTop: "1px solid", borderColor: "divider" }}
 							>
 								<CardActions sx={{ alignSelf: "flex-end", pt: 2 }}>
-									<Button size="sm" variant="outlined" color="neutral">
-										Cancel
-									</Button>
-									<Button size="sm" variant="solid">
+									<Button
+										size="sm"
+										variant="solid"
+										onClick={handleUpdateProfile}
+										disabled={isLoading}
+									>
 										Save
 									</Button>
 								</CardActions>
@@ -119,6 +140,7 @@ const ProfilePresentation: FC<Props> = ({
 									your API key information
 								</Typography>
 							</Box>
+
 							<Divider />
 							<Stack direction="row" spacing={3}>
 								<Stack spacing={2} sx={{ flexGrow: 1 }}>
@@ -145,10 +167,12 @@ const ProfilePresentation: FC<Props> = ({
 								sx={{ borderTop: "1px solid", borderColor: "divider" }}
 							>
 								<CardActions sx={{ alignSelf: "flex-end", pt: 2 }}>
-									<Button size="sm" variant="outlined" color="neutral">
-										Cancel
-									</Button>
-									<Button size="sm" variant="solid">
+									<Button
+										size="sm"
+										variant="solid"
+										onClick={handleUpdateProfile}
+										disabled={isLoading}
+									>
 										Save
 									</Button>
 								</CardActions>
