@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import ProfilePresentation, {
 	MessageType,
 	ProfileDataType,
@@ -12,22 +12,17 @@ import AuthResponse from "@/types/AuthTypes";
 
 const ProfileContainer = () => {
 	// store state
-	const {
-		id,
-		email,
-		display_name: displayName,
-		api_key: apiKey,
-	} = useSelector((state: RootState) => selectUser(state));
 	const dispatch = useDispatch();
+	const user = useSelector((state: RootState) => selectUser(state));
 	const token = useSelector((state: RootState) => selectToken(state));
 
 	// local state
-	const [message, setMessage] = useState<MessageType>(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [message, setMessage] = useState<MessageType>(null);
 	const [profileData, setProfileData] = useState<ProfileDataType>({
-		displayName,
-		apiKey: apiKey,
-		email,
+		displayName: user.display_name,
+		apiKey: user.api_key,
+		email: user.email,
 	});
 
 	// handlers
@@ -40,15 +35,10 @@ const ProfileContainer = () => {
 	};
 
 	const updateProfile = async () => {
-		// vlidation 
-		if (profileData.displayName === displayName && profileData.apiKey === apiKey) {
-			setMessage({status:false,text:"You haven't made any changes to your profile. Please update at least one field before submitting."})
-			return
-		}
 		setIsLoading(true);
 		try {
 			const { data: updatedUserInfo } = await axios.put(
-				`${CONSTANTS.URL.PUT_PROFILE}/${id}`,
+				`${CONSTANTS.URL.PUT_PROFILE}/${user.id}`,
 				{
 					display_name: profileData.displayName,
 					api_key: profileData.apiKey,
@@ -86,9 +76,19 @@ const ProfileContainer = () => {
 		setIsLoading(false);
 	};
 
+	useEffect(() => {
+		if (message?.status) {
+			const timer = setTimeout(() => {
+				setMessage(null);
+			}, 3000); 
+			return () => clearTimeout(timer); 
+		}
+	}, [message]);
+
 	return (
 		<ProfilePresentation
-			profileData={profileData}
+			user={user}
+			newProfileData={profileData}
 			handleInputChange={handleInputChange}
 			handleUpdateProfile={updateProfile}
 			isLoading={isLoading}

@@ -13,6 +13,7 @@ import CardActions from "@mui/joy/CardActions";
 import CardOverflow from "@mui/joy/CardOverflow";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import { Alert } from "@mui/material";
+import { IAuthUser } from "@/types/AuthTypes";
 
 export type ProfileDataType = {
 	displayName: string;
@@ -26,7 +27,8 @@ export type MessageType = {
 } | null;
 
 type Props = {
-	profileData: ProfileDataType;
+	user: IAuthUser;
+	newProfileData: ProfileDataType;
 	isLoading: boolean;
 	message: { status: boolean; text: string } | null;
 	handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -34,13 +36,13 @@ type Props = {
 };
 
 const ProfilePresentation: FC<Props> = ({
-	profileData,
+	user,
+	newProfileData,
 	isLoading,
 	message,
 	handleInputChange,
 	handleUpdateProfile,
 }) => {
-	const { displayName, email, apiKey } = profileData;
 	return (
 		<>
 			{message?.status && <Alert severity="success">{message.text}</Alert>}
@@ -82,7 +84,7 @@ const ProfilePresentation: FC<Props> = ({
 												size="sm"
 												placeholder="type your dispaly name"
 												name="displayName"
-												value={displayName}
+												value={newProfileData.displayName}
 												onChange={handleInputChange}
 											/>
 										</FormControl>
@@ -95,7 +97,7 @@ const ProfilePresentation: FC<Props> = ({
 												type="email"
 												startDecorator={<EmailRoundedIcon />}
 												placeholder="email"
-												defaultValue={email}
+												defaultValue={user.email}
 												readOnly
 												sx={{ flexGrow: 1 }}
 											/>
@@ -111,9 +113,9 @@ const ProfilePresentation: FC<Props> = ({
 										size="sm"
 										variant="solid"
 										onClick={handleUpdateProfile}
-										disabled={isLoading}
+										disabled={isLoading || newProfileData.displayName === user.display_name}
 									>
-										Save
+										{isLoading && newProfileData.displayName !== user.display_name ? "Saving...": "Save"}
 									</Button>
 								</CardActions>
 							</CardOverflow>
@@ -156,7 +158,7 @@ const ProfilePresentation: FC<Props> = ({
 												size="sm"
 												placeholder="add your apiKey"
 												name="apiKey"
-												value={apiKey}
+												value={newProfileData.apiKey}
 												onChange={handleInputChange}
 											/>
 										</FormControl>
@@ -171,9 +173,10 @@ const ProfilePresentation: FC<Props> = ({
 										size="sm"
 										variant="solid"
 										onClick={handleUpdateProfile}
-										disabled={isLoading}
+										disabled={isLoading || newProfileData.apiKey === user.api_key}
 									>
-										Save
+
+										{isLoading && newProfileData.apiKey !== user.api_key ? "Saving...": "Save"}
 									</Button>
 								</CardActions>
 							</CardOverflow>
