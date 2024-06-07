@@ -6,7 +6,7 @@ export const BASE_URL = "https://daomatcher-backend-v2.onrender.com";
 export const CONSTANTS = {
 	URL: {
 		GET_RANDOM_IMAGE: "https://robohash.org",
-		PUT_PROFILE: BASE_URL + "/api/user", // use it with /userid
+		PUT_PROFILE: "/api/user", // use it with /userid
 	},
 	NO_NAVBAR_PAGES: [
 		"/DAOMatcher/login",

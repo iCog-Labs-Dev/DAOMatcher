@@ -1,4 +1,6 @@
-import { ChangeEvent, FC } from "react";
+import { FC } from "react";
+import ProfilePropsType from "@/types/ProfilePageTypes";
+import { Alert, styled } from "@mui/material";
 import { CssVarsProvider } from "@mui/joy/styles";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
@@ -12,30 +14,8 @@ import Card from "@mui/joy/Card";
 import CardActions from "@mui/joy/CardActions";
 import CardOverflow from "@mui/joy/CardOverflow";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
-import { Alert } from "@mui/material";
-import { IAuthUser } from "@/types/AuthTypes";
 
-export type ProfileDataType = {
-	displayName: string;
-	email: string;
-	apiKey: string;
-};
-
-export type MessageType = {
-	text: string;
-	status: boolean;
-} | null;
-
-type Props = {
-	user: IAuthUser;
-	newProfileData: ProfileDataType;
-	isLoading: boolean;
-	message: { status: boolean; text: string } | null;
-	handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	handleUpdateProfile: () => Promise<void>;
-};
-
-const ProfilePresentation: FC<Props> = ({
+const ProfilePresentation: FC<ProfilePropsType> = ({
 	user,
 	newProfileData,
 	isLoading,
@@ -49,9 +29,10 @@ const ProfilePresentation: FC<Props> = ({
 			{message?.status === false && (
 				<Alert severity="error">{message?.text}</Alert>
 			)}
+
 			<CssVarsProvider>
 				<Box sx={{ flex: 1, width: "100%", marginTop: "3rem" }}>
-					{/* *personal info */}
+					{/* personal info */}
 					<Stack
 						spacing={4}
 						sx={{
@@ -110,21 +91,27 @@ const ProfilePresentation: FC<Props> = ({
 							>
 								<CardActions sx={{ alignSelf: "flex-end", pt: 2 }}>
 									<Button
+										color="primary"
 										size="sm"
 										variant="solid"
+										sx={{ background: "#008476" }}
 										onClick={handleUpdateProfile}
-										disabled={isLoading || newProfileData.displayName === user.display_name}
+										disabled={
+											isLoading ||
+											newProfileData.displayName === user.display_name
+										}
 									>
-										{isLoading && newProfileData.displayName !== user.display_name ? "Saving...": "Save"}
+										{isLoading &&
+										newProfileData.displayName !== user.display_name
+											? "Saving..."
+											: "Save"}
 									</Button>
 								</CardActions>
 							</CardOverflow>
 						</Card>
 					</Stack>
 
-					{/*
-					 *api info
-					 */}
+					{/* api info */}
 					<Stack
 						spacing={4}
 						sx={{
@@ -138,9 +125,7 @@ const ProfilePresentation: FC<Props> = ({
 						<Card>
 							<Box sx={{ mb: 1 }}>
 								<Typography level="title-md">API Key info</Typography>
-								<Typography level="body-sm">
-									your API key information
-								</Typography>
+								<Typography level="body-sm">Your Twitter API key</Typography>
 							</Box>
 
 							<Divider />
@@ -172,11 +157,15 @@ const ProfilePresentation: FC<Props> = ({
 									<Button
 										size="sm"
 										variant="solid"
+										sx={{ background: "#008476" }}
 										onClick={handleUpdateProfile}
-										disabled={isLoading || newProfileData.apiKey === user.api_key}
+										disabled={
+											isLoading || newProfileData.apiKey === user.api_key
+										}
 									>
-
-										{isLoading && newProfileData.apiKey !== user.api_key ? "Saving...": "Save"}
+										{isLoading && newProfileData.apiKey !== user.api_key
+											? "Saving..."
+											: "Save"}
 									</Button>
 								</CardActions>
 							</CardOverflow>

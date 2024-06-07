@@ -1,3 +1,3 @@
-import SettingsContainer from "./SettingsContainer";
+import ProfileContainer from "./ProfileContainer";
 
-export default SettingsContainer;
+export default ProfileContainer;
