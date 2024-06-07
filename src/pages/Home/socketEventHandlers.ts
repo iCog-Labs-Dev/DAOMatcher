@@ -20,6 +20,7 @@ import { clearUser, updateToken } from "@/redux/userSlice";
 import { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { clearSearchParam } from "@/redux/searchParamSlice";
+import axiosInstance from "@/services/api/axiosInstance";
 
 export const connectHandler = (dispatch: Dispatch<UnknownAction>) => {
   console.log("Connected to the Socket.IO server");
@@ -43,8 +44,8 @@ export const refreshHandler = (
   socket.current.emit("remove", userId);
   socket.current.disconnect();
 
-  axios
-    .get(`${BASE_URL}/api/auth/refresh`, { withCredentials: true })
+  axiosInstance
+    .get(`$/api/auth/refresh`, { withCredentials: true })
     .then((data) => {
       const { data: responseData, success, message } = data.data;
       const { token } = responseData;
