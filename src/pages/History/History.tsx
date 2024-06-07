@@ -1,10 +1,9 @@
 import  { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Card, CardContent, Typography, Button, styled, Box, Avatar, CircularProgress } from "@mui/material";
-import axios from "axios";
 import { selectToken, selectUser } from "@/redux/userSlice";
 import { RootState } from "@/redux/store";
-import { BASE_URL } from "@/config/default";
+import axiosInstance from "@/services/api/axiosInstance";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: 'flex',
@@ -21,7 +20,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 const StyledButton = styled(Button)({
   marginTop: '20px',
   padding: '8px 16px',
-  borderRadius: 15,
+  borderRadius: 5,
 });
 
 const UserCard = styled(Box)({
@@ -63,15 +62,7 @@ function History() {
     const fetchHistoryData = async () => {
       try {
         setLoading(true);
-        const authToken = Token;
-        const response = await axios.get(
-          `${BASE_URL}/api/user/${user.id}/search-result`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
+        const response = await axiosInstance.get(`/api/user/${user.id}/search-result`);
         const newHistoryData = response.data.data; // Reverse the order
         setHistoryData(newHistoryData);
         setVisibleCounts(new Array(newHistoryData.length).fill(5));
