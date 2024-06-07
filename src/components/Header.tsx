@@ -11,10 +11,14 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { CONSTANTS } from "@/config/default";
 import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "@reduxjs/toolkit/query";
+import { selectUser } from "@/redux/userSlice";
 
 function Header() {
-	const { pathname } = useLocation()
+	const { pathname } = useLocation();
 	const showNavbar = !CONSTANTS.NO_NAVBAR_PAGES.includes(pathname);
+	const user = useSelector((state: RootState) => selectUser(state));
 
 	const settings = [
 		{ name: "Profile", link: "/DAOMatcher/profile" },
@@ -33,12 +37,10 @@ function Header() {
 		setAnchorElUser(null);
 	};
 
-	const handleLogOut = () => {
-
-	}
+	const handleLogOut = () => {};
 
 	if (!showNavbar) {
-		return (<></>)
+		return <></>;
 	}
 
 	return (
@@ -96,12 +98,12 @@ function Header() {
 						<Tooltip title="Open settings">
 							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 								{/*
-										*TODO:MAKE THE image url /hello DYNAMIC 
-										*/}
+								 *TODO:MAKE THE image url /hello DYNAMIC
+								 */}
 								<Avatar
 									alt="Profile image"
-									sx={{ width: "100%", }}
-									src={CONSTANTS.URL.GET_RANDOM_IMAGE + "/ishak"}
+									sx={{ width: "100%" }}
+									src={`${CONSTANTS.URL.GET_RANDOM_IMAGE}/${user.display_name}`}
 								/>
 							</IconButton>
 						</Tooltip>
@@ -139,8 +141,8 @@ function Header() {
 							))}
 
 							{/*
-								*logout
-								*/}
+							 *logout
+							 */}
 
 							<MenuItem onClick={handleLogOut}>
 								<Typography
