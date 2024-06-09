@@ -4,7 +4,6 @@
 
 import { useState, CSSProperties } from "react";
 import {
-  Button,
   TextField,
   Typography,
   Container,
@@ -15,15 +14,18 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import { validateEmail, validatePassword } from "@/pages/Login/validators";
+import { validateEmail, validatePassword } from "@/utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Navigate } from "react-router-dom";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
-import LoginData from "@/types/LoginData";
-import { addUser, selectIsLoggedIn, selectUser } from "@/redux/userSlice";
+import AuthResponse from "@/types/AuthTypes";
+import { addUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
+
+import OptionLink from "@/components/ui/OptionLink";
+import Button from "@/components/ui/Button";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 
@@ -68,6 +70,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
@@ -94,9 +97,11 @@ const LoginPage = () => {
 
     console.log(`Email: ${email} Password: ${password}`);
 
-    let data: LoginResponse;
+    let data: AuthResponse;
     try {
-      const { data: successData }: AxiosResponse<LoginResponse> =
+      setIsLoading(true);
+
+      const { data: successData }: AxiosResponse<AuthResponse> =
         await axios.post(
           `${BASE_URL}/api/auth/login`,
           {
@@ -108,7 +113,7 @@ const LoginPage = () => {
       data = successData;
     } catch (error) {
       if (error instanceof AxiosError) {
-        const errorData: LoginResponse = error
+        const errorData: AuthResponse = error
           ? error.response
             ? error.response.data
               ? error.response.data
@@ -131,12 +136,11 @@ const LoginPage = () => {
           message: null,
         };
       }
+      setIsLoading(false);
     }
 
     const { success, message, error, data: loginData } = data;
     setSuccess(success);
-    dispatch(addUser(loginData));
-    dispatch(setIsLoggedIn(true));
 
     if (!success) {
       return setError(message ?? error ?? "Something went wrong");
@@ -145,6 +149,8 @@ const LoginPage = () => {
       setPassword("");
       setSuccessMessage(message ?? "Login Successful");
       setError("");
+      dispatch(addUser(loginData));
+      dispatch(setIsLoggedIn(true));
 
       return <Navigate to="/DAOMatcher" replace />;
     }
@@ -211,16 +217,11 @@ const LoginPage = () => {
             }}
           />
           <FormHelperText error>{passError}</FormHelperText>
-          <Button
-            type="button"
-            fullWidth
-            variant="contained"
-            color="primary"
-            style={styles.submit}
-            onClick={handleLogin}
-          >
-            Sign In
-          </Button>
+          <Button text="Sign In" loading={isLoading} onClick={handleLogin} />
+          <OptionLink
+            text="Don't have an account yet? Sign up"
+            to="/DAOMatcher/signup"
+          />
         </form>
 
         <GoogleLogin

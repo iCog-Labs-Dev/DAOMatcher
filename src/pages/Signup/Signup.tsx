@@ -4,7 +4,6 @@
 
 import { useState, CSSProperties } from "react";
 import {
-  Button,
   TextField,
   Typography,
   Container,
@@ -15,20 +14,25 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import { validateEmail, validatePassword, confirmPassword,validateName } from "@/pages/Login/validators";
+import {
+  validateEmail,
+  validatePassword,
+  confirmPassword,
+  validateName,
+} from "@/utils/validators";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Navigate } from "react-router-dom";
+
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
-import LoginData from "@/types/LoginData";
-import { addUser, selectIsLoggedIn, selectUser } from "@/redux/userSlice";
+import AuthResponse from "@/types/AuthTypes";
+import { addUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
+import OptionLink from "@/components/ui/OptionLink";
+import Button from "@/components/ui/Button";
+import { Navigate } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
-
-
-
 
 interface LoginResponse {
   data: LoginData | null;
@@ -75,12 +79,13 @@ const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
 
   if (isLoggedIn) {
-    return <Navigate to="/DAOMatcher" replace />;
+    return <Navigate to="/DAOMatcher/verifyEmail" replace />;
   }
 
   const togglePasswordVisibility = () => {
@@ -91,36 +96,36 @@ const SignupPage = () => {
     e.preventDefault();
 
     if (!validateName(name, setNameError)) {
-        console.log("Name is invalid : ", name);
-        return;
-      }
+      console.log("Name is invalid : ", name);
+      return;
+    }
 
     if (!validateEmail(email, setEmailError)) {
       console.log("Email is invalid : ", email);
       return;
     }
 
-    if (!validatePassword(password, setPassError)) {    
+    if (!validatePassword(password, setPassError)) {
       console.log("Password is invalid: ", email);
       return;
     }
 
     if (!confirmPassword(password, confirmedPassword, setPassError)) {
-        console.log("Password do not match: ", email);
-        return;
-      }
-
-
+      console.log("Password do not match: ", email);
+      return;
+    }
 
     console.log(`Email: ${email} Password: ${password}`);
 
-    let data: LoginResponse;
+    let data: AuthResponse;
     try {
-      const { data: successData }: AxiosResponse<LoginResponse> =
+      setIsLoading(true);
+
+      const { data: successData }: AxiosResponse<AuthResponse> =
         await axios.post(
           `${BASE_URL}/api/auth/register`,
           {
-            name,
+            display_name: name,
             email,
             password,
           },
@@ -129,7 +134,7 @@ const SignupPage = () => {
       data = successData;
     } catch (error) {
       if (error instanceof AxiosError) {
-        const errorData: LoginResponse = error
+        const errorData: AuthResponse = error
           ? error.response
             ? error.response.data
               ? error.response.data
@@ -152,11 +157,11 @@ const SignupPage = () => {
           message: null,
         };
       }
+      setIsLoading(false);
     }
 
     const { success, message, error, data: loginData } = data;
     setSuccess(success);
-    dispatch(addUser(loginData));
 
     if (!success) {
       return setError(message ?? error ?? "Something went wrong");
@@ -165,6 +170,8 @@ const SignupPage = () => {
       setPassword("");
       setSuccessMessage(message ?? "Signup Successful");
       setError("");
+      dispatch(addUser(loginData));
+      dispatch(setIsLoggedIn(true));
 
       return <Navigate to="/DAOMatcher" replace />;
     }
@@ -207,10 +214,9 @@ const SignupPage = () => {
             onBlur={() => validateName(name, setNameError)}
           />
 
-        <FormHelperText error>{nameError}</FormHelperText>
+          <FormHelperText error>{nameError}</FormHelperText>
 
-
-            <TextField
+          <TextField
             variant="outlined"
             margin="normal"
             required
@@ -263,30 +269,27 @@ const SignupPage = () => {
             // autoComplete="current-password"
             value={confirmedPassword}
             onChange={(e) => setCOnfirmedPassword(e.target.value)}
-            onBlur={() => confirmPassword(password,confirmedPassword, setPassError)}
+            onBlur={() =>
+              confirmPassword(password, confirmedPassword, setPassError)
+            }
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton onClick={togglePasswordVisibility} edge="end">
                     {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>                                                     
+                  </IconButton>
                 </InputAdornment>
               ),
             }}
           />
           <FormHelperText error>{passError}</FormHelperText>
 
+          <Button text="Sign Up" loading={isLoading} onClick={handleSignup} />
 
-          <Button
-            type="button"
-            fullWidth
-            variant="contained"
-            color="primary"
-            style={styles.submit}
-            onClick={handleSignup}
-          >
-            Sign Up
-          </Button>
+          <OptionLink
+            text="Already have an account? Login"
+            to="/DAOMatcher/login"
+          />
         </form>
         
 

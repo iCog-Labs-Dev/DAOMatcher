@@ -26,7 +26,7 @@ import CancelButton from "@/pages/Home/components/CancelButton";
 import UsersList from "@/pages/Home/components/UsersList";
 import CountInput from "@/pages/Home/components/CountInput";
 import DepthInput from "@/pages/Home/components/DepthInput";
-import { selectToken, selectUser } from "@/redux/userSlice";
+import { clearUser, selectToken, selectUser } from "@/redux/userSlice";
 import SocketContext from "../../../redux/SocketContext";
 
 import { selectSearchParams } from "@/redux/searchParamSlice";
@@ -121,6 +121,7 @@ function Body() {
     };
   }, [resubmit, searchParam]);
   if (!isLoggedIn) {
+    dispatch(clearUser());
     return <Navigate to="/DAOMatcher/login" />;
   }
 

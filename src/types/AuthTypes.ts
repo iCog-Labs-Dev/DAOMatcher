@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export interface ILoginUser {
+export interface IAuthUser {
   api_key: string;
   display_name: string;
   email: string;
@@ -9,10 +9,17 @@ export interface ILoginUser {
   verified: boolean;
 }
 
-interface LoginData {
+export interface AuthData {
   token: string;
   isLoggedIn: boolean;
-  user: ILoginUser;
+  user: IAuthUser;
 }
 
-export default LoginData;
+interface AuthResponse {
+  data: AuthData | null;
+  success: boolean;
+  message: string | null;
+  error: string | null;
+}
+
+export default AuthResponse;

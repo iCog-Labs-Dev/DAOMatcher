@@ -12,27 +12,50 @@ import {
   clearError,
   selectAllHomeStates,
   setHandle,
-  setHandleInput,
+  clearHandleInputs,
+  setMastodonHandleInput,
+  setTwitterHandleInput,
+  setLinkedInHandleInput,
 } from "@/pages/Home/homeSlice";
 import { clearInfoMessages } from "@/redux/infoSlice";
+import { LINKEDIN_PREFIX, TWITTER_PREFIX } from "@/config/default";
+import { useState } from "react";
 
 const UserHandleInputInput = () => {
   const handle = useSelector(selectAllHomeStates).handle;
-  const handleInput = useSelector(selectAllHomeStates).handleInput;
+  const [displayHandle, setDisplayHandle] = useState<string[]>(handle);
+  const mastodonHandleInput =
+    useSelector(selectAllHomeStates).mastodonHandleInput;
+  const linkedInHandleInput =
+    useSelector(selectAllHomeStates).linkedInHandleInput;
+  const twitterHandleInput =
+    useSelector(selectAllHomeStates).twitterHandleInput;
 
   const dispatch = useDispatch();
 
   const addHandler = () => {
-    if (handleInput != "") {
-      const indexof = handle.indexOf(handleInput);
-      if (indexof === -1) {
-        dispatch(setHandle([handleInput, ...handle]));
+    if (mastodonHandleInput || linkedInHandleInput || twitterHandleInput) {
+      const handlesToAdd = [];
+      const annotatedHandles = [];
+      if (mastodonHandleInput && !displayHandle.includes(mastodonHandleInput)) {
+        handlesToAdd.push(mastodonHandleInput);
+        annotatedHandles.push(mastodonHandleInput);
       }
-      dispatch(setHandleInput(""));
+      if (linkedInHandleInput && !displayHandle.includes(linkedInHandleInput)) {
+        handlesToAdd.push(linkedInHandleInput);
+        annotatedHandles.push(`${LINKEDIN_PREFIX}${linkedInHandleInput}`);
+      }
+      if (twitterHandleInput && !displayHandle.includes(twitterHandleInput)) {
+        handlesToAdd.push(twitterHandleInput);
+        annotatedHandles.push(`${TWITTER_PREFIX}${twitterHandleInput}`);
+      }
+
+      dispatch(setHandle([...annotatedHandles, ...handle]));
+      setDisplayHandle([...handlesToAdd, ...displayHandle]);
+      dispatch(clearHandleInputs());
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const inputChangeHandler = (e: any) => {
     if (e.key === "Enter") {
       addHandler();
@@ -41,11 +64,25 @@ const UserHandleInputInput = () => {
     dispatch(clearError());
     dispatch(clearInfoMessages());
 
-    dispatch(setHandleInput(e.target.value));
+    const { name, value } = e.target;
+    if (name === "mastodonHandleInput") dispatch(setMastodonHandleInput(value));
+    else if (name === "linkedInHandleInput")
+      dispatch(setLinkedInHandleInput(value));
+    else if (name === "twitterHandleInput")
+      dispatch(setTwitterHandleInput(value));
+
+    dispatch(clearError());
+    dispatch(clearInfoMessages());
   };
 
   const deleteHandle = (h: string) => {
-    dispatch(setHandle(handle.filter((e) => e != h)));
+    dispatch(
+      //The following checks if the string is a mastodon handle, if so no need to slice, if not, compare by removing the prefix of the handle
+      setHandle(
+        handle.filter((e) => (e.charAt(0) === "@" ? e != h : e.slice(3) != h))
+      )
+    );
+    setDisplayHandle(displayHandle.filter((e) => e != h));
   };
 
   return (
@@ -53,23 +90,56 @@ const UserHandleInputInput = () => {
       <Stack direction="row">
         <TextField
           id="outlined-basic"
+          name="mastodonHandleInput"
           label="Mastodon User handles"
           variant="outlined"
           fullWidth
           onChange={inputChangeHandler}
-          value={handleInput}
+          value={mastodonHandleInput}
           onKeyDown={inputChangeHandler}
           onBlur={addHandler}
           size="small"
           placeholder="@MarkRuffalo@mastodon.social"
+        />
+
+        <Box sx={{ width: "1rem" }} />
+
+        <TextField
+          id="outlined-basic"
+          name="linkedInHandleInput"
+          label="LinkedIn User handles"
+          variant="outlined"
+          fullWidth
+          onChange={inputChangeHandler}
+          value={linkedInHandleInput}
+          onKeyDown={inputChangeHandler}
+          onBlur={addHandler}
+          size="small"
+          placeholder="benjamin-grant-72381ujy3u"
+        />
+
+        <Box sx={{ width: "1rem" }} />
+
+        <TextField
+          id="outlined-basic"
+          name="twitterHandleInput"
+          label="Twitter User handles"
+          variant="outlined"
+          fullWidth
+          onChange={inputChangeHandler}
+          value={twitterHandleInput}
+          onKeyDown={inputChangeHandler}
+          onBlur={addHandler}
+          size="small"
+          placeholder="sololeveling_en"
         />
         <IconButton aria-label="delete" size="medium" onClick={addHandler}>
           <AddIcon fontSize="inherit" />
         </IconButton>
       </Stack>
       <Box sx={{ margin: "1rem 0" }}>
-        {handle.length ? (
-          handle.map((h, i) => (
+        {displayHandle.length ? (
+          displayHandle.map((h, i) => (
             <Chip
               label={h}
               key={i}

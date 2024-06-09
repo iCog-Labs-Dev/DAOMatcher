@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
-import LoginData from "@/types/LoginData";
+import { AuthData } from "@/types/AuthTypes";
 
-const initialState: LoginData = {
+const initialState: AuthData = {
   token: "",
   isLoggedIn: false,
   user: {
@@ -36,7 +36,9 @@ const userSlice = createSlice({
     },
     clearUser: (state) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      state = initialState;
+      state.isLoggedIn = initialState.isLoggedIn;
+      state.token = initialState.token;
+      state.user = initialState.user;
     },
   },
 });
