@@ -1,6 +1,6 @@
 import { FC } from "react";
 import ProfilePropsType from "@/types/ProfilePageTypes";
-import { Alert, styled } from "@mui/material";
+import { Alert } from "@mui/material";
 import { CssVarsProvider } from "@mui/joy/styles";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
@@ -102,7 +102,7 @@ const ProfilePresentation: FC<ProfilePropsType> = ({
 										}
 									>
 										{isLoading &&
-										newProfileData.displayName !== user.display_name
+											newProfileData.displayName !== user.display_name
 											? "Saving..."
 											: "Save"}
 									</Button>

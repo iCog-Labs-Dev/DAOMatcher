@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { CONSTANTS } from "@/config/default";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState } from "@reduxjs/toolkit/query";
+import { RootState } from "@/redux/store";
 import { selectUser } from "@/redux/userSlice";
 
 function Header() {
