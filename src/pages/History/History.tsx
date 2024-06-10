@@ -1,9 +1,14 @@
 import  { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Card, CardContent, Typography, Button, styled, Box, Avatar, CircularProgress } from "@mui/material";
-import { selectToken, selectUser } from "@/redux/userSlice";
+import { clearUser, selectToken, selectUser } from "@/redux/userSlice";
 import { RootState } from "@/redux/store";
 import axiosInstance from "@/services/api/axiosInstance";
+import JoyrideTour from "@/components/ui/JoyrideTour";
+import { historyPageSteps } from "@/components/TourSteps/Steps";
+import { selectAllHomeStates } from "../Home/homeSlice";
+import { useDispatch } from "react-redux";
+import { Navigate } from "react-router-dom";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: 'flex',
@@ -57,6 +62,8 @@ function History() {
   const [loading, setLoading] = useState(false);
   const Token = useSelector((state: RootState) => selectToken(state));
   const [visibleCounts, setVisibleCounts] = useState<number[]>([]);
+  const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchHistoryData = async () => {
@@ -83,7 +90,14 @@ function History() {
     });
   };
 
+  if (!isLoggedIn) {
+    dispatch(clearUser());
+    return <Navigate to="/DAOMatcher/login" />;
+  }
+
   return (
+    <>
+    <JoyrideTour steps={historyPageSteps} tourKey="historyTourCompleted" />
     <Box
       display="flex"
       flexDirection="column"
@@ -91,13 +105,13 @@ function History() {
       justifyContent="center"
       marginTop="100px"
     >
-      <Typography variant="h4" style={{ marginBottom: "20px" }}>
+      <Typography variant="h4" style={{ marginBottom: "20px" }} id="historyPageTitle">
         History
       </Typography>
       {loading && <CircularProgress />}
       {historyData.length > 0 ? (
         historyData.map((historyItem, index) => (
-          <StyledCard elevation={3} key={index}>
+          <StyledCard elevation={3} key={index} id="historyResult">
             <CardContent>
               <Typography variant="h4" component="div" style={{ textTransform: 'capitalize' }}>
                 {historyItem.description}
@@ -124,6 +138,7 @@ function History() {
                   variant="contained"
                   color="primary"
                   onClick={() => handleLoadMoreUsers(index)}
+                  id="loadMoreButton"
                 >
                   Load More
                 </StyledButton>
@@ -143,6 +158,7 @@ function History() {
         )
       )}
     </Box>
+    </>
   );
 }
 

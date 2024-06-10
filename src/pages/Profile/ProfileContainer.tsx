@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import ProfilePresentation from "./ProfilePresentation";
 import { useDispatch, useSelector } from "react-redux";
-import { selectToken, selectUser, updateUser } from "@/redux/userSlice";
+import { clearUser,selectToken, selectUser, updateUser } from "@/redux/userSlice";
 import { RootState } from "@/redux/store";
 import { AxiosError } from "axios";
 import { CONSTANTS } from "@/config/default";
@@ -9,6 +9,10 @@ import AuthResponse from "@/types/AuthTypes";
 import { ProfileDataType, ProfileMessageType } from "@/types/ProfilePageTypes";
 import { extractErrorData } from "@/utils/helpers";
 import axiosInstance from "@/services/api/axiosInstance";
+import { selectAllHomeStates } from "../Home/homeSlice";
+import { Navigate } from "react-router-dom";
+
+
 
 const ProfileContainer = () => {
 	// store state
@@ -79,6 +83,13 @@ const ProfileContainer = () => {
 			return () => clearTimeout(timer);
 		}
 	}, [message]);
+
+	//navigate to login page if not logged in
+	const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
+	if (!isLoggedIn) {
+		dispatch(clearUser());
+		return <Navigate to="/DAOMatcher/login" />;
+	}
 
 	return (
 		<ProfilePresentation

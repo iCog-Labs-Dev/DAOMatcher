@@ -44,7 +44,7 @@ function Header() {
 	}
 
 	return (
-		<AppBar position="static" sx={{ background: "white", boxShadow: "2" }}>
+		<AppBar position="static" sx={{ background: "white", boxShadow: "2" }} id="tour-typography">
 			<Container maxWidth="xl">
 				<Toolbar
 					disableGutters
@@ -96,7 +96,7 @@ function Header() {
 
 					<Box sx={{ flexGrow: 0 }}>
 						<Tooltip title="Open settings">
-							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} id="profilePageButton">
 								{/*
 								 *TODO:MAKE THE image url /hello DYNAMIC
 								 */}
