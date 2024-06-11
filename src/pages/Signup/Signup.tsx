@@ -67,7 +67,7 @@ const SignupPage = () => {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmedPassword, setCOnfirmedPassword] = useState("");
+  const [confirmedPassword, setConfirmedPassword] = useState("");
   const [passError, setPassError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -296,7 +296,7 @@ const SignupPage = () => {
             id="confirmPassword"
             // autoComplete="current-password"
             value={confirmedPassword}
-            onChange={(e) => setCOnfirmedPassword(e.target.value)}
+            onChange={(e) => setConfirmedPassword(e.target.value)}
             onBlur={() =>
               confirmPassword(password, confirmedPassword, setPassError)
             }

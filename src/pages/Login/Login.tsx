@@ -26,7 +26,7 @@ import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
 
 import OptionLink from "@/components/ui/OptionLink";
 import Button from "@/components/ui/Button";
-import { GoogleLogin } from "@react-oauth/google";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
 interface DecodedToken {
@@ -150,6 +150,43 @@ const LoginPage = () => {
     }
   };
 
+  const googleAuthSuccessHandler = (credentialResponse: CredentialResponse) => {
+    const decoded: DecodedToken = jwtDecode(
+      credentialResponse?.credential ?? ""
+    );
+    let email = decoded.email;
+    let name = decoded.name;
+    // setEmail(decoded.email);
+    // setName(decoded.name);
+    console.log("Decoded JWT:", decoded);
+    console.log("Email:", email);
+    console.log("Name:", name);
+
+    // Prepare data to send to backend
+    const data = {
+      name,
+      email,
+    };
+
+    // Send data to backend
+    fetch(`${BASE_URL}/api/auth/google-signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+        // Handle successful login, maybe redirect the user or show a message
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // Handle errors
+      });
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -219,42 +256,9 @@ const LoginPage = () => {
         </form>
 
         <GoogleLogin
-          onSuccess={(credentialResponse) => {
-            const decoded: DecodedToken = jwtDecode(
-              credentialResponse?.credential ?? ""
-            );
-            let email = decoded.email;
-            let name = decoded.name;
-            // setEmail(decoded.email);
-            // setName(decoded.name);
-            console.log("Decoded JWT:", decoded);
-            console.log("Email:", email);
-            console.log("Name:", name);
-
-            // Prepare data to send to backend
-            const data = {
-              name,
-              email,
-            };
-
-            // Send data to backend
-            fetch(`${BASE_URL}/api/auth/google-signin`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                console.log("Success:", data);
-                // Handle successful login, maybe redirect the user or show a message
-              })
-              .catch((error) => {
-                console.error("Error:", error);
-                // Handle errors
-              });
-          }}
+          onSuccess={(credentialResponse) =>
+            googleAuthSuccessHandler(credentialResponse)
+          }
           onError={() => {
             console.log("Login Failed");
           }}
