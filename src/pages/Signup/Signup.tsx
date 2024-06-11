@@ -197,11 +197,50 @@ const SignupPage = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
-        // Handle successful login, maybe redirect the user or show a message
+        const { success, message, error, data: loginData } = data;
+        setSuccess(success);
+
+        if (!success) {
+          return setError(message ?? error ?? "Something went wrong");
+        } else {
+          setEmail("");
+          setPassword("");
+          setSuccessMessage(message ?? "Signup Successful");
+          setError("");
+          dispatch(addUser(loginData));
+          dispatch(setIsLoggedIn(true));
+
+          return <Navigate to="/DAOMatcher" replace />;
+        }
       })
       .catch((error) => {
-        console.error("Error:", error);
-        // Handle errors
+        let data;
+        if (error instanceof AxiosError) {
+          const errorData: AuthResponse = error
+            ? error.response
+              ? error.response.data
+                ? error.response.data
+                : null
+              : null
+            : null;
+          data = errorData
+            ? errorData
+            : {
+                success: false,
+                data: null,
+                error: "Login Failed due to server error",
+                message: null,
+              };
+        } else {
+          data = {
+            success: false,
+            data: null,
+            error: "Something went wrong with your login",
+            message: null,
+          };
+        }
+        setIsLoading(false);
+        setError(data.error ?? "Something went wrong");
       });
   };
 
