@@ -31,15 +31,8 @@ import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
 import OptionLink from "@/components/ui/OptionLink";
 import Button from "@/components/ui/Button";
 import { Navigate } from "react-router-dom";
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-
-interface LoginResponse {
-  data: LoginData | null;
-  success: boolean;
-  message: string | null;
-  error: string | null;
-}
 
 interface DecodedToken {
   email: string;
@@ -291,48 +284,46 @@ const SignupPage = () => {
             to="/DAOMatcher/login"
           />
         </form>
-        
 
         <GoogleLogin
-          onSuccess={credentialResponse => {
-            const decoded: DecodedToken = jwtDecode(credentialResponse?.credential);
+          onSuccess={(credentialResponse) => {
+            const decoded: DecodedToken = jwtDecode(
+              credentialResponse?.credential ?? ""
+            );
             let email = decoded.email;
             let name = decoded.name;
-            console.log('Decoded JWT:', decoded);
-            console.log('Email:', email);
-            console.log('Name:', name);
+            console.log("Decoded JWT:", decoded);
+            console.log("Email:", email);
+            console.log("Name:", name);
 
             // Prepare data to send to backend
-      const data = {
-        name,
-        email
-      };
+            const data = {
+              name,
+              email,
+            };
 
-      // Send data to backend
-      fetch(`${BASE_URL}/api/auth/google-signin`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Success:', data);
-        // Handle successful login, maybe redirect the user or show a message
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        // Handle errors
-      });
-    
-
+            // Send data to backend
+            fetch(`${BASE_URL}/api/auth/google-signin`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log("Success:", data);
+                // Handle successful login, maybe redirect the user or show a message
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+                // Handle errors
+              });
           }}
           onError={() => {
-            console.log('Login Failed');
+            console.log("Login Failed");
           }}
         />
-
       </div>
     </Container>
   );
