@@ -31,6 +31,14 @@ import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
 import OptionLink from "@/components/ui/OptionLink";
 import Button from "@/components/ui/Button";
 import { Navigate } from "react-router-dom";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+
+interface DecodedToken {
+  email: string;
+  given_name: string;
+  [key: string]: any;
+}
 
 const styles = {
   paper: {
@@ -59,7 +67,7 @@ const SignupPage = () => {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmedPassword, setCOnfirmedPassword] = useState("");
+  const [confirmedPassword, setConfirmedPassword] = useState("");
   const [passError, setPassError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -162,6 +170,80 @@ const SignupPage = () => {
     }
   };
 
+  const googleAuthSuccessHandler = (credentialResponse: CredentialResponse) => {
+    const decoded: DecodedToken = jwtDecode(
+      credentialResponse?.credential ?? ""
+    );
+    let email = decoded.email;
+    let name = decoded.name;
+    console.log("Decoded JWT:", decoded);
+    console.log("Email:", email);
+    console.log("Name:", name);
+
+    // Prepare data to send to backend
+    const data = {
+      name,
+      email,
+    };
+
+    // Send data to backend
+    fetch(`${BASE_URL}/api/auth/google-signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+        const { success, message, error, data: loginData } = data;
+        setSuccess(success);
+
+        if (!success) {
+          return setError(message ?? error ?? "Something went wrong");
+        } else {
+          setEmail("");
+          setPassword("");
+          setSuccessMessage(message ?? "Signup Successful");
+          setError("");
+          dispatch(addUser(loginData));
+          dispatch(setIsLoggedIn(true));
+
+          return <Navigate to="/DAOMatcher" replace />;
+        }
+      })
+      .catch((error) => {
+        let data;
+        if (error instanceof AxiosError) {
+          const errorData: AuthResponse = error
+            ? error.response
+              ? error.response.data
+                ? error.response.data
+                : null
+              : null
+            : null;
+          data = errorData
+            ? errorData
+            : {
+                success: false,
+                data: null,
+                error: "Login Failed due to server error",
+                message: null,
+              };
+        } else {
+          data = {
+            success: false,
+            data: null,
+            error: "Something went wrong with your login",
+            message: null,
+          };
+        }
+        setIsLoading(false);
+        setError(data.error ?? "Something went wrong");
+      });
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -253,7 +335,7 @@ const SignupPage = () => {
             id="confirmPassword"
             // autoComplete="current-password"
             value={confirmedPassword}
-            onChange={(e) => setCOnfirmedPassword(e.target.value)}
+            onChange={(e) => setConfirmedPassword(e.target.value)}
             onBlur={() =>
               confirmPassword(password, confirmedPassword, setPassError)
             }
@@ -276,6 +358,16 @@ const SignupPage = () => {
             to="/DAOMatcher/login"
           />
         </form>
+
+        <GoogleLogin
+          onSuccess={(credentialResponse) =>
+            googleAuthSuccessHandler(credentialResponse)
+          }
+          onError={() => {
+            console.log("Login Failed");
+            setError("Google Authentication Failed");
+          }}
+        />
       </div>
     </Container>
   );

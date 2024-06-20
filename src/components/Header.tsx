@@ -10,15 +10,21 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { CONSTANTS } from "@/config/default";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { selectUser } from "@/redux/userSlice";
+import { selectUser, clearUser } from "@/redux/userSlice";
+import { useDispatch } from "react-redux";
+import { setIsLoggedIn } from "@/pages/Home/homeSlice";
+
 
 function Header() {
 	const { pathname } = useLocation();
 	const showNavbar = CONSTANTS.PRIVATE_ROUTES.includes(pathname);
 	const user = useSelector((state: RootState) => selectUser(state));
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	
 
 	const settings = [
 		{ name: "Profile", link: "/DAOMatcher/profile" },
@@ -37,7 +43,12 @@ function Header() {
 		setAnchorElUser(null);
 	};
 
-	const handleLogOut = () => {};
+	const handleLogOut = () => {
+		localStorage.clear();
+		dispatch(clearUser());
+		dispatch(setIsLoggedIn(false));
+		navigate("/DAOMatcher/login");
+	};
 
 	if (!showNavbar) {
 		return <></>;
