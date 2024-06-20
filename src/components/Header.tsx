@@ -17,7 +17,7 @@ import { selectUser } from "@/redux/userSlice";
 
 function Header() {
 	const { pathname } = useLocation();
-	const showNavbar = !CONSTANTS.NO_NAVBAR_PAGES.includes(pathname);
+	const showNavbar = CONSTANTS.PRIVATE_ROUTES.includes(pathname);
 	const user = useSelector((state: RootState) => selectUser(state));
 
 	const settings = [

@@ -8,10 +8,10 @@ export const CONSTANTS = {
 		GET_RANDOM_IMAGE: "https://robohash.org",
 		PUT_PROFILE: "/api/user", // use it with /userid
 	},
-	NO_NAVBAR_PAGES: [
-		"/DAOMatcher/login",
-		"/DAOMatcher/signup",
-		"/DAOMatcher/verifyEmail",
+	PRIVATE_ROUTES: [
+		"/DAOMatcher",
+		"/DAOMatcher/history",
+		"/DAOMatcher/profile",
 	],
 };
 export const socket = io(BASE_URL, { autoConnect: false });
