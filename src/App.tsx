@@ -9,6 +9,7 @@ import History from "./pages/History/History";
 import Verification from "@/pages/Verification/Verification";
 import Confirm from "@/pages/Verification/Confirm";
 import ProfileContainer from "./pages/Profile/ProfileContainer";
+import AuthGuard from "./components/AuthGurd";
 
 const theme = createTheme({
 	typography: {
@@ -36,19 +37,27 @@ function App() {
 		<>
 			<ThemeProvider theme={theme}>
 				<BrowserRouter>
-					<Header />
-					<Routes>
-						<Route path="/DAOMatcher/" element={<Body />} />
-						<Route path="/DAOMatcher/login/" element={<Login />} />
-						<Route path="/DAOMatcher/signup/" element={<Signup />} />
-						<Route path="/DAOMatcher/history/" element={<History />} />
-						<Route path="/DAOMatcher/profile/" element={<ProfileContainer />} />
-						<Route path="/DAOMatcher/verifyEmail/" element={<Verification />} />
-						<Route
-							path="/DAOMatcher/api/auth/confirm/:token"
-							element={<Confirm />}
-						/>
-					</Routes>
+					<AuthGuard>
+						<Header />
+						<Routes>
+							<Route path="/DAOMatcher/" element={<Body />} />
+							<Route path="/DAOMatcher/login/" element={<Login />} />
+							<Route path="/DAOMatcher/signup/" element={<Signup />} />
+							<Route path="/DAOMatcher/history/" element={<History />} />
+							<Route
+								path="/DAOMatcher/profile/"
+								element={<ProfileContainer />}
+							/>
+							<Route
+								path="/DAOMatcher/verifyEmail/"
+								element={<Verification />}
+							/>
+							<Route
+								path="/DAOMatcher/api/auth/confirm/:token"
+								element={<Confirm />}
+							/>
+						</Routes>
+					</AuthGuard>
 				</BrowserRouter>
 			</ThemeProvider>
 		</>
