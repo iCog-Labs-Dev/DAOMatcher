@@ -15,6 +15,7 @@ const SearchButton = ({ isLoading, handleSubmit }: IProps) => {
           fullWidth
           onClick={handleSubmit}
           size="small"
+          id="tour-search-button"
         >
           Search
         </Button>

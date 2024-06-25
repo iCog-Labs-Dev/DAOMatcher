@@ -20,6 +20,7 @@ const DepthInput = ({ isLoading, depth, count, handleDepthChange }: IProps) => {
           type="number"
           value={depth}
           onChange={handleDepthChange}
+          id="tour-depth-input"
         />
         <div
           style={{

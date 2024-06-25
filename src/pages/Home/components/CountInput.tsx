@@ -28,6 +28,7 @@ const CountInput = ({ isLoading, count, handleChange }: IProps) => {
         size="small"
         onChange={handleChange}
         value={count}
+        id="tour-count-input"
       />
     </>
   );

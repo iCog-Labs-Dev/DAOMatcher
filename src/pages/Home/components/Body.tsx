@@ -30,6 +30,8 @@ import { clearUser, selectToken, selectUser } from "@/redux/userSlice";
 import SocketContext from "../../../redux/SocketContext";
 
 import { selectSearchParams } from "@/redux/searchParamSlice";
+import JoyrideTour from "@/components/ui/JoyrideTour";
+import { homePageSteps } from "@/components/TourSteps/Steps";
 
 function Body() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -67,7 +69,7 @@ function Body() {
     count,
     depthRef.current
   );
-
+  
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(clearError());
     dispatch(clearInfoMessages());
@@ -125,9 +127,18 @@ function Body() {
     return <Navigate to="/DAOMatcher/login" />;
   }
 
+
   return (
     <center>
-      <Container maxWidth="lg">
+      <Container
+        maxWidth="lg"
+        sx={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
         <Box sx={{ margin: "5rem 0" }}>
           <Container maxWidth="md">
             <Typography variant="h5">
@@ -187,6 +198,7 @@ function Body() {
         </Box>
 
         <UsersList users={users} />
+        <JoyrideTour steps={homePageSteps} tourKey="homeTourCompleted" />
       </Container>
     </center>
   );

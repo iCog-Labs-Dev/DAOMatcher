@@ -133,7 +133,7 @@ const UserHandleInputInput = () => {
           size="small"
           placeholder="sololeveling_en"
         />
-        <IconButton aria-label="delete" size="medium" onClick={addHandler}>
+        <IconButton aria-label="delete" size="medium" onClick={addHandler} id="tour-add-user-handle-input">
           <AddIcon fontSize="inherit" />
         </IconButton>
       </Stack>
