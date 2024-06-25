@@ -20,7 +20,7 @@ import { setIsLoggedIn } from "@/pages/Home/homeSlice";
 
 function Header() {
 	const { pathname } = useLocation();
-	const showNavbar = !CONSTANTS.NO_NAVBAR_PAGES.includes(pathname);
+	const showNavbar = CONSTANTS.PRIVATE_ROUTES.includes(pathname);
 	const user = useSelector((state: RootState) => selectUser(state));
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
