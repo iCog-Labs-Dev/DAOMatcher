@@ -49,7 +49,10 @@ const useSocket = ({ count, depth }: ISocketProps) => {
       socket.current.on("set_cookie", (userId: string) =>
         setCookieHandler(userId)
       );
-      socket.current.on("connect_error", () => connectErrorHandler(dispatch));
+      socket.current.on("connect_error", (err) => {
+        console.log("Connection Error: ", err);
+        connectErrorHandler(dispatch)
+      });;
       socket.current.on("search", (data: Response) =>
         getUsers(dispatch, data, count)
       );
