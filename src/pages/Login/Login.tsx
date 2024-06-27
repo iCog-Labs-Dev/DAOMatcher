@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/ Install Material-UI if not already installed
-  / npm install @mui/material @emotion/react @emotion/styled
+// Install Material-UI if not already installed
+// npm install @mui/material @emotion/react @emotion/styled
 
 import { useState, CSSProperties } from "react";
 import {
@@ -48,9 +48,9 @@ const styles = {
     backgroundColor: "secondary",
   },
   form: {
-    width: "100%", / Fix IE 11 issue.
-      marginTop: "8px",
-},
+    width: "100%", // Fix IE 11 issue.
+    marginTop: "8px",
+  },
   submit: {
     margin: "24px 0 16px",
   },
@@ -156,19 +156,19 @@ const LoginPage = () => {
     );
     let email = decoded.email;
     let name = decoded.name;
-    / setEmail(decoded.email);
-      / setName(decoded.name);
+    // setEmail(decoded.email);
+    // setName(decoded.name);
     console.log("Decoded JWT:", decoded);
     console.log("Email:", email);
     console.log("Name:", name);
 
-    / Prepare data to send to backend
+    // Prepare data to send to backend
     const data = {
       name,
       email,
     };
 
-    / Send data to backend
+    // Send data to backend
     fetch(`${BASE_URL}/api/auth/google-signin`, {
       method: "POST",
       headers: {
