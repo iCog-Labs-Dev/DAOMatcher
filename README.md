@@ -55,10 +55,6 @@ npm run build
 
 The output will be located in the `dist` directory.
 
-## Deployment
-
-You can deploy the contents of the `dist` directory to any static hosting service.
-
 ## Note
 
 To use Google OAuth in this project, you will need a Google Client ID. If you do not have one, the Google OAuth functionality will not work when running the project locally.
