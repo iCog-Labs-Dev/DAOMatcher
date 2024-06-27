@@ -30,7 +30,6 @@ import AuthResponse from "@/types/AuthTypes";
 import { addUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
-import OptionLink from "@/components/ui/OptionLink";
 import Button from "@/components/ui/Button";
 import { Link, Navigate } from "react-router-dom";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
