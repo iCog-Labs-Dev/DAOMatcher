@@ -34,10 +34,10 @@ const JoyrideTour: React.FC<JoyrideTourProps> = ({ steps, tourKey }) => {
         continuous={true}
         styles={{
           options: {
-            arrowColor: "#5caeab",
-            backgroundColor: "#5caeab",
+            arrowColor: "#009688",
+            backgroundColor: "#009688",
             overlayColor: "rgba(92, 174, 171, 0.3)",
-            primaryColor: "#5caeab",
+            primaryColor: "#009688",
             textColor: "#fff",
             zIndex: 1000,
           },

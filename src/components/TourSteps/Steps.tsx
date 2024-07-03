@@ -26,7 +26,7 @@ const homePageSteps = [
   {
     target: "#tour-depth-input",
     content:
-      "Enter the depth to search the user. Define how deep the search should go into the network.",
+      "Enter the depth for searching the user. A higher depth will yield better results but will take longer to find users.",
   },
   {
     target: "#tour-search-button",

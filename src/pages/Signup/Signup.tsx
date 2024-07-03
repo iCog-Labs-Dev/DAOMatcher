@@ -25,7 +25,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { BASE_URL } from "@/config/default";
 import AuthResponse from "@/types/AuthTypes";
-import { addUser } from "@/redux/userSlice";
+import { addUser, selectUser } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllHomeStates, setIsLoggedIn } from "@/pages/Home/homeSlice";
 import OptionLink from "@/components/ui/OptionLink";
@@ -76,9 +76,15 @@ const SignupPage = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectAllHomeStates).isLoggedIn;
+  const user = useSelector(selectUser);
 
   if (isLoggedIn) {
-    return <Navigate to="/DAOMatcher/verifyEmail" replace />;
+    if(!user.verified){
+      return <Navigate to="/DAOMatcher/verifyEmail" replace />;
+    } 
+    else {
+      return <Navigate to="/DAOMatcher" replace />;
+    }
   }
 
   const togglePasswordVisibility = () => {
